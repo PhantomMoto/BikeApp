@@ -25,7 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('products.urls')),
 ]
-
+import os
 # Always serve media files (even in production, for Render quick fix)
 if settings.DEBUG or os.environ.get('RENDER') == 'true':
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

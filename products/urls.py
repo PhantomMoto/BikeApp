@@ -49,9 +49,9 @@ urlpatterns = [
     path('blog/', views.blog_list_view, name='blog_list'),
     path('blog/<slug:slug>/', views.blog_detail_view, name='blog_detail'),
     path('contact/', views.contact_view, name='contact'),
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

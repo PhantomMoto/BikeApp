@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-*p3gkb&fy!1k(51q+hvnl%t#o=5pvf2z9keqnjg(x4jh0qcg3y'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['https://phantommoto.in/', 'phantommoto.in']
 
 
 # Application definition
@@ -123,6 +123,10 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
+import os
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 
 import os
 
@@ -143,3 +147,10 @@ LOGIN_REDIRECT_URL = '/account/'
 
 RAZORPAY_KEY_ID = "rzp_test_cq7lxIhKWEMmCZ"
 RAZORPAY_KEY_SECRET = "JlTRultMrU8OS7izPky8fgqV"
+
+
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True

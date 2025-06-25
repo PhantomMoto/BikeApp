@@ -120,8 +120,8 @@ STATICFILES_DIRS = [ BASE_DIR / 'static' ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # Directory where static files will be collected in production
 
 # ✅ MEDIA FILES
+MEDIA_ROOT = '/mnt/data/media'  # Always use absolute path
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Default primary key field type

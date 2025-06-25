@@ -27,5 +27,6 @@ urlpatterns = [
 ]
 
 # Always serve media files (even in production, for Render quick fix)
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.DEBUG or os.environ.get('RENDER') == 'true':
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

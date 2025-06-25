@@ -1,0 +1,31 @@
+{% extends 'products/base.html' %}
+{% block content %}
+  <section class="account-section">
+    <div class="account-card">
+      <!-- Avatar -->
+      <div class="account-avatar">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#4f46e5" class="account-avatar-svg">
+          <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.31 0-10 1.66-10 5v1h20v-1c0-3.34-6.69-5-10-5z"/>
+        </svg>
+      </div>
+      <h1 class="account-title">Hey, {{ user.username }} 👋</h1>
+      <p class="account-subtitle">Here are your account details</p>
+      <div class="account-divider"></div>
+      <div class="account-info">
+        <div>
+          <p class="label">Username</p>
+          <p class="value">{{ user.username }}</p>
+        </div>
+        <div>
+          <p class="label">Email</p>
+          <p class="value">{{ user.email }}</p>
+        </div>
+      </div>
+      <form method="post" action="{% url 'products:logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="logout-btn">Logout</button>
+      </form>
+      <p class="account-footer">Thanks for visiting 🚀</p>
+    </div>
+  </section>
+{% endblock %}

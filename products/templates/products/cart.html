@@ -1,0 +1,140 @@
+{% extends 'products/base.html' %}
+{% block title %}
+  Custom Page Title
+{% endblock %}
+{% block content %}
+{% if cart_items %}
+<div class="cart-container">
+  <table class="cart-table">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Qty</th>
+        <th>Price</th>
+        <th>Subtotal</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in cart_items %}
+      <tr>
+        <td>{{ item.accessory.name }}</td>
+        <td>
+          <form action="{% url 'products:cart_update' item.accessory.id %}" method="post" class="cart-qty-form">
+            {% csrf_token %}
+            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="cart-qty-input">
+            <button type="submit" class="cart-btn cart-btn-update">Update</button>
+          </form>
+        </td>
+        <td>₹{{ item.accessory.price }}</td>
+        <td>₹{{ item.subtotal }}</td>
+        <td>
+          <form action="{% url 'products:cart_remove' item.accessory.id %}" method="post" class="cart-remove-form">
+            {% csrf_token %}
+            <button type="submit" class="cart-btn cart-btn-remove">Remove</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="3" class="cart-total-label"><strong>Total:</strong></td>
+        <td colspan="2" class="cart-total-value">₹{{ total }}</td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+<div class="cart-actions-row">
+  <a href="/products/" class="cart-continue-link">Continue Shopping</a>
+  <div style="margin-top: 20px;">
+  <label for="shipping_speed"><strong>Select Shipping Speed:</strong></label>
+  <select id="shipping_speed" name="shipping_speed" required style="padding: 8px 12px; margin-left: 10px; font-size: 1rem;">
+    <option value="standard">Standard (4-7 days)</option>
+    <option value="express">Express (2-3 days)</option>
+    <option value="fast">Fast (Next Day)</option>
+  </select>
+</div>
+  <button id="rzp-checkout-btn" class="cart-btn cart-btn-checkout" style="background:#F97A00;color:#fff;padding:12px 32px;border-radius:8px;font-size:1.1rem;font-weight:600;border:none;cursor:pointer;">Checkout & Pay</button>
+</div>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  document.getElementById('rzp-checkout-btn').onclick = function(e){
+    e.preventDefault();
+    var amount = {{ total|floatformat:2|add:"0"|floatformat:0 }} * 100; // in paise
+    fetch("/razorpay/create-order/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": '{{ csrf_token }}'
+      },
+      body: JSON.stringify({ amount: amount })
+    })
+    .then(response => response.json())
+    .then(data => {
+      var options = {
+        "key": data.key,
+        "amount": amount,
+        "currency": "INR",
+        "name": "PhantomMoto",
+        "description": "Order Payment",
+        // "image": "/static/logo.png",
+        "order_id": data.order_id,
+        "handler": function (response){
+          // Verify payment on backend
+          fetch("/razorpay/verify/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature
+            })
+          })
+          .then(res => res.json())
+          .then(result => {
+            if(result.success){
+              alert('Payment successful! Payment ID: ' + response.razorpay_payment_id);
+              window.location.reload();
+            } else {
+              alert('Payment verification failed: ' + (result.error || 'Unknown error'));
+            }
+          });
+        },
+        "prefill": {
+          "email": "{{ user.email|default:'' }}"
+        },
+        "theme": {
+          "color": "#F97A00"
+        }
+      };
+      var rzp1 = new Razorpay(options);
+      rzp1.open();
+    });
+  }
+
+  var shippingSpeed = document.getElementById('shipping_speed').value;
+
+fetch("/razorpay/create-order/", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "X-CSRFToken": '{{ csrf_token }}'
+  },
+  body: JSON.stringify({ 
+    amount: amount,
+    shipping_speed: shippingSpeed
+  })
+})
+</script>
+{% else %}
+<p class="cart-empty">Your cart is empty.</p>
+<div class="cart-empty-actions">
+  <a href="/products/" class="cart-continue-link">Continue Shopping</a>
+</div>
+{% endif %}
+
+{% endblock %}

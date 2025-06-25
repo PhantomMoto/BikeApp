@@ -1,0 +1,202 @@
+{% extends 'products/base.html' %}
+{% block content %}
+<section class="contact-section">
+  <div class="contact-card">
+    
+    <!-- 📍 Map -->
+    <div class="map-section">
+      <iframe 
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3765.707218950862!2d72.85313967521087!3d19.295094381955085!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7b150a626a2e9%3A0x4dfb4d47b5beee14!2sPHANTOM%20MOTORS!5e0!3m2!1sen!2sin!4v1750747567501!5m2!1sen!2sin" 
+        allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+
+    <!-- 📞 Contact Info -->
+    <div class="contact-info">
+      <h2 class="contact-title" style="text-align:left;">Reach Us Directly</h2>
+      <p><i class="fas fa-envelope"></i> support@phantommoto.com</p>
+      <p><i class="fas fa-phone"></i> +91 98765 43210</p>
+      <p><i class="fas fa-map-marker-alt"></i> 123, Main Street, Your City, India</p>
+    </div>
+
+    <!-- 📝 Form -->
+    <h2 class="contact-title">Or Send Us a Message</h2>
+    <p class="contact-subtitle">Drop a message and we’ll get back to you shortly.</p>
+    <form method="post" class="contact-form">
+      {% csrf_token %}
+      {% if success %}
+        <div class="contact-success" style="color: green;">Thank you, {{ name }}! Your message has been sent.</div>
+      {% endif %}
+      <div class="contact-field">
+        <label for="name">Your Name</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div class="contact-field">
+        <label for="email">Your Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div class="contact-field">
+        <label for="phone">Phone Number</label>
+        <input type="text" id="phone" name="phone" required>
+      </div>
+      <div class="contact-field">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="5" required></textarea>
+      </div>
+      <button type="submit" class="contact-btn">Send Message</button>
+    </form>
+  </div>
+</section>
+
+<style>
+/* 🌐 Section Layout */
+.contact-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  background: linear-gradient(120deg, #f9fafb 60%, #e0e7ff 100%);
+  padding: 60px 16px;
+}
+
+/* 📦 Contact Card Container */
+.contact-card {
+  background: #fff;
+  border-radius: 28px;
+  box-shadow: 0 8px 32px rgba(44, 62, 80, 0.13);
+  max-width: 900px;
+  width: 100%;
+  padding: 48px 36px 32px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 🗺 Map Styling */
+.map-section {
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2.5rem;
+}
+
+.map-section iframe {
+  width: 100%;
+  height: 340px;
+  border: none;
+  display: block;
+}
+
+/* 🧾 Titles & Subtitles */
+.contact-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #F97A00;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 8px #e0e7ff;
+}
+
+.contact-subtitle {
+  font-size: 1.08rem;
+  color: #6b7280;
+  margin-bottom: 22px;
+  font-weight: 500;
+}
+
+/* 📝 Form Styling */
+.contact-form {
+  width: 100%;
+  margin-top: 1.5rem;
+}
+
+.contact-field {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.contact-field label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #374151;
+}
+
+.contact-field input,
+.contact-field textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+  background-color: #f9fafb;
+}
+
+.contact-field input:focus,
+.contact-field textarea:focus {
+  outline: none;
+  border-color: #F97A00;
+  background-color: #fff;
+}
+
+.contact-btn {
+  background-color: #F97A00;
+  color: #fff;
+  font-weight: 600;
+  padding: 12px;
+  font-size: 1rem;
+  border-radius: 9999px;
+  border: none;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.contact-btn:hover {
+  background-color: #c75c00;
+}
+
+/* 📞 Contact Info Styling */
+.contact-info {
+  margin-top: 2rem;
+  text-align: left;
+  width: 100%;
+  color: #374151;
+  margin-bottom: 2rem;
+}
+
+.contact-info h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.contact-info p {
+  margin: 0.3rem 0;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.contact-info i {
+  color: #F97A00;
+}
+
+/* 📱 Mobile Responsive */
+@media (max-width: 600px) {
+  .contact-card {
+    padding: 24px 16px;
+  }
+  .contact-title {
+    font-size: 1.5rem;
+  }
+  .map-section iframe {
+    height: 260px;
+  }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,253 @@
+{% extends 'products/base.html' %}
+{% block content %}
+
+  <form method="get" class="filter">
+
+    <!-- 🔹 Brand Dropdown -->
+    <label>Bike Brand:</label>
+    <select name="brand" id='brand-select'>
+      <option value="">All</option>
+      {% for brand in brands %}
+        <option value="{{ brand.id }}" {% if request.GET.brand == brand.id|stringformat:"s" %}selected{% endif %}>
+          {{ brand.name }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <!-- 🔹 Model Dropdown -->
+   <label for="model">Bike Model:</label>
+<select name="model" id="model-select">
+  <option value="">All</option>
+  {% for model in models %}
+    {% if not request.GET.brand or model.brand.id|stringformat:"s" == request.GET.brand %}
+      <option value="{{ model.id }}" {% if request.GET.model == model.id|stringformat:"s" %}selected{% endif %}>
+        {{ model.name }}
+      </option>
+    {% endif %}
+  {% endfor %}
+</select>
+
+    <button type="submit">Filter</button>
+  </form>
+
+  <!-- 🔸 Product Cards -->
+ <div class="cards-container">
+  {% for accessory in accessories %}
+    <div class="card">
+      <h3>{{ accessory.name }}</h3>
+      {% if accessory.image %}
+        <img src="{{ accessory.image.url }}" alt="{{ accessory.name }}">
+      {% endif %}
+      <p><strong>₹{{ accessory.price }}</strong></p>
+      <p>{{ accessory.description }}</p>
+      <p>Category: {{ accessory.categories.name }}</p>
+      <form action="{% url 'products:cart_add' accessory.id %}" method="post" style="margin-top:10px;">
+  {% csrf_token %}
+  <div class="cart-control" data-accessory-id="{{ accessory.id }}">
+  <button class="btn-add-cart">Add to Cart</button>
+</div>
+</form>
+
+    </div>
+  {% empty %}
+    <p>No accessories found.</p>
+  {% endfor %}
+</div>
+
+
+  <script>
+
+    
+document.getElementById('brand-select').addEventListener('change', function() {
+    const brandId = this.value;
+    const modelSelect = document.getElementById('model-select');
+
+    // Clear current options
+    modelSelect.innerHTML = '<option value="">All</option>';
+
+    if (brandId) {
+        fetch(`/ajax/get-models/?brand_id=${brandId}`)
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model.id;
+                    option.textContent = model.name;
+                    modelSelect.appendChild(option);
+                });
+            });
+    }
+});
+
+
+{% comment %} cart logic {% endcomment %}
+ document.addEventListener('DOMContentLoaded', function () {
+    const cartCountBubble = document.getElementById('cart-count-bubble');
+
+    // Load initial cart count from server or session
+    fetch('/ajax/cart/count/')  // We'll create this endpoint
+      .then(res => res.json())
+      .then(data => {
+        updateCartBubble(data.total_qty);
+      });
+
+    function updateCartBubble(count) {
+      if (count > 0) {
+        cartCountBubble.textContent = count;
+        cartCountBubble.style.display = 'inline-block';
+      } else {
+        cartCountBubble.style.display = 'none';
+      }
+    }
+
+    // Attach event listeners to all Add to Cart buttons
+    document.querySelectorAll('.btn-add-cart').forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        const accessoryId = this.dataset.accessoryId;
+
+        fetch(`/ajax/cart/add/${accessoryId}/`, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({})  // no body needed but Django expects POST
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            updateCartBubble(data.total_qty);
+          }
+        });
+      });
+    });
+
+    // CSRF helper function (you probably already have this, else add)
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+  });
+
+
+  {% comment %} cart 2 js (new) {% endcomment %}
+  document.addEventListener('DOMContentLoaded', () => {
+  const cartCountBubble = document.getElementById('cart-count-bubble');
+
+  // Load initial cart data (optional)
+  fetch('/ajax/cart/items/')
+    .then(res => res.json())
+    .then(data => {
+      updateCartBubble(data.total_qty || 0);
+      // Initialize buttons state based on existing cart
+      data.items.forEach(item => {
+        const container = document.querySelector(`.cart-control[data-accessory-id="${item.id}"]`);
+        if (container) {
+          renderQuantityControls(container, item.quantity);
+        }
+      });
+    });
+
+  function updateCartBubble(count) {
+    if (count > 0) {
+      cartCountBubble.textContent = count;
+      cartCountBubble.style.display = 'inline-block';
+    } else {
+      cartCountBubble.style.display = 'none';
+    }
+  }
+
+  // Switch from Add to Cart to [- qty +]
+  function renderQuantityControls(container, quantity) {
+    container.innerHTML = `
+      <button class="qty-minus">-</button>
+      <span class="qty-number">${quantity}</span>
+      <button class="qty-plus">+</button>
+    `;
+  }
+
+  // Switch back to Add to Cart button
+  function renderAddButton(container) {
+    container.innerHTML = `<button class="btn-add-cart">Add to Cart</button>`;
+  }
+
+  // Handle clicks on dynamically created buttons with event delegation
+  document.body.addEventListener('click', e => {
+    const target = e.target;
+    if (target.classList.contains('btn-add-cart')) {
+      e.preventDefault();
+      const container = target.closest('.cart-control');
+      const accessoryId = container.dataset.accessoryId;
+      // Add 1 item to cart
+      updateCartQuantity(accessoryId, 1, container);
+    }
+    else if (target.classList.contains('qty-plus')) {
+      e.preventDefault();
+      const container = target.closest('.cart-control');
+      const accessoryId = container.dataset.accessoryId;
+      updateCartQuantity(accessoryId, 1, container);
+    }
+    else if (target.classList.contains('qty-minus')) {
+      e.preventDefault();
+      const container = target.closest('.cart-control');
+      const accessoryId = container.dataset.accessoryId;
+      updateCartQuantity(accessoryId, -1, container);
+    }
+  });
+
+  // AJAX call to update quantity, delta can be +1 or -1
+  function updateCartQuantity(accessoryId, delta, container) {
+    fetch(`/ajax/cart/update/${accessoryId}/`, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken'),
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({delta: delta})
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        updateCartBubble(data.total_qty);
+
+        if (data.quantity > 0) {
+          renderQuantityControls(container, data.quantity);
+        } else {
+          renderAddButton(container);
+        }
+      } else {
+        alert('Error updating cart');
+      }
+    });
+  }
+
+  // CSRF helper
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let cookie of cookies) {
+        cookie = cookie.trim();
+        if (cookie.startsWith(name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+});
+
+</script>
+{% endblock %}

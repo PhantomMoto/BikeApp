@@ -1,0 +1,239 @@
+{% extends 'products/base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Blog & Videos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f9f9fc;
+      color: #222;
+    }
+    .blog-section-header {
+      background: #ffe12a;
+      color: #fff;
+      padding: 50px 20px 30px;
+      text-align: center;
+      border-bottom: 5px solid #eee;
+    }
+    .blog-section-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+      font-weight: 800;
+    }
+    .blog-section-header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+    .blog-section-header .back-link {
+      margin-top: 15px;
+      display: inline-block;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 8px 18px;
+      border-radius: 30px;
+      text-decoration: none;
+      transition: all 0.3s;
+      font-weight: 600;
+    }
+    .blog-section-header .back-link:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .blog-section-title {
+      font-size: 1.5rem;
+      margin: 35px 18px 20px;
+      border-left: 4px solid #007BFF;
+      padding-left: 12px;
+      font-weight: 700;
+    }
+    .scroll-row-wrapper {
+      position: relative;
+      margin: 0 18px 30px;
+    }
+    .blog-scroll-row, .video-scroll-row {
+      display: flex;
+      overflow-x: auto;
+      gap: 20px;
+      padding-bottom: 12px;
+      scroll-behavior: smooth;
+    }
+    .blog-card, .video-card {
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      min-width: 300px;
+      max-width: 320px;
+      flex: 0 0 320px;
+      transition: all 0.3s;
+    }
+    .blog-card:hover, .video-card:hover {
+      transform: scale(1.04);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.15);
+    }
+    .blog-card img, .video-card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+    }
+    .blog-card-content, .video-card-content {
+      padding: 15px 16px 20px;
+    }
+    .blog-card-content h3, .video-card-content h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 0 0 10px;
+      color: #222;
+      line-height: 1.3;
+    }
+    .blog-card-content p {
+      font-size: 0.95rem;
+      color: #555;
+      margin-bottom: 10px;
+    }
+    .blog-card-content a {
+      text-decoration: none;
+      color: #007BFF;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    .blog-card-content a:hover {
+      color: #0051a2;
+    }
+    .scroll-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #007BFF;
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      font-size: 1.3rem;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      transition: background 0.3s ease;
+      z-index: 10;
+    }
+    .scroll-btn.left { left: -10px; }
+    .scroll-btn.right { right: -10px; }
+    .scroll-btn:hover {
+      background: #0056b3;
+    }
+    .scroll-btn.hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @media (max-width: 900px) {
+      .blog-card, .video-card {
+        min-width: 48vw;
+        max-width: 48vw;
+      }
+    }
+    @media (max-width: 600px) {
+      .blog-card, .video-card {
+        min-width: 90vw;
+        max-width: 95vw;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="blog-section-header">
+  <h1>Discover Our Latest News & Videos</h1>
+  <p>Stay updated with blogs and videos curated just for you.</p>
+  <a href="/" class="back-link">← Back to Home</a>
+</div>
+
+<section>
+  <h2 class="blog-section-title">Latest Blogs</h2>
+  <div class="scroll-row-wrapper">
+    <button class="scroll-btn left" id="blog-scroll-left" onclick="scrollRow('blog-scroll-row', -1)">&#8592;</button>
+    <div class="blog-scroll-row" id="blog-scroll-row">
+      {% for blog in blogs %}
+      <div class="blog-card">
+        <a href="{% url 'products:blog_detail' blog.slug %}">
+          {% if blog.thumbnail %}
+            <img src="{{ blog.thumbnail.url }}" alt="{{ blog.title }}">
+          {% else %}
+            <img src="https://via.placeholder.com/300x180?text=No+Image" alt="No Thumbnail">
+          {% endif %}
+        </a>
+        <div class="blog-card-content">
+          <h3>{{ blog.title }}</h3>
+          <p>{{ blog.content|truncatewords:20 }}</p>
+          <a href="{% url 'products:blog_detail' blog.slug %}">Read more →</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <button class="scroll-btn right" id="blog-scroll-right" onclick="scrollRow('blog-scroll-row', 1)">&#8594;</button>
+  </div>
+</section>
+
+<section>
+  <h2 class="blog-section-title">YouTube Videos</h2>
+  <div class="scroll-row-wrapper">
+    <button class="scroll-btn left" id="video-scroll-left" onclick="scrollRow('video-scroll-row', -1)">&#8592;</button>
+    <div class="video-scroll-row" id="video-scroll-row">
+      {% for video in videos %}
+      <div class="video-card">
+        <a href="{{ video.video_url }}" target="_blank">
+          {% if video.thumbnail %}
+            <img src="{{ video.thumbnail.url }}" alt="{{ video.title }}">
+          {% else %}
+            <img src="https://via.placeholder.com/300x180?text=No+Thumbnail" alt="No Thumbnail">
+          {% endif %}
+        </a>
+        <div class="video-card-content">
+          <h3>{{ video.title }}</h3>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <button class="scroll-btn right" id="video-scroll-right" onclick="scrollRow('video-scroll-row', 1)">&#8594;</button>
+  </div>
+</section>
+
+<script>
+function scrollRow(id, dir) {
+  const row = document.getElementById(id);
+  const card = row.querySelector('.blog-card, .video-card');
+  if (!card) return;
+  const scrollAmount = card.offsetWidth + 20;
+  row.scrollBy({ left: dir * scrollAmount * 2, behavior: 'smooth' });
+}
+
+function updateScrollButtons(rowId, leftBtnId, rightBtnId) {
+  const row = document.getElementById(rowId);
+  const leftBtn = document.getElementById(leftBtnId);
+  const rightBtn = document.getElementById(rightBtnId);
+  if (row.scrollWidth <= row.clientWidth + 2) {
+    leftBtn.classList.add('hide');
+    rightBtn.classList.add('hide');
+  } else {
+    leftBtn.classList.remove('hide');
+    rightBtn.classList.remove('hide');
+  }
+}
+
+window.addEventListener('DOMContentLoaded', function () {
+  updateScrollButtons('blog-scroll-row', 'blog-scroll-left', 'blog-scroll-right');
+  updateScrollButtons('video-scroll-row', 'video-scroll-left', 'video-scroll-right');
+});
+window.addEventListener('resize', function () {
+  updateScrollButtons('blog-scroll-row', 'blog-scroll-left', 'blog-scroll-right');
+  updateScrollButtons('video-scroll-row', 'video-scroll-left', 'video-scroll-right');
+});
+</script>
+</body>
+</html>
+{% endblock %}

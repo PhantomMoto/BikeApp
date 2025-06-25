@@ -1,0 +1,87 @@
+{% extends 'products/base.html' %}
+{% block content %}
+<section class="home-main">
+<h2 id="Shop-By-Category">Select your Brand</h2>
+
+<form method="get" action="/products/" class="filter">
+  <div class="filter-group">
+    <label for="brand">Bike Brand:</label>
+    <select name="brand" id="brand-select">
+      <option value="">All</option>
+      {% for brand in brands %}
+        <option value="{{ brand.id }}">{{ brand.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label for="model">Bike Model:</label>
+    <select name="model" id="model-select">
+      <option value="">All</option>
+      {% for model in models %}
+        <option value="{{ model.id }}"> {{ model.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <button type="submit">Search</button>
+</form>
+</section>
+<section class="home-cat">
+<h2 id="Shop-By-Category">Shop by Category</h2> <br>
+<div class="category-buttons">
+  {% for cat in categories %}
+    <a href="/products/?category={{ cat.name }}" class="category-btn">
+      {% if cat.image %}
+        <img src="{{ cat.image.url }}" alt="{{ cat.name }}" class="category-img">
+      {% endif %}
+      <span>{{ cat.name }}</span>
+    </a>
+  {% endfor %}
+</div>
+
+</section>
+<script>
+document.getElementById('brand-select').addEventListener('change', function() {
+  const brandId = this.value;
+  const modelSelect = document.getElementById('model-select');
+
+  modelSelect.innerHTML = '<option value="">All</option>';
+
+  if(brandId) {
+    fetch(`/ajax/get-models/?brand_id=${brandId}`)
+      .then(res => res.json())
+      .then(data => {
+        data.forEach(model => {
+          const option = document.createElement('option');
+          option.value = model.id;
+          option.textContent = model.name;
+          modelSelect.appendChild(option);
+        });
+      });
+  }
+});
+</script>
+<style> {% load static %}
+.home-main{
+    width: 100vw;
+    height: 90vh;
+   background-image: url("{% static 'bg1.webp' %}");
+   background-repeat: no-repeat;
+   background-size: cover;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+
+@media (max-width: 600px) {
+  .home-main {
+      background: rgb(223, 213, 213);
+  }
+}
+</style>
+{% endblock %}

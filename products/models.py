@@ -23,14 +23,7 @@ class BikeModel(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     # ImageKit ProcessedImageField - uploads image, processes (resize etc.) automatically
-    image = ProcessedImageField(
-        upload_to='category_images/',
-        processors=[ResizeToFill(300, 300)],  # Resize to 300x300 px square
-        format='JPEG',
-        options={'quality': 80},
-        null=True,
-        blank=True
-    )
+    image_url = models.URLField(blank=True, null=True) 
 
     def __str__(self):
         return self.name
@@ -43,16 +36,8 @@ class Accessory(models.Model):
     categories = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     bike_models = models.ManyToManyField(BikeModel, related_name='accessories')
     created_at = models.DateTimeField(auto_now_add=True)
-    image = ProcessedImageField(
-        upload_to='accessories/',
-        processors=[ResizeToFill(600, 400)],
-        format='JPEG',
-        options={'quality': 85},
-        null=True,
-        blank=True
-    )
+    image_url = models.URLField(blank=True, null=True) 
     is_universal = models.BooleanField(default=False)
-
     def __str__(self):
         return self.name
 

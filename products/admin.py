@@ -13,14 +13,13 @@ class AccessoryAdmin(admin.ModelAdmin):
     form = AccessoryAdminForm
     list_display = ['name', 'price', 'is_universal', 'preview_img']
     filter_horizontal = ['bike_models']
+    fields = ['name', 'price', 'is_universal', 'image_url', 'bike_models', 'categories', 'description']  # image_url add kar
 
     def preview_img(self, obj):
-        if obj.image:
-            # ImageKit ka processed image URL hota hai obj.image.url
-            return mark_safe(f'<img src="{obj.image.url}" width="80" />')
+        if obj.image_url:
+            return mark_safe(f'<img src="{obj.image_url}" width="80" />')
         return "-"
-    preview_img.short_description = "Image"
-
+    preview_img.short_description = "Image Preview"
     class Media:
         js = ('js/accessory_admin.js',)  # agar bike_models ko disable karna hai jab is_universal tick ho
 

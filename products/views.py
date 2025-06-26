@@ -337,7 +337,7 @@ def verify_razorpay_payment(request):
             client.utility.verify_payment_signature(params_dict)
             # Here you can mark the order as paid, clear cart, etc.
             request.session['cart'] = {}  # Clear cart after payment
-            return redirect('post-payment/')  # Redirect to a success page
+            return redirect('/post-payment/')  # Redirect to a success page
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
     return HttpResponseBadRequest('Invalid request')
@@ -350,7 +350,7 @@ def post_payment_shipping(request):
         pincode = request.POST['pincode']
         shipping_priority = request.POST['shipping_priority']
         # Save to DB or proceed directly to Delhivery
-        return redirect('submit-order/', {'address':address, 'city':city, 'pincode':pincode, 'shipping_priority':shipping_priority})
+        return redirect('/submit-order/', {'address':address, 'city':city, 'pincode':pincode, 'shipping_priority':shipping_priority})
     
     return render(request, 'shipping_form.html')
 def contact_view(request):

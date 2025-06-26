@@ -18,7 +18,7 @@ class AccessoryAdmin(admin.ModelAdmin):
 ### Blog Admin ###
 @admin.register(Blog)
 class BlogAdmin(admin.ModelAdmin):
-    list_display = ['title', 'created_at', 'preview_img']
+    list_display = ['title','preview_img']
     search_fields = ['title', 'content']
 
     def preview_img(self, obj):

@@ -79,9 +79,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 import os
 
+import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+if os.getenv("RENDER") == "true":
+    MEDIA_ROOT = '/opt/render/project/src/media'
+else:
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # now it points to the Render persistent disk
-# ✅ AUTO FIELD
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # 🔐 SECURITY HEADERS (for production)

@@ -3,22 +3,24 @@ from django import forms
 from .models import BikeBrand, BikeModel, Category, Accessory, Blog, YouTubeVideo
 
 
+from django.contrib import admin
+from django import forms
+from .models import Accessory
+
 class AccessoryAdminForm(forms.ModelForm):
     class Meta:
         model = Accessory
         fields = '__all__'
 
-    class Media:
-        js = ('admin/js/accessory_toggle.js',)  # your custom JS
-
+    def save(self, commit=True):
+        instance = super().save(commit)
+        print("Uploaded Image URL:", instance.image.url)
+        return instance
 
 class AccessoryAdmin(admin.ModelAdmin):
     form = AccessoryAdminForm
-    list_display = ['name', 'price', 'is_universal']
-    filter_horizontal = ['bike_models']
 
-    class Media:
-        js = ('js/accessory_admin.js',)
+admin.site.register(Accessory, AccessoryAdmin)
 
 
 @admin.register(Category)

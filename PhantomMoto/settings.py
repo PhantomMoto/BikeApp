@@ -3,6 +3,7 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 SECRET_KEY = 'django-insecure-*p3gkb&fy!1k(51q+hvnl%t#o=5pvf2z9keqnjg(x4jh0qcg3y'
 DEBUG = os.environ.get('DEBUG')
 
@@ -79,8 +80,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = "/media"
-
+MEDIA_ROOT = '/persistent_media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

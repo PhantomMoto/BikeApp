@@ -1,17 +1,29 @@
 from django.contrib import admin
 from django import forms
 from .models import BikeBrand, BikeModel, Category, Accessory, Blog, YouTubeVideo, Message
+from django.core.files.storage import default_storage
 
 
 class AccessoryAdminForm(forms.ModelForm):
     class Meta:
         model = Accessory
         fields = '__all__'
-
     def save(self, commit=True):
-        instance = super().save(commit=commit)
+        instance = super().save(commit)
         print("Uploaded Image URL:", instance.image.url)
+        if instance.image and not default_storage.exists(instance.image.name):
+            instance.image.save(instance.image.name, instance.image.file, save=False)
         return instance
+    def save_model(self, request, obj, form, change):
+        if change and 'image' in form.changed_data:
+            try:
+                old_obj = Accessory.objects.get(pk=obj.pk)
+                if old_obj.image and old_obj.image.url != obj.image.url:
+                    old_obj.image.delete(save=False)
+            except Accessory.DoesNotExist:
+                pass
+        obj.save()
+        # return instance
 
 
 class AccessoryAdmin(admin.ModelAdmin):

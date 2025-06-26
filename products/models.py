@@ -17,12 +17,17 @@ class BikeModel(models.Model):
     def __str__(self):
         return f"{self.brand.name} {self.name}"
 
+from django.core.files.storage import default_storage
+
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     image = models.ImageField(upload_to='category_images/', null=True, blank=True)
 
-    def __str__(self):
-        return self.name
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # Handle race condition or early render deploy file issues
+        if self.image and not default_storage.exists(self.image.name):
+            self.image.save(self.image.name, self.image.file, save=False)
 
 class Accessory(models.Model):
     name = models.CharField(max_length=150)

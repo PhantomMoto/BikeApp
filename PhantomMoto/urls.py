@@ -1,35 +1,16 @@
-"""
-URL configuration for PhantomMoto project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
-from django.contrib import admin
-from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-
-
+from django.contrib import admin
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('products.urls')),
+    path('', include('products.urls')),  # your app urls
 ]
-import os
-# Always serve media files (even in production, for Render quick fix)
-if settings.DEBUG or os.environ.get('RENDER') == 'true':
+
+# Serve media files in development and Render server:
+if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    
-    
-    # Serve static files in development    
+else:
+    # Render doesn't serve media automatically in production, you need to configure a web server or use django-storages etc.
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

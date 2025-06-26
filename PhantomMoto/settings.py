@@ -78,7 +78,7 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Use the mount path without trailing slash for MEDIA_ROOT
-MEDIA_ROOT = Path('/persistent_media')
+MEDIA_ROOT = Path('/persistent_media/')
 MEDIA_URL = '/media/'
 # ✅ AUTO FIELD
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

@@ -30,6 +30,11 @@ class Category(models.Model):
             self.image.save(self.image.name, self.image.file, save=False)
     def __str__(self):
         return self.name
+from uuid import uuid4
+
+def accessory_image_path(instance, filename):
+    ext = filename.split('.')[-1]
+    return f'accessories/{uuid4().hex}.{ext}'
 
 class Accessory(models.Model):
     name = models.CharField(max_length=150)
@@ -38,7 +43,7 @@ class Accessory(models.Model):
     categories = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     bike_models = models.ManyToManyField(BikeModel, related_name='accessories')
     created_at = models.DateTimeField(auto_now_add=True)
-    image = models.ImageField(upload_to='accessories/', blank=True, null=True)
+    image = models.ImageField(upload_to=accessory_image_path, blank=True, null=True)
     is_universal = models.BooleanField(default=False)
 
     def __str__(self):

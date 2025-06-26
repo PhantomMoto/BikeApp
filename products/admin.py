@@ -13,10 +13,10 @@ class AccessoryAdmin(admin.ModelAdmin):
     form = AccessoryAdminForm
     list_display = ['name', 'price', 'is_universal', 'preview_img']
     filter_horizontal = ['bike_models']
-    fields = ['name', 'price', 'is_universal', 'image_url', 'bike_models', 'categories', 'description']  # image_url add kar
+    fields = ['name', 'price', 'is_universal', 'image', 'bike_models', 'categories', 'description']  # image_url add kar
 
     def preview_img(self, obj):
-        if obj.image_url:
+        if obj.image:
             return mark_safe(f'<img src="{obj.image_url}" width="80" />')
         return "-"
     preview_img.short_description = "Image Preview"

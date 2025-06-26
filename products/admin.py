@@ -11,7 +11,7 @@ class AccessoryAdminForm(forms.ModelForm):
 
 class AccessoryAdmin(admin.ModelAdmin):
     form = AccessoryAdminForm
-    list_display = ['name', 'price', 'is_universal', 'preview_img']
+    list_display = ['name', 'price', 'is_universal']
     filter_horizontal = ['bike_models']
     fields = ['name', 'price', 'is_universal', 'image', 'bike_models', 'categories', 'description']  # image_url add kar
 
@@ -22,14 +22,14 @@ class AccessoryAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'preview_img']
+    list_display = ['name',]
 
    
 
 @admin.register(Blog)
 class BlogAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
-    list_display = ("title", "published_at", "preview_img")
+    list_display = ("title", "published_at")
     search_fields = ("title", "content")
     date_hierarchy = "published_at"
 
@@ -38,7 +38,7 @@ class BlogAdmin(admin.ModelAdmin):
 
 @admin.register(YouTubeVideo)
 class YouTubeVideoAdmin(admin.ModelAdmin):
-    list_display = ("title", "video_url", "preview_img")
+    list_display = ("title", "video_url")
     search_fields = ("title",)
 
     

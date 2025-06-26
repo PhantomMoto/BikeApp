@@ -4,7 +4,7 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-*p3gkb&fy!1k(51q+hvnl%t#o=5pvf2z9keqnjg(x4jh0qcg3y'
-DEBUG = True
+DEBUG = os.environ.get('DEBUG')
 
 ALLOWED_HOSTS = ['phantommoto.in', 'www.phantommoto.in', '127.0.0.1', 'localhost']
 
@@ -75,10 +75,6 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-IMAGEKIT_PRIVATE_KEY = 'private_0c9dXiX4DWYP/Mvv7YQL2MwaxQs='
-IMAGEKIT_PUBLIC_KEY = 'public_vM/AHn6BaC9a2FvmKQbM1ogAF/4='
-IMAGEKIT_URL_ENDPOINT = 'https://ik.imagekit.io/ishankashyaptestapp'
-
 
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -99,7 +95,8 @@ CSRF_COOKIE_SECURE = True
 # ✅ LOGIN CONFIG
 LOGIN_REDIRECT_URL = 'products:product_list'
 LOGOUT_REDIRECT_URL = 'products:login'
-
+rzpkid = os.environ.get('RAZORPAY_KEY_ID')
+rzpkst = os.environ.get('RAZORPAY_KEY_SECRET')
 # 🪙 RAZORPAY KEYS
-RAZORPAY_KEY_ID = "rzp_test_cq7lxIhKWEMmCZ"
-RAZORPAY_KEY_SECRET = "JlTRultMrU8OS7izPky8fgqV"
+RAZORPAY_KEY_ID = rzpkid
+RAZORPAY_KEY_SECRET = rzpkst

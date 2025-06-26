@@ -120,9 +120,8 @@ STATICFILES_DIRS = [ BASE_DIR / 'static' ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # Directory where static files will be collected in production
 
 # ✅ MEDIA FILES
-MEDIA_ROOT = '/media/'  # Always use absolute path
 MEDIA_URL = '/media/'
-
+MEDIA_ROOT = '/persistent_media/' 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

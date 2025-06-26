@@ -7,7 +7,7 @@ from .models import Accessory, Blog, Category, YouTubeVideo, BikeBrand, BikeMode
 class AccessoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'price', 'is_universal', 'preview_img']
     search_fields = ['name']
-    list_filter = ['is_universal', 'bike_models', 'category']
+    list_filter = ['is_universal', 'bike_models', 'categories']
 
     def preview_img(self, obj):
         if obj.image:

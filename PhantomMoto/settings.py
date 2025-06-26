@@ -74,8 +74,11 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [ BASE_DIR / 'static' ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+import os
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-MEDIA_ROOT = '/persistent_media/'
+# Use the mount path without trailing slash for MEDIA_ROOT
+MEDIA_ROOT = Path('/persistent_media')
 MEDIA_URL = '/media/'
 # ✅ AUTO FIELD
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

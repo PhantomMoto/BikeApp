@@ -1,6 +1,6 @@
 from django.db import models
-from imagekit.models import ProcessedImageField
-from imagekit.processors import ResizeToFill
+# from imagekit.models import ProcessedImageField
+# from imagekit.processors import ResizeToFill
 
 class BikeBrand(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -22,8 +22,8 @@ class BikeModel(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    # Changed from URLField to ImageField for image upload
-    image = models.ImageField(upload_to='category_images/', null=True, blank=True)
+    # Use image_url for ImageKit CDN
+    image_url = models.URLField(max_length=500, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -36,8 +36,8 @@ class Accessory(models.Model):
     categories = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     bike_models = models.ManyToManyField(BikeModel, related_name='accessories')
     created_at = models.DateTimeField(auto_now_add=True)
-    # Changed from URLField to ImageField for image upload
-    image = models.ImageField(upload_to='accessories/', blank=True, null=True)
+    # Use image_url for ImageKit CDN
+    image_url = models.URLField(max_length=500, blank=True, null=True)
     is_universal = models.BooleanField(default=False)
     def __str__(self):
         return self.name
@@ -47,8 +47,8 @@ class Blog(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
     content = models.TextField()
-    # Changed from ProcessedImageField to ImageField for standard image upload
-    thumbnail = models.ImageField(upload_to='blog_thumbnails/', null=True, blank=True)
+    # Use image_url for ImageKit CDN
+    thumbnail_url = models.URLField(max_length=500, blank=True, null=True)
     published_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -58,8 +58,8 @@ class Blog(models.Model):
 class YouTubeVideo(models.Model):
     title = models.CharField(max_length=200)
     video_url = models.URLField()
-    # Changed from ProcessedImageField to ImageField for standard image upload
-    thumbnail = models.ImageField(upload_to='video_thumbnails/', null=True, blank=True)
+    # Use image_url for ImageKit CDN
+    thumbnail_url = models.URLField(max_length=500, blank=True, null=True)
 
     def __str__(self):
         return self.title

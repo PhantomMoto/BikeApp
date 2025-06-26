@@ -180,7 +180,7 @@ Blogs & Videos - Phantom Moto
       <div class="blog-card">
         <a href="{% url 'products:blog_detail' blog.slug %}">
           {% if blog.thumbnail %}
-            <img src="{{ blog.thumbnail.url }}" alt="{{ blog.title }}">
+            <img src="{{ blog.thumbnail_url }}" alt="{{ blog.title }}">
           {% else %}
             <img src="https://via.placeholder.com/300x180?text=No+Image" alt="No Thumbnail">
           {% endif %}
@@ -205,7 +205,7 @@ Blogs & Videos - Phantom Moto
       {% for video in videos %}
       <div class="video-card">
         <a href="{{ video.video_url }}" target="_blank">
-          {% if video.thumbnail %}
+          {% if video.thumbnail_url %}
             <img src="{{ video.thumbnail.url }}" alt="{{ video.title }}">
           {% else %}
             <img src="https://via.placeholder.com/300x180?text=No+Thumbnail" alt="No Thumbnail">

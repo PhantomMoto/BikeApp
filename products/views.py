@@ -303,9 +303,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from django.http import JsonResponse, HttpResponseBadRequest
 
-# Razorpay credentials (set these in your settings.py securely)
-RAZORPAY_KEY_ID = getattr(settings, 'RAZORPAY_KEY_ID', 'rzp_test_cq7lxIhKWEMmCZ')
-RAZORPAY_KEY_SECRET = getattr(settings, 'RAZORPAY_KEY_SECRET', 'your_secret_here')
+from django.conf import settings
 
 @csrf_exempt
 def create_razorpay_order(request):
@@ -315,13 +313,13 @@ def create_razorpay_order(request):
         amount = int(data.get('amount', 0))
         if amount <= 0:
             return HttpResponseBadRequest('Invalid amount')
-        client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
         order = client.order.create({
             'amount': amount,  # in paise
             'currency': 'INR',
             'payment_capture': 1
         })
-        return JsonResponse({'order_id': order['id'], 'key': RAZORPAY_KEY_ID})
+        return JsonResponse({'order_id': order['id'], 'key': settings.RAZORPAY_KEY_ID})
     return HttpResponseBadRequest('Invalid request')
 
 @csrf_exempt
@@ -329,7 +327,7 @@ def verify_razorpay_payment(request):
     if request.method == 'POST':
         import json
         data = json.loads(request.body)
-        client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
         try:
             params_dict = {
                 'razorpay_order_id': data['razorpay_order_id'],
@@ -339,12 +337,22 @@ def verify_razorpay_payment(request):
             client.utility.verify_payment_signature(params_dict)
             # Here you can mark the order as paid, clear cart, etc.
             request.session['cart'] = {}  # Clear cart after payment
-            return JsonResponse({'success': True})
+            return redirect('post-payment/')  # Redirect to a success page
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
     return HttpResponseBadRequest('Invalid request')
 
-
+@login_required
+def post_payment_shipping(request):
+    if request.method == 'POST':
+        address = request.POST['address']
+        city = request.POST['city']
+        pincode = request.POST['pincode']
+        shipping_priority = request.POST['shipping_priority']
+        # Save to DB or proceed directly to Delhivery
+        return redirect('submit-order/', {'address':address, 'city':city, 'pincode':pincode, 'shipping_priority':shipping_priority})
+    
+    return render(request, 'shipping_form.html')
 def contact_view(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -427,4 +435,84 @@ def contact_view(request):
         return render(request, 'products/contact.html', {'success': True, 'name': name})
 
     return render(request, 'products/contact.html')
+import requests
 
+def create_delhivery_order(data):
+    headers = {
+        "Authorization": f"Token {settings.DELHIVERY_API_TOKEN}",
+        "Content-Type": "application/json",
+    }
+
+    payload = {
+        "pickup_location": {
+            "name": "PhantomMoto",
+            "city": "Mira Road",
+            "state": "Maharashtra",
+            "country": "India",
+            "phone": "08355944801",
+            "email": "phantommotoindustries@gmail.com",
+            "address": "Flower Valley Complex CHSL, Shop No 37 H wing, Geeta Omkar, near Lifeline Hospital, Mira Road East, Mira Bhayandar, Maharashtra 401105",
+            "pin": "401107"
+        },
+        "shipments": [
+            {
+                "waybill": "",
+                "order": data['order_id'],
+                "products_desc": "Bike Accessories",
+                "total_amount": data['amount'],
+                "payment_mode": "Prepaid",
+                "consignee": data['name'],
+                "consignee_address1": data['address'],
+                "consignee_address2": "",
+                "consignee_city": data['city'],
+                "consignee_state": data['state'],
+                "consignee_pincode": data['pincode'],
+                "consignee_phone": data['phone'],
+                "consignee_email": data['email'],
+                "weight": 0.5,
+                "length": 10,
+                "breadth": 10,
+                "height": 5,
+                "shipping_mode": data['priority']
+            }
+        ]
+    }
+
+    res = requests.post(
+        "https://track.delhivery.com/api/cmu/create.json",
+        headers=headers,
+        json=payload
+    )
+
+    return res.json()
+
+
+from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
+
+def post_payment_shipping(request):
+    return render(request, 'shipping_form.html')
+
+@csrf_exempt
+def submit_to_delhivery(request):
+    if request.method == 'POST':
+        data = {
+            'order_id': 'ORD12345',  # Generate dynamically in real use
+            'name': request.POST['name'],
+            'email': request.POST['email'],
+            'phone': request.POST['phone'],
+            'address': request.POST['address'],
+            'city': request.POST['city'],
+            'state': request.POST['state'],
+            'pincode': request.POST['pincode'],
+            'priority': request.POST['priority'],
+            'amount': 2999,  # Replace with dynamic Razorpay payment amount
+        }
+
+        response = create_delhivery_order(data)
+
+        if response.get('packages'):
+            waybill = response['packages'][0]['waybill']
+            return render(request, 'order_success.html', {'waybill': waybill})
+        else:
+            return render(request, 'order_fail.html', {'error': response})

@@ -15,11 +15,7 @@ class AccessoryAdmin(admin.ModelAdmin):
     filter_horizontal = ['bike_models']
     fields = ['name', 'price', 'is_universal', 'image', 'bike_models', 'categories', 'description']  # image_url add kar
 
-    def preview_img(self, obj):
-        if obj.image:
-            return mark_safe(f'<img src="{obj.image_url}" width="80" />')
-        return "-"
-    preview_img.short_description = "Image Preview"
+   
     class Media:
         js = ('js/accessory_admin.js',)  # agar bike_models ko disable karna hai jab is_universal tick ho
 
@@ -28,11 +24,7 @@ class AccessoryAdmin(admin.ModelAdmin):
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'preview_img']
 
-    def preview_img(self, obj):
-        if obj.image:
-            return mark_safe(f'<img src="{obj.image.url}" width="80" />')
-        return "-"
-    preview_img.short_description = "Image"
+   
 
 @admin.register(Blog)
 class BlogAdmin(admin.ModelAdmin):
@@ -41,11 +33,7 @@ class BlogAdmin(admin.ModelAdmin):
     search_fields = ("title", "content")
     date_hierarchy = "published_at"
 
-    def preview_img(self, obj):
-        if obj.thumbnail:
-            return mark_safe(f'<img src="{obj.thumbnail.url}" width="80" />')
-        return "-"
-    preview_img.short_description = "Thumbnail"
+   
 
 
 @admin.register(YouTubeVideo)
@@ -53,12 +41,7 @@ class YouTubeVideoAdmin(admin.ModelAdmin):
     list_display = ("title", "video_url", "preview_img")
     search_fields = ("title",)
 
-    def preview_img(self, obj):
-        if obj.thumbnail:
-            return mark_safe(f'<img src="{obj.thumbnail.url}" width="80" />')
-        return "-"
-    preview_img.short_description = "Thumbnail"
-
+    
 
 admin.site.register(BikeBrand)
 admin.site.register(BikeModel)

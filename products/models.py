@@ -22,8 +22,8 @@ class BikeModel(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    # ImageKit ProcessedImageField - uploads image, processes (resize etc.) automatically
-    image_url = models.URLField(blank=True, null=True) 
+    # Changed from URLField to ImageField for image upload
+    image = models.ImageField(upload_to='category_images/', null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -36,7 +36,8 @@ class Accessory(models.Model):
     categories = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     bike_models = models.ManyToManyField(BikeModel, related_name='accessories')
     created_at = models.DateTimeField(auto_now_add=True)
-    image_url = models.URLField(blank=True, null=True) 
+    # Changed from URLField to ImageField for image upload
+    image = models.ImageField(upload_to='accessories/', blank=True, null=True)
     is_universal = models.BooleanField(default=False)
     def __str__(self):
         return self.name
@@ -46,14 +47,8 @@ class Blog(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
     content = models.TextField()
-    thumbnail = ProcessedImageField(
-        upload_to='blog_thumbnails/',
-        processors=[ResizeToFill(800, 450)],
-        format='JPEG',
-        options={'quality': 85},
-        null=True,
-        blank=True
-    )
+    # Changed from ProcessedImageField to ImageField for standard image upload
+    thumbnail = models.ImageField(upload_to='blog_thumbnails/', null=True, blank=True)
     published_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -63,14 +58,8 @@ class Blog(models.Model):
 class YouTubeVideo(models.Model):
     title = models.CharField(max_length=200)
     video_url = models.URLField()
-    thumbnail = ProcessedImageField(
-        upload_to='video_thumbnails/',
-        processors=[ResizeToFill(800, 450)],
-        format='JPEG',
-        options={'quality': 85},
-        null=True,
-        blank=True
-    )
+    # Changed from ProcessedImageField to ImageField for standard image upload
+    thumbnail = models.ImageField(upload_to='video_thumbnails/', null=True, blank=True)
 
     def __str__(self):
         return self.title

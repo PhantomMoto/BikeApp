@@ -77,9 +77,10 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Use the mount path without trailing slash for MEDIA_ROOT
-MEDIA_ROOT = Path('/persistent_media/')
+import os
+
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # now it points to the Render persistent disk
 # ✅ AUTO FIELD
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

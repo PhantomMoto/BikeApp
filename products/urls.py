@@ -59,7 +59,6 @@ import os
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
 # Serve static files in production (already handled by WhiteNoise, but safe to keep)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     

@@ -36,7 +36,7 @@
   {% for cat in categories %}
     <a href="/products/?category={{ cat.name }}" class="category-btn">
       {% if cat.image %}
-        <img src="{{ cat.image.url }}" alt="{{ cat.name }}" class="category-img">
+        <img src="{{ cat.image_url }}" alt="{{ cat.name }}" class="category-img">
       {% endif %}
       <span>{{ cat.name }}</span>
     </a>

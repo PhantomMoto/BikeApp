@@ -16,9 +16,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'products',
-    'cloudinary',
-    'cloudinary_storage',
-]
+    'imagekit']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -77,19 +75,16 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-import os
+IMAGEKIT_PRIVATE_KEY = 'private_0c9dXiX4DWYP/Mvv7YQL2MwaxQs='
+IMAGEKIT_PUBLIC_KEY = 'public_vM/AHn6BaC9a2FvmKQbM1ogAF/4='
+IMAGEKIT_URL_ENDPOINT = 'https://ik.imagekit.io/ishankashyaptestapp'
+
 
 import os
-from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-if os.getenv("RENDER") == "true":
-    MEDIA_ROOT = '/opt/render/project/src/media'
-else:
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

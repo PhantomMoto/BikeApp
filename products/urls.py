@@ -58,6 +58,9 @@ from django.views.static import serve
 import os
 
 if settings.DEBUG:
+    from django.conf.urls.static import static
+    from django.urls import path
+
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # Serve static files in production (already handled by WhiteNoise, but safe to keep)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

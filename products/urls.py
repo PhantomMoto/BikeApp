@@ -55,13 +55,15 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import re_path
 from django.views.static import serve
-
-
 import os
 
-
-if settings.DEBUG or os.environ.get("RENDER", "") == "true":
+if not settings.DEBUG:
+    urlpatterns += [
+        re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    ]
+else:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 
 # Serve static files in production (already handled by WhiteNoise, but safe to keep)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

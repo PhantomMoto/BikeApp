@@ -1,5 +1,5 @@
 <!-- Create this file in templates/shipping_form.html -->
-<form method="post" action="{% url 'submit_to_delhivery' %}">
+<form method="post" action="{% url 'products:submit_to_delhivery' %}">
     {% csrf_token %}
     <input type="text" name="name" placeholder="Full Name" required><br>
     <input type="text" name="email" placeholder="Email" required><br>

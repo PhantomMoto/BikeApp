@@ -9,7 +9,7 @@ class AccessoryAdminForm(forms.ModelForm):
         fields = '__all__'
 
     def save(self, commit=True):
-        instance = super().save(commit)
+        instance = super().save(commit=commit)
         print("Uploaded Image URL:", instance.image.url)
         return instance
 

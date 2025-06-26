@@ -28,6 +28,8 @@ class Category(models.Model):
         # Handle race condition or early render deploy file issues
         if self.image and not default_storage.exists(self.image.name):
             self.image.save(self.image.name, self.image.file, save=False)
+    def __str__(self):
+        return self.name
 
 class Accessory(models.Model):
     name = models.CharField(max_length=150)

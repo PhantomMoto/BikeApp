@@ -411,7 +411,20 @@ def contact_view(request):
             message=message_text,
         )
 
+        # # Notify the site owner via email
+        # from django.core.mail import send_mail
+        # owner_email = 'owner@example.com'  # <-- Change to your email
+        # subject = f"New Contact Message from {name}"
+        # message_body = f"Name: {name}\nEmail: {email}\nPhone: {phone}\nMessage: {message_text}"
+        # send_mail(
+        #     subject,
+        #     message_body,
+        #     'no-reply@phantommoto.in',  # From email (set a valid sender)
+        #     [owner_email],
+        #     fail_silently=True,
+        # )
+
         return render(request, 'products/contact.html', {'success': True, 'name': name})
 
     return render(request, 'products/contact.html')
-   
+

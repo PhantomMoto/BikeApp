@@ -1,4 +1,17 @@
 {% extends 'products/base.html' %}
+
+{% block meta_description %}
+ Blogs Page
+Get the latest insights, bike modification tips, riding guides, and reviews straight from the world of motorheads. PhantomMoto Blogs keep you informed, inspired, and connected to the biking brotherhood.
+{% endblock %}
+{% block og_title %}
+  Blogs - Phantom Moto
+{% endblock %}
+
+{% block og_description %}
+  {{ blog.title }} - Phantom Moto 
+{% endblock %}
+
 {% block content %}
 <!DOCTYPE html>
 <html lang="en">

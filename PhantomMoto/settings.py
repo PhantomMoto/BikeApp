@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'products'
+    'products',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -119,11 +121,17 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [ BASE_DIR / 'static' ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # Directory where static files will be collected in production
 
-# ✅ MEDIA FILES
-MEDIA_URL = '/media/'
-MEDIA_ROOT = '/persistent_media' 
 
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dmdqnwwsu',
+    'API_KEY': '882236737156355',
+    'API_SECRET': 't4UkwEgrQiVTdFM9SMsAGzhsTfY',
+}
+
+# Media files configuration to use Cloudinary storage
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 # Default primary key field type
+MEDIA_URL = f'https://res.cloudinary.com/{CLOUDINARY_STORAGE["cloud_name"]}/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

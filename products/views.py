@@ -451,65 +451,69 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from .models import Accessory
 import requests
+import json
 
-# 🟢 Step 1: Save Shipping Data to Session after Payment
-@login_required
-def post_payment_shipping(request):
-    if request.method == 'POST':
-        # Get form inputs
-        address = request.POST.get('address')
-        city = request.POST.get('city')
-        pincode = request.POST.get('pincode')
-        shipping_priority = request.POST.get('shipping_priority')
-
-        # Save to session
-        request.session['shipping_data'] = {
-            'address': address,
-            'city': city,
-            'pincode': pincode,
-            'shipping_priority': shipping_priority
-        }
-
-        return redirect('products:submit_to_delhivery')  # redirect to form to get name/email/phone etc.
-    
-    return render(request, 'shipping_form.html')  # fallback if GET
-
-
-# 🟢 Step 2: Submit order to Delhivery with full form + session data
+# 🟢 Unified Shipping & Order Submission (no session juggling)
 @csrf_exempt
 @login_required
 def submit_to_delhivery(request):
     if request.method == 'POST':
-        shipping_data = request.session.pop('shipping_data', {})
-
-        if not shipping_data:
-            return render(request, 'order_fail.html', {'error': 'Missing shipping info. Please try again.'})
-
-        # Combine both form and session data
+        # Get shipping info
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        address = request.POST.get('address')
+        city = request.POST.get('city')
+        state = request.POST.get('state')
+        pincode = request.POST.get('pincode')
+        priority = request.POST.get('priority')
+        # Get order/cart info
+        try:
+            order_items = json.loads(request.POST.get('order_items', '[]'))
+        except Exception:
+            order_items = []
+        total = float(request.POST.get('order_total', 0))
+        if not (name and email and phone and address and city and state and pincode and order_items and total):
+            return render(request, 'products/order_fail.html', {'error': 'Missing required order or shipping info.'})
+        # Build order_id (could use user+timestamp or uuid)
+        import uuid
+        order_id = f"ORD-{request.user.id}-{uuid.uuid4().hex[:8]}"
+        # Build products_desc
+        products_desc = ', '.join([f"{item['accessory'].name} x{item['quantity']}" for item in order_items])
+        # Prepare Delhivery payload
         data = {
-            'order_id': 'ORD12345',  # Replace with dynamic order ID logic
-            'name': request.POST.get('name'),
-            'email': request.POST.get('email'),
-            'phone': request.POST.get('phone'),
-            'address': shipping_data.get('address'),
-            'city': shipping_data.get('city'),
-            'state': request.POST.get('state'),
-            'pincode': shipping_data.get('pincode'),
-            'priority': request.POST.get('priority'),
-            'amount': 2999,  # TODO: Replace with dynamic amount from Razorpay/cart
+            'order_id': order_id,
+            'name': name,
+            'email': email,
+            'phone': phone,
+            'address': address,
+            'city': city,
+            'state': state,
+            'pincode': pincode,
+            'priority': priority,
+            'amount': total,
+            'products_desc': products_desc,
         }
-
-        # Send to Delhivery
         response = create_delhivery_order(data)
-
         if response.get('packages'):
             waybill = response['packages'][0]['waybill']
-            return render(request, 'order_success.html', {'waybill': waybill})
+            return render(request, 'products/order_success.html', {'waybill': waybill})
         else:
-            return render(request, 'order_fail.html', {'error': response})
-
-    return render(request, 'shipping_form.html')  # fallback on GET
-
+            return render(request, 'products/order_fail.html', {'error': response})
+    # On GET, show shipping form with cart summary
+    cart = request.session.get('cart', {})
+    accessories = []
+    total = 0
+    for acc_id, qty in cart.items():
+        accessory = Accessory.objects.filter(pk=acc_id).first()
+        if accessory:
+            accessories.append({
+                'accessory': accessory,
+                'quantity': qty,
+                'subtotal': accessory.price * qty
+            })
+            total += accessory.price * qty
+    return render(request, 'shipping_form.html', {'cart_items': accessories, 'total': total})
 
 # 🟢 Utility to Create Order via Delhivery API
 def create_delhivery_order(data):

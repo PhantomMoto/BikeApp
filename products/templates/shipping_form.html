@@ -1,8 +1,13 @@
-<!-- Create this file in templates/shipping_form.html -->
-<!-- Shipping form after payment, collects all info needed for Delhivery -->
-<form method="post" action="{% url 'products:submit_to_delhivery' %}">
+<!--
+  Unified shipping and order form after payment.
+  Collects all shipping info and displays cart items and total for confirmation.
+  Submits everything in one POST to /submit-to-delhivery/.
+-->
+{% extends 'products/base.html' %}
+{% block content %}
+  <h2>Shipping & Order Details</h2>
+  <form method="post" action="{% url 'products:submit_to_delhivery' %}">
     {% csrf_token %}
-    <h2>Shipping Details</h2>
     <input type="text" name="name" placeholder="Full Name" required><br>
     <input type="email" name="email" placeholder="Email" required><br>
     <input type="text" name="phone" placeholder="Phone" required><br>
@@ -12,13 +17,42 @@
     <input type="text" name="pincode" placeholder="Pincode" required><br>
     <label>Shipping Priority:</label>
     <select name="priority">
-        <option value="Surface">Surface</option>
-        <option value="Express">Express</option>
+      <option value="Surface">Surface</option>
+      <option value="Express">Express</option>
     </select><br>
+    <h3>Order Summary</h3>
+    <table class="cart-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Qty</th>
+          <th>Price</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in cart_items %}
+        <tr>
+          <td>{{ item.accessory.name }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>₹{{ item.accessory.price }}</td>
+          <td>₹{{ item.subtotal }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3"><strong>Total:</strong></td>
+          <td>₹{{ total }}</td>
+        </tr>
+      </tfoot>
+    </table>
+    <!-- Hidden fields to send cart data -->
+    <input type="hidden" name="order_items" value='{{ cart_items|json_script:"orderItems" }}'>
+    <input type="hidden" name="order_total" value="{{ total }}">
     <button type="submit">Submit Order</button>
-</form>
-
-<!-- Add a message for errors if passed in context -->
-{% if error %}
-  <div class="error">{{ error }}</div>
-{% endif %}
+  </form>
+  {% if error %}
+    <div class="error">{{ error }}</div>
+  {% endif %}
+{% endblock %}

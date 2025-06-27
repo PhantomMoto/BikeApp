@@ -526,57 +526,43 @@ def create_delhivery_order(data):
         "Content-Type": "application/json",
     }
 
+    # Build the shipment dict
+    shipment = {
+        "order": data['order_id'],
+        "products_desc": data['products_desc'],
+        "total_amount": data['amount'],
+        "payment_mode": "Prepaid",  # or "COD" if you support cash on delivery
+        "consignee": data['name'],
+        "consignee_address1": data['address'],
+        "consignee_address2": "",  # optional
+        "consignee_city": data['city'],
+        "consignee_state": data['state'],
+        "consignee_pincode": data['pincode'],
+        "consignee_phone": data['phone'],
+        "consignee_email": data['email'],
+        "weight": 0.5,  # update as needed
+        "length": 10,
+        "breadth": 10,
+        "height": 5,
+        "shipping_mode": data['priority']
+    }
+    # Build the payload for Delhivery
     payload = {
-        "format": "json",
-        "data": json.dumps({
-            "pickup_location": "Phantom Moto",  # 👈 bas naam do
-            "shipments": [
-                {
-                    "order": data['order_id'],
-                    "products_desc": "Bike Accessories",
-                    "total_amount": data['amount'],
-                    "payment_mode": "Prepaid",
-                    "consignee": data['name'],
-                    "consignee_address1": data['address'],
-                    "consignee_address2": "",
-                    "consignee_city": data['city'],
-                    "consignee_state": data['state'],
-                    "consignee_pincode": data['pincode'],
-                    "consignee_phone": data['phone'],
-                    "consignee_email": data['email'],
-                    "weight": 0.5,
-                    "length": 10,
-                    "breadth": 10,
-                    "height": 5,
-                    "shipping_mode": data['priority']
-                }
-            ]
-        })
+        "pickup_location": "Phantom Moto",  # must match dashboard
+        "shipments": [shipment]
     }
-
-    headers = {
-        "Authorization": f"Token {settings.DELHIVERY_API_TOKEN}"
-    }
-
-    res = requests.post(
-        "https://track.delhivery.com/api/cmu/create.json",
-        headers=headers,
-        data=payload  # 👈 use data=, not json=
-    )
-
-    import urllib.parse
-
     final_payload = {
         "format": "json",
         "data": json.dumps(payload)
     }
-
+    headers = {
+        "Authorization": f"Token {settings.DELHIVERY_API_TOKEN}"
+    }
     res = requests.post(
         "https://track.delhivery.com/api/cmu/create.json",
         headers=headers,
-        data=final_payload  # ✅ send as form data, not json
+        data=final_payload  # send as form-data
     )
-    # Debug: print payload and response
     print("Delhivery payload:", final_payload)
     print("Delhivery response:", res.text)
     return res.json()

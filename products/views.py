@@ -525,45 +525,50 @@ def submit_to_delhivery(request):
 import json, requests
 from django.conf import settings
 
-import json
-import requests
-from django.conf import settings
 
-import json
-import requests
-from django.conf import settings
-
-import json
-import requests
-from django.conf import settings
 
 def create_delhivery_order(data):
     shipment = {
+        "name": data['name'],
+        "add": data['address'],
+        "pin": data['pincode'],
+        "city": data['city'],
+        "state": data['state'],
+        "country": "India",
+        "phone": data['phone'],
         "order": data['order_id'],
-        "products_desc": data['products_desc'],
-        "total_amount": data['amount'],
         "payment_mode": "Prepaid",
-        "consignee": data['name'],
-        "consignee_address1": data['address'],
-        "consignee_address2": "",
-        "consignee_city": data['city'],
-        "consignee_state": data['state'],
-        "consignee_pincode": data['pincode'],
-        "consignee_phone": data['phone'],
-        "consignee_email": data['email'],
-        "weight": 0.5,
-        "length": 10,
-        "breadth": 10,
-        "height": 5,
-        "shipping_mode": data['priority']
+        "return_pin": "",  # Optional
+        "return_city": "",
+        "return_phone": "",
+        "return_add": "",
+        "return_state": "",
+        "return_country": "",
+        "products_desc": data['products_desc'],
+        "hsn_code": "",
+        "cod_amount": "",
+        "order_date": None,
+        "total_amount": str(data['amount']),
+        "seller_add": "",
+        "seller_name": "",
+        "seller_inv": "",
+        "quantity": "1",
+        "waybill": "",
+        "shipment_width": "10",
+        "shipment_height": "5",
+        "weight": "0.5",
+        "shipping_mode": data['priority'],
+        "address_type": ""
     }
 
     api_body = {
-        # Replace this with actual pickup location CODE, NOT the name
-        "pickup_location": "PMOMUMBAIWH",
-        "shipments": [shipment]
+        "shipments": [shipment],
+        "pickup_location": {
+            "name": "PMOMUMBAIWH"  # Replace with pickup name, NOT CODE
+        }
     }
 
+    # Create payload exactly as they expect: format=json & data={JSON string}
     payload = {
         "format": "json",
         "data": json.dumps(api_body)
@@ -571,11 +576,12 @@ def create_delhivery_order(data):
 
     headers = {
         "Authorization": f"Token {settings.DELHIVERY_API_TOKEN}",
+        "Accept": "application/json",
         "Content-Type": "application/x-www-form-urlencoded"
     }
 
     response = requests.post(
-        "https://track.delhivery.com/api/cmu/create.json",
+        "https://staging-express.delhivery.com/api/cmu/create.json",
         headers=headers,
         data=payload
     )
@@ -585,4 +591,7 @@ def create_delhivery_order(data):
     print("📩 RESPONSE FROM DELHIVERY:")
     print(response.status_code, response.text)
 
-    return response.json()
+    try:
+        return response.json()
+    except Exception as e:
+        return {"error": str(e), "raw_response": response.text}

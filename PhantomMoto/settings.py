@@ -61,8 +61,8 @@ DATABASES = {
 # delivery settings
 # Make sure to set these environment variables in your production environment
 # or replace with your actual values
-DELHIVERY_API_TOKEN = '77e3075e4a4235202652825b86a907b174a823be'
-DELHIVERY_CLIENT = 'PHANTOM_MOTO NA'
+DELHIVERY_API_TOKEN = '5ef5b6f39ed14f7dc902f5d7aac7efcbff1c47d4'
+DELHIVERY_CLIENT = 'Phantom Moto'
 
 
 

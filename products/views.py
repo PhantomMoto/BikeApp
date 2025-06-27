@@ -324,24 +324,22 @@ def create_razorpay_order(request):
 
 @csrf_exempt
 def verify_razorpay_payment(request):
-    if request.method == 'POST':
-        import json
-        data = json.loads(request.body)
-        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
-        try:
-            params_dict = {
-                'razorpay_order_id': data['razorpay_order_id'],
-                'razorpay_payment_id': data['razorpay_payment_id'],
-                'razorpay_signature': data['razorpay_signature']
-            }
-            client.utility.verify_payment_signature(params_dict)
-            # Here you can mark the order as paid, clear cart, etc.
-            request.session['cart'] = {}  # Clear cart after payment
-            return redirect('/post-payment/')  # Redirect to a success page
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
-    return HttpResponseBadRequest('Invalid request')
 
+    import json
+    data = json.loads(request.body)
+    client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+    
+    params_dict = {
+        'razorpay_order_id': data['razorpay_order_id'],
+        'razorpay_payment_id': data['razorpay_payment_id'],
+        'razorpay_signature': data['razorpay_signature']
+    }
+    client.utility.verify_payment_signature(params_dict)
+    # Here you can mark the order as paid, clear cart, etc.
+    request.session['cart'] = {}  # Clear cart after payment
+    return redirect('/post-payment/')  # Redirect to a success page
+    
+    
 
     
     return render(request, 'shipping_form.html')

@@ -553,14 +553,14 @@ def create_delhivery_order(data):
 
     # 2. Wrap into the API body, using your CODE—not display name!
     api_body = {
-        "pickup_location": "PHANTOM_MOTO",   # <-- Use the exact code/alias Delhivery gave you
+        "pickup_location": "Phantom Moto",     # <-- Use the correct code, not account name
         "shipments": [shipment]
     }
 
     # 3. Prepare the form-encoded payload
     form_payload = {
         "format": "json",
-        "data": json.dumps(api_body)
+        "data": json.dumps(api_body, ensure_ascii=False)
     }
 
     # 4. Send with no JSON header—requests will default to x-www-form-urlencoded

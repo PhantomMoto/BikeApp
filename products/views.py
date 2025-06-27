@@ -524,6 +524,7 @@ def create_delhivery_order(data):
     }
 
     payload = {
+        "format": "json",
         "pickup_location": {
             "name": "PhantomMoto",
             "city": "Mira Road",

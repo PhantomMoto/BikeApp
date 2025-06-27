@@ -456,113 +456,55 @@ import json
 # 🟢 Unified Shipping & Order Submission (no session juggling)
 @csrf_exempt
 @login_required
-def submit_to_delhivery(request):
-    if request.method == 'POST':
-        # Get shipping info
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        phone = request.POST.get('phone')
-        address = request.POST.get('address')
-        city = request.POST.get('city')
-        state = request.POST.get('state')
-        pincode = request.POST.get('pincode')
-        priority = request.POST.get('priority')
-        # Get order/cart info
-        try:
-            order_items = json.loads(request.POST.get('order_items', '[]'))
-        except Exception:
-            order_items = []
-        total = float(request.POST.get('order_total', 0))
-        if not (name and email and phone and address and city and state and pincode and order_items and total):
-            return render(request, 'products/order_fail.html', {'error': 'Missing required order or shipping info.'})
-        # Build order_id (could use user+timestamp or uuid)
-        import uuid
-        order_id = f"ORD-{request.user.id}-{uuid.uuid4().hex[:8]}"
-        # Build products_desc
-        products_desc = ', '.join([f"{item['accessory']['name']} x{item['quantity']}" for item in order_items])
-        # Prepare Delhivery payload
-        data = {
-            'order_id': order_id,
-            'name': name,
-            'email': email,
-            'phone': phone,
-            'address': address,
-            'city': city,
-            'state': state,
-            'pincode': pincode,
-            'priority': priority,
-            'amount': total,
-            'products_desc': products_desc,
-        }
-        response = create_delhivery_order(data)
-        # Debug: show full response if order not created
-        waybill = None
-        if response.get('packages') and response['packages'] and response['packages'][0].get('waybill'):
-            waybill = response['packages'][0]['waybill']
-            request.session['cart'] = {}  # Clear cart only after successful order
-            return render(request, 'products/order_success.html', {'waybill': waybill, 'delhivery_response': response})
-        else:
-            # Show full response for debugging
-            return render(request, 'products/order_fail.html', {'error': response})
-    # On GET, show shipping form with cart summary
-    cart = request.session.get('cart', {})
-    accessories = []
-    total = 0
-    for acc_id, qty in cart.items():
-        accessory = Accessory.objects.filter(pk=acc_id).first()
-        if accessory:
-            accessories.append({
-                'accessory': accessory,
-                'quantity': qty,
-                'subtotal': accessory.price * qty
-            })
-            total += accessory.price * qty
-    return render(request, 'shipping_form.html', {'cart_items': accessories, 'total': total})
-
-# 🟢 Utility to Create Order via Delhivery API
 def create_delhivery_order(data):
-    headers = {
-        "Authorization": f"Token {settings.DELHIVERY_API_TOKEN}",
-        "Content-Type": "application/json",
-    }
+    import json, requests
+    from django.conf import settings
 
-    # Build the shipment dict
+    # 1) Prepare single shipment dict
     shipment = {
         "order": data['order_id'],
         "products_desc": data['products_desc'],
         "total_amount": data['amount'],
-        "payment_mode": "Prepaid",  # or "COD" if you support cash on delivery
+        "payment_mode": "Prepaid",
         "consignee": data['name'],
         "consignee_address1": data['address'],
-        "consignee_address2": "",  # optional
+        "consignee_address2": "",
         "consignee_city": data['city'],
         "consignee_state": data['state'],
         "consignee_pincode": data['pincode'],
         "consignee_phone": data['phone'],
         "consignee_email": data['email'],
-        "weight": 0.5,  # update as needed
+        "weight": 0.5,
         "length": 10,
         "breadth": 10,
         "height": 5,
         "shipping_mode": data['priority']
     }
-    # Build the payload for Delhivery
-    payload = {
-        "name": "Phantom Moto",  # must match dashboard
+
+    # 2) Build the API payload — must have "pickup_location" + "shipments"
+    api_body = {
+        "pickup_location": "Phantom Moto",   # ← exactly as in your dashboard
         "shipments": [shipment]
     }
+
+    # Wrap into form-data fields
     final_payload = {
         "format": "json",
-        "data": json.dumps(payload)
+        "data": json.dumps(api_body)
     }
+
+    # 3) Send as form-data (x-www-form-urlencoded)
     headers = {
         "Authorization": f"Token {settings.DELHIVERY_API_TOKEN}"
     }
     res = requests.post(
         "https://track.delhivery.com/api/cmu/create.json",
         headers=headers,
-        data=final_payload  # send as form-data
+        data=final_payload
     )
-    print("Delhivery payload:", final_payload)
-    print("Delhivery response:", res.text)
+
+    # Debug logs
+    print("Delhivery request body:", final_payload)
+    print("Delhivery response text:", res.text)
+
     return res.json()

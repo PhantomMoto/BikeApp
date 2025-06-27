@@ -548,7 +548,7 @@ def create_delhivery_order(data):
     }
     # Build the payload for Delhivery
     payload = {
-        "pickup_location": "Phantom Moto",  # must match dashboard
+        "name": "Phantom Moto",  # must match dashboard
         "shipments": [shipment]
     }
     final_payload = {

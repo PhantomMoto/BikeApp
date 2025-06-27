@@ -522,8 +522,11 @@ def submit_to_delhivery(request):
 # 🟢 Utility to Create Order via Delhivery API
 # This is NOT a Django view! Only called from submit_to_delhivery
 
+import json, requests
+from django.conf import settings
+
 def create_delhivery_order(data):
-    # 1) Build shipment dict
+    # 1. Build single shipment dict
     shipment = {
         "order": data['order_id'],
         "products_desc": data['products_desc'],
@@ -544,31 +547,32 @@ def create_delhivery_order(data):
         "shipping_mode": data['priority']
     }
 
-    # 2) Wrap in API body
+    # 2. Build the full API body dict
     api_body = {
-        "pickup_location": "Phantom Moto",  # EXACT match from your dashboard
+        "pickup_location": "Phantom Moto",  # exact dashboard name
         "shipments": [shipment]
     }
 
-    # 3) Endpoint with format=json
-    url = "https://track.delhivery.com/api/cmu/create.json?format=json"
-    headers = {
-        "Authorization": f"Token {settings.DELHIVERY_API_TOKEN}",
-        "Content-Type": "application/json"
+    # 3. Prepare form-encoded payload
+    form_payload = {
+        "format": "json",
+        "data": json.dumps(api_body)
     }
 
-    # 4) Send true JSON
-    response = requests.post(url, headers=headers, json=api_body)
+    # 4. Send as form-encoded (no JSON header!)
+    headers = {
+        "Authorization": f"Token {settings.DELHIVERY_API_TOKEN}"
+        # Let requests set Content-Type to application/x-www-form-urlencoded
+    }
 
-    # 5) Debug logs—inspect these!
-    print("== Delhivery Request Body ==")
-    print(json.dumps(api_body, indent=2))
-    print("== Delhivery Response Text ==")
-    print(response.text)
+    response = requests.post(
+        "https://track.delhivery.com/api/cmu/create.json",
+        headers=headers,
+        data=form_payload
+    )
+
+    # 5. Debug
+    print("Delhivery Form Payload:", form_payload)
+    print("Delhivery Response:", response.text)
 
     return response.json()
-    # Debug logs
-    print("Delhivery request body:", final_payload)
-    print("Delhivery response text:", res.text)
-
-    return res.json()

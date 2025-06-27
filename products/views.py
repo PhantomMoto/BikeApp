@@ -529,6 +529,10 @@ import json
 import requests
 from django.conf import settings
 
+import json
+import requests
+from django.conf import settings
+
 def create_delhivery_order(data):
     shipment = {
         "order": data['order_id'],
@@ -551,28 +555,27 @@ def create_delhivery_order(data):
     }
 
     api_body = {
-        "pickup_location": "Phantom Moto",  # <-- your registered code
+        "pickup_location": "Phantom Moto",  # ✅ Use pickup code, not display name
         "shipments": [shipment]
     }
 
-    # ✅ Convert `data` to string
-    form_payload = {
-        "format": "json",
-        "data": json.dumps(api_body)  # stringified here!
+    # ✅ IMPORTANT — Send as x-www-form-urlencoded (not JSON body!)
+    headers = {
+        "Authorization": f"Token {settings.DELHIVERY_API_TOKEN}",
+        "Content-Type": "application/x-www-form-urlencoded"
     }
 
-    headers = {
-        "Authorization": f"Token {settings.DELHIVERY_API_TOKEN}"
+    payload = {
+        "format": "json",
+        "data": json.dumps(api_body)
     }
 
     response = requests.post(
         "https://track.delhivery.com/api/cmu/create.json",
         headers=headers,
-        json=form_payload
+        data=payload  # ✅ NOT `json=`, use `data=` here
     )
 
-    print("👉 Delhivery Form Payload:")
-    print(json.dumps(form_payload, indent=2))
     print("👉 Delhivery Response:")
     print(response.status_code, response.text)
 

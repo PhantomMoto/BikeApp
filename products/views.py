@@ -555,28 +555,29 @@ def create_delhivery_order(data):
     }
 
     api_body = {
-        "pickup_location": "Phantom Moto",  # ✅ Use pickup code, not display name
+        "pickup_location": "Phantom Moto",  # ✅ Must be pickup code, not label
         "shipments": [shipment]
     }
 
-    # ✅ IMPORTANT — Send as x-www-form-urlencoded (not JSON body!)
+    # ✅ Send data as x-www-form-urlencoded, not JSON
+    payload = {
+        "format": "json",
+        "data": json.dumps(api_body)  # ✅ Make sure it's stringified
+    }
+
     headers = {
         "Authorization": f"Token {settings.DELHIVERY_API_TOKEN}",
         "Content-Type": "application/x-www-form-urlencoded"
     }
 
-    payload = {
-        "format": "json",
-        "data": json.dumps(api_body)
-    }
-
+    # ✅ DO NOT USE json= → just use data=
     response = requests.post(
         "https://track.delhivery.com/api/cmu/create.json",
         headers=headers,
-        data=payload  # ✅ NOT `json=`, use `data=` here
+        data=payload
     )
 
-    print("👉 Delhivery Response:")
-    print(response.status_code, response.text)
+    print("👉 Final Payload Sent:", payload)
+    print("👉 Delhivery Response:", response.status_code, response.text)
 
     return response.json()

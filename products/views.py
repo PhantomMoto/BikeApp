@@ -533,12 +533,16 @@ import json
 import requests
 from django.conf import settings
 
+import json
+import requests
+from django.conf import settings
+
 def create_delhivery_order(data):
     shipment = {
         "order": data['order_id'],
         "products_desc": data['products_desc'],
         "total_amount": data['amount'],
-        "payment_mode": "Prepaid",  # or "COD"
+        "payment_mode": "Prepaid",
         "consignee": data['name'],
         "consignee_address1": data['address'],
         "consignee_address2": "",
@@ -555,14 +559,14 @@ def create_delhivery_order(data):
     }
 
     api_body = {
-        "pickup_location": "Phantom Moto",  # Must be pickup CODE, not label
+        # Replace this with actual pickup location CODE, NOT the name
+        "pickup_location": "PMOMUMBAIWH",
         "shipments": [shipment]
     }
 
-    # ✅ Convert data to x-www-form-urlencoded format
     payload = {
         "format": "json",
-        "data": json.dumps(api_body)  # stringified JSON
+        "data": json.dumps(api_body)
     }
 
     headers = {
@@ -573,7 +577,7 @@ def create_delhivery_order(data):
     response = requests.post(
         "https://track.delhivery.com/api/cmu/create.json",
         headers=headers,
-        data=payload  # ✅ This is the key
+        data=payload
     )
 
     print("📤 SENT TO DELHIVERY:")

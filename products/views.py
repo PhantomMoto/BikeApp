@@ -482,29 +482,37 @@ from django.views.decorators.csrf import csrf_exempt
 
 @login_required
 def post_payment_shipping(request):
-    if request.method == 'POST':
-        address = request.POST['address']
-        city = request.POST['city']
-        pincode = request.POST['pincode']
-        shipping_priority = request.POST['shipping_priority']
-        # Save to DB or proceed directly to Delhivery
-        return redirect('/submit-order/', {'address':address, 'city':city, 'pincode':pincode, 'shipping_priority':shipping_priority})
+
+    address = request.POST['address']
+    city = request.POST['city']
+    pincode = request.POST['pincode']
+    shipping_priority = request.POST['shipping_priority']
     
-    return render(request, 'shipping_form.html')
+    request.session['shipping_data'] = {
+    'address': address,
+    'city': city,
+    'pincode': pincode,
+    'shipping_priority': shipping_priority
+}
+    return redirect('/submit-order/')
+    
 
 @csrf_exempt
 def submit_to_delhivery(request):
     if request.method == 'POST':
+        shipping_data = request.session.pop('shipping_data', {})
+# use shipping_data['city'], etc.
+
         data = {
             'order_id': 'ORD12345',  # Generate dynamically in real use
             'name': request.POST['name'],
             'email': request.POST['email'],
             'phone': request.POST['phone'],
-            'address': request.POST['address'],
-            'city': request.POST['city'],
+            'address': shipping_data.get('address', ''),
+            'city': shipping_data.get('city', ''),
             'state': request.POST['state'],
-            'pincode': request.POST['pincode'],
-            'priority': request.POST['priority'],
+            'pincode': shipping_data.get('pincode', ''),
+            'priority': shipping_data.get('shipping_priority', 'Normal'),  # or 'Priority'
             'amount': 2999,  # Replace with dynamic Razorpay payment amount
         }
 

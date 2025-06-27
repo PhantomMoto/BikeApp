@@ -345,23 +345,22 @@ def create_razorpay_order(request):
 def verify_razorpay_payment(request):
 
     import json
-    data = json.loads(request.body)
-    client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
-    
-    params_dict = {
-        'razorpay_order_id': data['razorpay_order_id'],
-        'razorpay_payment_id': data['razorpay_payment_id'],
-        'razorpay_signature': data['razorpay_signature']
-    }
-    client.utility.verify_payment_signature(params_dict)
-    # Here you can mark the order as paid, clear cart, etc.
-    request.session['cart'] = {}  # Clear cart after payment
-    return redirect('/post-payment/')  # Redirect to a success page
-    
-    
+    try:
+        data = json.loads(request.body)
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        params_dict = {
+            'razorpay_order_id': data['razorpay_order_id'],
+            'razorpay_payment_id': data['razorpay_payment_id'],
+            'razorpay_signature': data['razorpay_signature']
+        }
+        client.utility.verify_payment_signature(params_dict)
+        # Mark order as paid, clear cart, etc.
+        request.session['cart'] = {}  # Clear cart after payment
+        return JsonResponse({'success': True, 'redirect_url': '/post-payment/'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
 
-    
-    return render(request, 'shipping_form.html')
+
 def contact_view(request):
     if request.method == 'POST':
         name = request.POST.get('name')

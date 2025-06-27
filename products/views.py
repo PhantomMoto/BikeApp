@@ -530,12 +530,11 @@ import requests
 from django.conf import settings
 
 def create_delhivery_order(data):
-    # 1. Build the single shipment dict
     shipment = {
         "order": data['order_id'],
         "products_desc": data['products_desc'],
         "total_amount": data['amount'],
-        "payment_mode": "Prepaid",           # or "COD"
+        "payment_mode": "Prepaid",
         "consignee": data['name'],
         "consignee_address1": data['address'],
         "consignee_address2": "",
@@ -551,19 +550,17 @@ def create_delhivery_order(data):
         "shipping_mode": data['priority']
     }
 
-    # 2. Wrap into the API body, using your CODE—not display name!
     api_body = {
-        "pickup_location": "Phantom Moto",     # <-- Use the correct code, not account name
+        "pickup_location": "Phantom Moto",  # <-- your registered code
         "shipments": [shipment]
     }
 
-    # 3. Prepare the form-encoded payload
+    # ✅ Convert `data` to string
     form_payload = {
         "format": "json",
-        "data": api_body
+        "data": json.dumps(api_body)  # stringified here!
     }
 
-    # 4. Send with no JSON header—requests will default to x-www-form-urlencoded
     headers = {
         "Authorization": f"Token {settings.DELHIVERY_API_TOKEN}"
     }
@@ -571,10 +568,9 @@ def create_delhivery_order(data):
     response = requests.post(
         "https://track.delhivery.com/api/cmu/create.json",
         headers=headers,
-        json=form_payload  # Use json= to send as JSON
+        json=form_payload
     )
 
-    # 5. Debug logs
     print("👉 Delhivery Form Payload:")
     print(json.dumps(form_payload, indent=2))
     print("👉 Delhivery Response:")

@@ -563,7 +563,7 @@ def create_delhivery_order(data):
     api_body = {
         "shipments": shipment,
         "pickup_location": {
-            "name": "PHANTOM_MOTO"  # Replace with pickup name, NOT CODE
+            "name": "Phantom Moto"  # Replace with pickup name, NOT CODE
         }
     }
 

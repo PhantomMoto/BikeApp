@@ -525,12 +525,11 @@ def create_delhivery_order(data):
 
     payload = {
         "pickup_location": {
-            "name": "PhantomMoto",
-            "city": "Mira Road",
+            "name": "Phantom Moto",
+            "city": "Mumbai",
             "state": "Maharashtra",
             "country": "India",
-            "phone": "08355944801",
-            "email": "phantommotoindustries@gmail.com",
+            "phone": "8291056686",
             "address": "Flower Valley Complex CHSL, Shop No 37 H wing, Geeta Omkar, near Lifeline Hospital, Mira Road East, Mira Bhayandar, Maharashtra 401105",
             "pin": "401107"
         },

@@ -561,9 +561,15 @@ def create_delhivery_order(data):
     }
 
     api_body = {
-        "shipments": [shipment],
-        "pickup_location": {
-            "name": "PHANTOM_MOTO"  # Replace with pickup name, NOT CODE
+            "shipments": [shipment],
+            "pickup_location": {
+           "name": "Phantom Moto",  # Replace with pickup name, NOT CODE
+            "add": "Flower Valley Complex CHSL, Shop No 37 H wing, Geeta Omkar, near Lifeline Hospital, Mira Road East, Mira Bhayandar, Maharashtra 401105",
+            "city": "Mumbai",
+            "state": "Maharashtra",
+            "pin": "401107",
+            "country": "India",
+            "phone": "8291056686"  # Replace with pickup name, NOT CODE
         }
     }
 

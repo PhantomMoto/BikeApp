@@ -560,7 +560,7 @@ def create_delhivery_order(data):
     # 3. Prepare the form-encoded payload
     form_payload = {
         "format": "json",
-        "data": json.dumps(api_body, ensure_ascii=False)
+        "data": api_body
     }
 
     # 4. Send with no JSON header—requests will default to x-www-form-urlencoded
@@ -571,7 +571,7 @@ def create_delhivery_order(data):
     response = requests.post(
         "https://track.delhivery.com/api/cmu/create.json",
         headers=headers,
-        data=form_payload
+        json=form_payload  # Use json= to send as JSON
     )
 
     # 5. Debug logs

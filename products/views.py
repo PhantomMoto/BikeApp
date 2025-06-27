@@ -556,11 +556,16 @@ def create_delhivery_order(data):
             }
         ]
     }
+    import urllib.parse
+
+    final_payload = {
+        "format": "json",
+        "data": json.dumps(payload)
+    }
 
     res = requests.post(
-        "https://track.delhivery.com/api/cmu/create.json?format=json",  # ✅ query param
+        "https://track.delhivery.com/api/cmu/create.json",
         headers=headers,
-        json=payload  # ✅ proper JSON body
+        data=final_payload  # ✅ send as form data, not json
     )
-
     return res.json()

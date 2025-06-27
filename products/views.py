@@ -538,7 +538,7 @@ def create_delhivery_order(data):
         "order": data['order_id'],
         "products_desc": data['products_desc'],
         "total_amount": data['amount'],
-        "payment_mode": "Prepaid",
+        "payment_mode": "Prepaid",  # or "COD"
         "consignee": data['name'],
         "consignee_address1": data['address'],
         "consignee_address2": "",
@@ -555,27 +555,30 @@ def create_delhivery_order(data):
     }
 
     api_body = {
-        "pickup_location": "Phantom Moto",  # ✅ your pickup code
+        "pickup_location": "Phantom Moto",  # Must be pickup CODE, not label
         "shipments": [shipment]
     }
 
+    # ✅ Convert data to x-www-form-urlencoded format
     payload = {
         "format": "json",
-        "data": json.dumps(api_body)  # ✅ JSON string
+        "data": json.dumps(api_body)  # stringified JSON
     }
 
     headers = {
         "Authorization": f"Token {settings.DELHIVERY_API_TOKEN}",
-        "Content-Type": "application/x-www-form-urlencoded"  # ✅ form-encoded
+        "Content-Type": "application/x-www-form-urlencoded"
     }
 
     response = requests.post(
         "https://track.delhivery.com/api/cmu/create.json",
         headers=headers,
-        data=payload  # ✅ NOT json=
+        data=payload  # ✅ This is the key
     )
 
-    print("👉 Sent Payload:", payload)
-    print("👉 Response:", response.status_code, response.text)
+    print("📤 SENT TO DELHIVERY:")
+    print(payload)
+    print("📩 RESPONSE FROM DELHIVERY:")
+    print(response.status_code, response.text)
 
     return response.json()

@@ -479,7 +479,7 @@ def submit_to_delhivery(request):
         import uuid
         order_id = f"ORD-{request.user.id}-{uuid.uuid4().hex[:8]}"
         # Build products_desc
-        products_desc = ', '.join([f"{item['accessory'].name} x{item['quantity']}" for item in order_items])
+        products_desc = ', '.join([f"{item['accessory']['name']} x{item['quantity']}" for item in order_items])
         # Prepare Delhivery payload
         data = {
             'order_id': order_id,

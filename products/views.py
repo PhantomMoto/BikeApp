@@ -342,15 +342,7 @@ def verify_razorpay_payment(request):
             return JsonResponse({'success': False, 'error': str(e)})
     return HttpResponseBadRequest('Invalid request')
 
-@login_required
-def post_payment_shipping(request):
-    if request.method == 'POST':
-        address = request.POST['address']
-        city = request.POST['city']
-        pincode = request.POST['pincode']
-        shipping_priority = request.POST['shipping_priority']
-        # Save to DB or proceed directly to Delhivery
-        return redirect('/submit-order/', {'address':address, 'city':city, 'pincode':pincode, 'shipping_priority':shipping_priority})
+
     
     return render(request, 'shipping_form.html')
 def contact_view(request):
@@ -490,7 +482,16 @@ def create_delhivery_order(data):
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 
+@login_required
 def post_payment_shipping(request):
+    if request.method == 'POST':
+        address = request.POST['address']
+        city = request.POST['city']
+        pincode = request.POST['pincode']
+        shipping_priority = request.POST['shipping_priority']
+        # Save to DB or proceed directly to Delhivery
+        return redirect('/submit-order/', {'address':address, 'city':city, 'pincode':pincode, 'shipping_priority':shipping_priority})
+    
     return render(request, 'shipping_form.html')
 
 @csrf_exempt

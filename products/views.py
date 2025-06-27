@@ -523,10 +523,7 @@ def submit_to_delhivery(request):
 # This is NOT a Django view! Only called from submit_to_delhivery
 
 def create_delhivery_order(data):
-    import json, requests
-    from django.conf import settings
-
-    # 1) Prepare single shipment dict
+    # 1) Build shipment dict
     shipment = {
         "order": data['order_id'],
         "products_desc": data['products_desc'],
@@ -547,28 +544,29 @@ def create_delhivery_order(data):
         "shipping_mode": data['priority']
     }
 
-    # 2) Build the API payload — must have "pickup_location" + "shipments"
+    # 2) Wrap in API body
     api_body = {
-        "pickup_location": "Phantom Moto",   # ← exactly as in your dashboard (or use the code if required)
+        "pickup_location": "Phantom Moto",  # EXACT match from your dashboard
         "shipments": [shipment]
     }
 
-    # Wrap into form-data fields
-    final_payload = {
-        "format": "json",
-        "data": json.dumps(api_body)
-    }
-
-    # 3) Send as form-data (x-www-form-urlencoded)
+    # 3) Endpoint with format=json
+    url = "https://track.delhivery.com/api/cmu/create.json?format=json"
     headers = {
-        "Authorization": f"Token {settings.DELHIVERY_API_TOKEN}"
+        "Authorization": f"Token {settings.DELHIVERY_API_TOKEN}",
+        "Content-Type": "application/json"
     }
-    res = requests.post(
-        "https://track.delhivery.com/api/cmu/create.json",
-        headers=headers,
-        data=final_payload
-    )
 
+    # 4) Send true JSON
+    response = requests.post(url, headers=headers, json=api_body)
+
+    # 5) Debug logs—inspect these!
+    print("== Delhivery Request Body ==")
+    print(json.dumps(api_body, indent=2))
+    print("== Delhivery Response Text ==")
+    print(response.text)
+
+    return response.json()
     # Debug logs
     print("Delhivery request body:", final_payload)
     print("Delhivery response text:", res.text)

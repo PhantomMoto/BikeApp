@@ -49,7 +49,7 @@ urlpatterns = [
     path('blog/', views.blog_list_view, name='blog_list'),
     path('blog/<slug:slug>/', views.blog_detail_view, name='blog_detail'),
     path('contact/', views.contact_view, name='contact'),
-     path('post-payment/', views.post_payment_shipping, name='post_payment'),
+     path('post-payment/', views.submit_to_delhivery, name='post_payment'),
     path('submit-to-delhivery/', views.submit_to_delhivery, name='submit_to_delhivery'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
@@ -66,6 +66,6 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # Serve static files in production (already handled by WhiteNoise, but safe to keep)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    
-    
-    
+
+
+

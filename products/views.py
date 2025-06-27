@@ -495,11 +495,14 @@ def submit_to_delhivery(request):
             'products_desc': products_desc,
         }
         response = create_delhivery_order(data)
-        if response.get('packages'):
+        # Debug: show full response if order not created
+        waybill = None
+        if response.get('packages') and response['packages'] and response['packages'][0].get('waybill'):
             waybill = response['packages'][0]['waybill']
             request.session['cart'] = {}  # Clear cart only after successful order
-            return render(request, 'products/order_success.html', {'waybill': waybill})
+            return render(request, 'products/order_success.html', {'waybill': waybill, 'delhivery_response': response})
         else:
+            # Show full response for debugging
             return render(request, 'products/order_fail.html', {'error': response})
     # On GET, show shipping form with cart summary
     cart = request.session.get('cart', {})
@@ -568,4 +571,7 @@ def create_delhivery_order(data):
         headers=headers,
         data=final_payload  # ✅ send as form data, not json
     )
+    # Debug: print payload and response
+    print("Delhivery payload:", final_payload)
+    print("Delhivery response:", res.text)
     return res.json()

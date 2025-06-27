@@ -5,6 +5,9 @@
     {% if waybill %}
       <p>Your Delhivery Waybill: <strong>{{ waybill }}</strong></p>
     {% endif %}
+    {% if delhivery_response %}
+      <pre style="background:#f8f8f8;padding:1em;border-radius:6px;overflow-x:auto;font-size:0.95em;">{{ delhivery_response|safe|escape }}</pre>
+    {% endif %}
     <p>Thank you for your order. You will receive a confirmation soon.</p>
     <a href="/products/">Continue Shopping</a>
   </div>

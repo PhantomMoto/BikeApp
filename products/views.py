@@ -549,7 +549,7 @@ def create_delhivery_order(data):
 
     # 2. Build the full API body dict
     api_body = {
-        "pickup_location": "Phantom Moto",  # exact dashboard name
+        "pickup_location": "PHANTOM_MOTO",  # use the pickup location CODE, not display name
         "shipments": [shipment]
     }
 

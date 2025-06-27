@@ -203,7 +203,10 @@ def cart_view(request):
             'subtotal': accessory.price * qty
         })
         total += accessory.price * qty
-    
+        request.session['paydetails'] = {
+        'items': accessories,
+        'price': total,
+        }
     return render(request, 'products/cart.html', {
         'cart_items': accessories,
         'total': total,
@@ -313,7 +316,7 @@ def create_razorpay_order(request):
         amount = int(data.get('amount', 0))
         if amount <= 0:
             return HttpResponseBadRequest('Invalid amount')
-        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET)) 
         order = client.order.create({
             'amount': amount,  # in paise
             'currency': 'INR',
@@ -427,6 +430,73 @@ def contact_view(request):
     return render(request, 'products/contact.html')
 import requests
 
+from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+from django.conf import settings
+from .models import Accessory
+import requests
+
+# 🟢 Step 1: Save Shipping Data to Session after Payment
+@login_required
+def post_payment_shipping(request):
+    if request.method == 'POST':
+        # Get form inputs
+        address = request.POST.get('address')
+        city = request.POST.get('city')
+        pincode = request.POST.get('pincode')
+        shipping_priority = request.POST.get('shipping_priority')
+
+        # Save to session
+        request.session['shipping_data'] = {
+            'address': address,
+            'city': city,
+            'pincode': pincode,
+            'shipping_priority': shipping_priority
+        }
+
+        return redirect('products:submit_to_delhivery')  # redirect to form to get name/email/phone etc.
+    
+    return render(request, 'shipping_form.html')  # fallback if GET
+
+
+# 🟢 Step 2: Submit order to Delhivery with full form + session data
+@csrf_exempt
+@login_required
+def submit_to_delhivery(request):
+    if request.method == 'POST':
+        shipping_data = request.session.pop('shipping_data', {})
+
+        if not shipping_data:
+            return render(request, 'order_fail.html', {'error': 'Missing shipping info. Please try again.'})
+
+        # Combine both form and session data
+        data = {
+            'order_id': 'ORD12345',  # Replace with dynamic order ID logic
+            'name': request.POST.get('name'),
+            'email': request.POST.get('email'),
+            'phone': request.POST.get('phone'),
+            'address': shipping_data.get('address'),
+            'city': shipping_data.get('city'),
+            'state': request.POST.get('state'),
+            'pincode': shipping_data.get('pincode'),
+            'priority': request.POST.get('priority'),
+            'amount': 2999,  # TODO: Replace with dynamic amount from Razorpay/cart
+        }
+
+        # Send to Delhivery
+        response = create_delhivery_order(data)
+
+        if response.get('packages'):
+            waybill = response['packages'][0]['waybill']
+            return render(request, 'order_success.html', {'waybill': waybill})
+        else:
+            return render(request, 'order_fail.html', {'error': response})
+
+    return render(request, 'shipping_form.html')  # fallback on GET
+
+
+# 🟢 Utility to Create Order via Delhivery API
 def create_delhivery_order(data):
     headers = {
         "Authorization": f"Token {settings.DELHIVERY_API_TOKEN}",
@@ -475,51 +545,3 @@ def create_delhivery_order(data):
     )
 
     return res.json()
-
-
-from django.shortcuts import render, redirect
-from django.views.decorators.csrf import csrf_exempt
-
-@login_required
-def post_payment_shipping(request):
-
-    address = request.POST['address']
-    city = request.POST['city']
-    pincode = request.POST['pincode']
-    shipping_priority = request.POST['shipping_priority']
-    
-    request.session['shipping_data'] = {
-    'address': address,
-    'city': city,
-    'pincode': pincode,
-    'shipping_priority': shipping_priority
-}
-    return redirect('/submit-order/')
-    
-
-@csrf_exempt
-def submit_to_delhivery(request):
-    if request.method == 'POST':
-        shipping_data = request.session.pop('shipping_data', {})
-# use shipping_data['city'], etc.
-
-        data = {
-            'order_id': 'ORD12345',  # Generate dynamically in real use
-            'name': request.POST['name'],
-            'email': request.POST['email'],
-            'phone': request.POST['phone'],
-            'address': shipping_data.get('address', ''),
-            'city': shipping_data.get('city', ''),
-            'state': request.POST['state'],
-            'pincode': shipping_data.get('pincode', ''),
-            'priority': shipping_data.get('shipping_priority', 'Normal'),  # or 'Priority'
-            'amount': 2999,  # Replace with dynamic Razorpay payment amount
-        }
-
-        response = create_delhivery_order(data)
-
-        if response.get('packages'):
-            waybill = response['packages'][0]['waybill']
-            return render(request, 'order_success.html', {'waybill': waybill})
-        else:
-            return render(request, 'order_fail.html', {'error': response})

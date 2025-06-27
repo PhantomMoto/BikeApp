@@ -557,13 +557,16 @@ def create_delhivery_order(data):
             }
         ]
     }
-    # Delhivery expects 'format' at the top level ONLY
-    payload = 'format=json&data={}'.format(payload).replace("'",'"')
+    import urllib.parse
+
+    final_payload = {
+        "format": "json",
+        "data": json.dumps(payload)
+    }
 
     res = requests.post(
         "https://track.delhivery.com/api/cmu/create.json",
         headers=headers,
-        json=payload
+        data=final_payload  # ✅ send as form data, not json
     )
-
     return res.json()

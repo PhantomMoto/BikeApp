@@ -108,5 +108,5 @@ LOGOUT_REDIRECT_URL = 'products:login'
 rzpkid = os.environ.get('RAZORPAY_KEY_ID')
 rzpkst = os.environ.get('RAZORPAY_KEY_SECRET')
 # 🪙 RAZORPAY KEYS
-RAZORPAY_KEY_ID = rzpkid
-RAZORPAY_KEY_SECRET = rzpkst
+RAZORPAY_KEY_ID = 'rzp_test_cq7lxIhKWEMmCZ'
+RAZORPAY_KEY_SECRET = 'JlTRultMrU8OS7izPky8fgqV'

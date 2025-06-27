@@ -524,7 +524,6 @@ def create_delhivery_order(data):
     }
 
     payload = {
-        "format": "json",
         "pickup_location": {
             "name": "PhantomMoto",
             "city": "Mira Road",
@@ -558,11 +557,13 @@ def create_delhivery_order(data):
             }
         ]
     }
+    # Delhivery expects 'format' at the top level
+    top_level_payload = {"format": "json", **payload}
 
     res = requests.post(
         "https://track.delhivery.com/api/cmu/create.json",
         headers=headers,
-        json=payload
+        json=top_level_payload
     )
 
     return res.json()

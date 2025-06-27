@@ -547,7 +547,6 @@ def create_delhivery_order(data):
         "products_desc": data['products_desc'],
         "hsn_code": "",
         "cod_amount": "",
-        "order_date": datetime.now().strftime("%Y-%m-%d"),
         "total_amount": str(data['amount']),
         "seller_add": "",
         "seller_name": "",

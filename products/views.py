@@ -524,7 +524,7 @@ def submit_to_delhivery(request):
 
 import json, requests
 from django.conf import settings
-
+from datetime import datetime
 
 
 def create_delhivery_order(data):
@@ -547,7 +547,7 @@ def create_delhivery_order(data):
         "products_desc": data['products_desc'],
         "hsn_code": "",
         "cod_amount": "",
-        "order_date": None,
+        "order_date": datetime.now().strftime("%Y-%m-%d"),
         "total_amount": str(data['amount']),
         "seller_add": "",
         "seller_name": "",

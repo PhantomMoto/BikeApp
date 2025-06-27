@@ -557,11 +557,12 @@ def create_delhivery_order(data):
         "shipment_height": "5",
         "weight": "0.5",
         "shipping_mode": data['priority'],
-        "address_type": ""
+        "address_type": "",
+        "order_date": datetime.now().strftime("%Y-%m-%d")
     }
 
     api_body = {
-        "shipments": shipment,
+        "shipments": [shipment],
         "pickup_location": {
             "name": "Phantom Moto"  # Replace with pickup name, NOT CODE
         }

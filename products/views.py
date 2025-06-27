@@ -354,8 +354,8 @@ def verify_razorpay_payment(request):
             'razorpay_signature': data['razorpay_signature']
         }
         client.utility.verify_payment_signature(params_dict)
-        # Mark order as paid, clear cart, etc.
-        request.session['cart'] = {}  # Clear cart after payment
+        # Mark order as paid, but DO NOT clear cart here!
+        # Cart will be cleared after successful Delhivery order.
         return JsonResponse({'success': True, 'redirect_url': '/post-payment/'})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
@@ -497,6 +497,7 @@ def submit_to_delhivery(request):
         response = create_delhivery_order(data)
         if response.get('packages'):
             waybill = response['packages'][0]['waybill']
+            request.session['cart'] = {}  # Clear cart only after successful order
             return render(request, 'products/order_success.html', {'waybill': waybill})
         else:
             return render(request, 'products/order_fail.html', {'error': response})

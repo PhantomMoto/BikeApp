@@ -525,13 +525,17 @@ def submit_to_delhivery(request):
 import json, requests
 from django.conf import settings
 
+import json
+import requests
+from django.conf import settings
+
 def create_delhivery_order(data):
-    # 1. Build single shipment dict
+    # 1. Build the single shipment dict
     shipment = {
         "order": data['order_id'],
         "products_desc": data['products_desc'],
         "total_amount": data['amount'],
-        "payment_mode": "Prepaid",
+        "payment_mode": "Prepaid",           # or "COD"
         "consignee": data['name'],
         "consignee_address1": data['address'],
         "consignee_address2": "",
@@ -547,22 +551,21 @@ def create_delhivery_order(data):
         "shipping_mode": data['priority']
     }
 
-    # 2. Build the full API body dict
+    # 2. Wrap into the API body, using your CODE—not display name!
     api_body = {
-        "pickup_location": "PHANTOM_MOTO",  # use the pickup location CODE, not display name
+        "pickup_location": "PHANTOM_MOTO",   # <-- Use the exact code/alias Delhivery gave you
         "shipments": [shipment]
     }
 
-    # 3. Prepare form-encoded payload
+    # 3. Prepare the form-encoded payload
     form_payload = {
         "format": "json",
         "data": json.dumps(api_body)
     }
 
-    # 4. Send as form-encoded (no JSON header!)
+    # 4. Send with no JSON header—requests will default to x-www-form-urlencoded
     headers = {
         "Authorization": f"Token {settings.DELHIVERY_API_TOKEN}"
-        # Let requests set Content-Type to application/x-www-form-urlencoded
     }
 
     response = requests.post(
@@ -571,8 +574,10 @@ def create_delhivery_order(data):
         data=form_payload
     )
 
-    # 5. Debug
-    print("Delhivery Form Payload:", form_payload)
-    print("Delhivery Response:", response.text)
+    # 5. Debug logs
+    print("👉 Delhivery Form Payload:")
+    print(json.dumps(form_payload, indent=2))
+    print("👉 Delhivery Response:")
+    print(response.status_code, response.text)
 
     return response.json()

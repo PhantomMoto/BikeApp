@@ -1,18 +1,24 @@
 <!-- Create this file in templates/shipping_form.html -->
+<!-- Shipping form after payment, collects all info needed for Delhivery -->
 <form method="post" action="{% url 'products:submit_to_delhivery' %}">
     {% csrf_token %}
+    <h2>Shipping Details</h2>
     <input type="text" name="name" placeholder="Full Name" required><br>
-    <input type="text" name="email" placeholder="Email" required><br>
+    <input type="email" name="email" placeholder="Email" required><br>
     <input type="text" name="phone" placeholder="Phone" required><br>
     <input type="text" name="address" placeholder="Full Address" required><br>
     <input type="text" name="city" placeholder="City" required><br>
     <input type="text" name="state" placeholder="State" required><br>
     <input type="text" name="pincode" placeholder="Pincode" required><br>
-
+    <label>Shipping Priority:</label>
     <select name="priority">
         <option value="Surface">Surface</option>
         <option value="Express">Express</option>
     </select><br>
-
     <button type="submit">Submit Order</button>
 </form>
+
+<!-- Add a message for errors if passed in context -->
+{% if error %}
+  <div class="error">{{ error }}</div>
+{% endif %}

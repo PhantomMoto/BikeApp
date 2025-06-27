@@ -121,20 +121,6 @@ Your selected accessories are just a click away. Review your cart, make changes,
       rzp1.open();
     });
   }
-
-  var shippingSpeed = document.getElementById('shipping_speed').value;
-
-fetch("/razorpay/create-order/", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    "X-CSRFToken": '{{ csrf_token }}'
-  },
-  body: JSON.stringify({ 
-    amount: amount,
-    shipping_speed: shippingSpeed
-  })
-})
 </script>
 {% else %}
 <p class="cart-empty">Your cart is empty.</p>

@@ -195,18 +195,34 @@ def cart_view(request):
     cart = request.session.get('cart', {})
     accessories = []
     total = 0
+    pay_items = []
+
     for acc_id, qty in cart.items():
         accessory = get_object_or_404(Accessory, pk=acc_id)
+
+        subtotal = accessory.price * qty
         accessories.append({
             'accessory': accessory,
             'quantity': qty,
-            'subtotal': accessory.price * qty
+            'subtotal': subtotal
         })
-        total += accessory.price * qty
-        request.session['paydetails'] = {
-        'items': accessories,
-        'price': total,
-        }
+
+        # 🟢 Only this part goes to session
+        pay_items.append({
+            'id': accessory.id,
+            'name': accessory.name,
+            'price': float(accessory.price),  # convert Decimal to float
+            'quantity': qty,
+            'subtotal': float(subtotal),
+        })
+
+        total += subtotal
+
+    request.session['paydetails'] = {
+        'items': pay_items,
+        'price': float(total),
+    }
+
     return render(request, 'products/cart.html', {
         'cart_items': accessories,
         'total': total,

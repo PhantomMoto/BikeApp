@@ -527,38 +527,43 @@ def create_delhivery_order(data):
     }
 
     payload = {
-        "pickup_location": {
-            "name": "Phantom Moto",
-            "city": "Mumbai",
-            "state": "Maharashtra",
-            "country": "India",
-            "phone": "8291056686",
-            "address": "Flower Valley Complex CHSL, Shop No 37 H wing, Geeta Omkar, near Lifeline Hospital, Mira Road East, Mira Bhayandar, Maharashtra 401105",
-            "pin": "401107"
-        },
-        "shipments": [
-            {
-                "waybill": "",
-                "order": data['order_id'],
-                "products_desc": "Bike Accessories",
-                "total_amount": data['amount'],
-                "payment_mode": "Prepaid",
-                "consignee": data['name'],
-                "consignee_address1": data['address'],
-                "consignee_address2": "",
-                "consignee_city": data['city'],
-                "consignee_state": data['state'],
-                "consignee_pincode": data['pincode'],
-                "consignee_phone": data['phone'],
-                "consignee_email": data['email'],
-                "weight": 0.5,
-                "length": 10,
-                "breadth": 10,
-                "height": 5,
-                "shipping_mode": data['priority']
-            }
-        ]
+        "format": "json",
+        "data": json.dumps({
+            "pickup_location": "Phantom Moto",  # 👈 bas naam do
+            "shipments": [
+                {
+                    "order": data['order_id'],
+                    "products_desc": "Bike Accessories",
+                    "total_amount": data['amount'],
+                    "payment_mode": "Prepaid",
+                    "consignee": data['name'],
+                    "consignee_address1": data['address'],
+                    "consignee_address2": "",
+                    "consignee_city": data['city'],
+                    "consignee_state": data['state'],
+                    "consignee_pincode": data['pincode'],
+                    "consignee_phone": data['phone'],
+                    "consignee_email": data['email'],
+                    "weight": 0.5,
+                    "length": 10,
+                    "breadth": 10,
+                    "height": 5,
+                    "shipping_mode": data['priority']
+                }
+            ]
+        })
     }
+
+    headers = {
+        "Authorization": f"Token {settings.DELHIVERY_API_TOKEN}"
+    }
+
+    res = requests.post(
+        "https://track.delhivery.com/api/cmu/create.json",
+        headers=headers,
+        data=payload  # 👈 use data=, not json=
+    )
+
     import urllib.parse
 
     final_payload = {

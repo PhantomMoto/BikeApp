@@ -228,6 +228,8 @@
         background: #25d366;
         color: #fff;
         border-radius: 30px;
+        border-top-right-radius: 0 ;
+        border-top-left-radius: 0 ;
         padding: 10px 18px 10px 14px;
         font-size: 20px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.18);
@@ -245,7 +247,12 @@
         text-decoration: none;
       }
       @media (max-width: 767px) {
-        .whatsapp-float { font-size: 18px; padding: 8px 14px 8px 12px; bottom: 40%; }
+        .whatsapp-float { font-size: 18px;
+           padding: 8px 14px 8px 12px;
+            bottom: 40%;
+           border-top-right-radius: 0 ;
+        border-top-left-radius: 0 ; }
+        
       }
     </style>
     <!-- Font Awesome already included in <head> -->

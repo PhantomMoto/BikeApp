@@ -70,8 +70,8 @@
         left: 0;
         right: 0;
         height: 60px;
-        background: #fff;
-        border-top: 1px solid #eee;
+        background: #000;
+        border-top: 1px solid #222;
         display: flex;
         justify-content: space-around;
         align-items: center;
@@ -80,7 +80,7 @@
       .mobile-bottom-nav .nav-item {
         flex: 1;
         text-align: center;
-        color: #d1002a;
+        color: #fff;
         text-decoration: none;
         font-size: 12px;
         padding: 6px 0;
@@ -89,6 +89,10 @@
         display: block;
         font-size: 22px;
         margin-bottom: 2px;
+        color: #fff;
+      }
+      .mobile-bottom-nav .nav-label {
+        color: #fff;
       }
       .mobile-bottom-nav .nav-item.active,
       .mobile-bottom-nav .nav-item:active {
@@ -221,6 +225,44 @@
       <i class="fab fa-whatsapp"></i> Inquire Now !
     </a>
     <style>
+      .mobile-bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: #000;
+        border-top: 1px solid #222;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        z-index: 1000;
+      }
+      .mobile-bottom-nav .nav-item {
+        flex: 1;
+        text-align: center;
+        color: #fff;
+        text-decoration: none;
+        font-size: 12px;
+        padding: 6px 0;
+      }
+      .mobile-bottom-nav .nav-icon {
+        display: block;
+        font-size: 22px;
+        margin-bottom: 2px;
+        color: #fff;
+      }
+      .mobile-bottom-nav .nav-label {
+        color: #fff;
+      }
+      .mobile-bottom-nav .nav-item.active,
+      .mobile-bottom-nav .nav-item:active {
+        color: #ff6600;
+      }
+      @media (min-width: 768px) {
+        .mobile-bottom-nav { display: none; }
+      }
+      /* WhatsApp Floating Button */
       .whatsapp-float {
         position: fixed;
         bottom: 40%;
@@ -254,7 +296,6 @@
         border-bottom-right-radius: 0 ;
       right : 0;
         }
-        
       }
     </style>
     <!-- Font Awesome already included in <head> -->

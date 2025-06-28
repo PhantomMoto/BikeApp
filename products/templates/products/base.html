@@ -21,6 +21,7 @@
         flex-direction: column;
         min-height: 100vh;
         overflow-x: hidden;
+        padding-bottom: 70px !important;
       }
       main {
         flex: 1;
@@ -62,6 +63,66 @@
       #mobile-menu a:hover {
         background: #333 !important;
         color: #F97A00 !important;
+      }
+      .mobile-bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: #fff;
+        border-top: 1px solid #eee;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        z-index: 1000;
+      }
+      .mobile-bottom-nav .nav-item {
+        flex: 1;
+        text-align: center;
+        color: #d1002a;
+        text-decoration: none;
+        font-size: 12px;
+        padding: 6px 0;
+      }
+      .mobile-bottom-nav .nav-icon {
+        display: block;
+        font-size: 22px;
+        margin-bottom: 2px;
+      }
+      .mobile-bottom-nav .nav-item.active,
+      .mobile-bottom-nav .nav-item:active {
+        color: #ff6600;
+      }
+      @media (min-width: 768px) {
+        .mobile-bottom-nav { display: none; }
+      }
+      /* WhatsApp Floating Button */
+      .whatsapp-float {
+        position: fixed;
+        right: 18px;
+        bottom: 80px;
+        background: #25d366;
+        color: #fff;
+        border-radius: 30px;
+        padding: 10px 18px 10px 14px;
+        font-size: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+        z-index: 1100;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background 0.2s;
+      }
+      .whatsapp-float:hover {
+        background: #128c7e;
+        color: #fff;
+        text-decoration: none;
+      }
+      @media (max-width: 767px) {
+        .whatsapp-float { font-size: 18px; padding: 8px 14px 8px 12px; bottom: 70px; }
       }
     </style>
   </head>
@@ -136,10 +197,58 @@
       {% block content %}{% endblock %}
     </main>
 
-    <footer>
-      <p>&copy; 2025 Phantom Moto | <a href="mailto:support@phantommoto.com">support@phantommoto.com</a> | <a href="tel:+919876543210">+91 98765 43210</a></p>
-      <p>123, Main Street, Your City, India</p>
-    </footer>
+    <!-- Bottom Navigation Bar (Mobile) -->
+    <nav class="mobile-bottom-nav">
+      <a href="/" class="nav-item">
+        <span class="nav-icon"><i class="fa fa-home"></i></span>
+        <span class="nav-label">Home</span>
+      </a>
+      <a href="/products/" class="nav-item">
+        <span class="nav-icon"><i class="fa fa-th-large"></i></span>
+        <span class="nav-label">Shop</span>
+      </a>
+      <a href="{% url 'products:cart' %}" class="nav-item">
+        <span class="nav-icon"><i class="fa fa-shopping-cart"></i></span>
+        <span class="nav-label">Cart</span>
+      </a>
+      <a href="{% url 'products:account' %}" class="nav-item">
+        <span class="nav-icon"><i class="fa fa-user"></i></span>
+        <span class="nav-label">Account</span>
+      </a>
+    </nav>
+    <!-- WhatsApp Floating Button -->
+    <a href="https://wa.me/8291056686" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+      <i class="fab fa-whatsapp"></i> Hey!
+    </a>
+    <style>
+      .whatsapp-float {
+        position: fixed;
+        right: 18px;
+        bottom: 80px;
+        background: #25d366;
+        color: #fff;
+        border-radius: 30px;
+        padding: 10px 18px 10px 14px;
+        font-size: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+        z-index: 1100;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background 0.2s;
+      }
+      .whatsapp-float:hover {
+        background: #128c7e;
+        color: #fff;
+        text-decoration: none;
+      }
+      @media (max-width: 767px) {
+        .whatsapp-float { font-size: 18px; padding: 8px 14px 8px 12px; bottom: 70px; }
+      }
+    </style>
+    <!-- Font Awesome already included in <head> -->
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         const menuBtn = document.getElementById('menu-btn');

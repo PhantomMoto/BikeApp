@@ -1061,3 +1061,64 @@ footer a:hover {
     padding: 1rem 0.5rem;
   }
 }
+
+
+.category-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 260px;
+  height: 180px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  text-decoration: none;
+  overflow: hidden;
+  color: white;
+  font-weight: 600;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.category-btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+.category-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+@media (max-width: 900px) {
+  .category-btn {
+    width: 48vw;
+    min-width: 160px;
+    height: 140px;
+  }
+  .category-img {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+@media (max-width: 600px) {
+  .category-btn {
+    width: 90vw;
+    min-width: 0;
+    height: 110px;
+    border-radius: 12px;
+  }
+  .category-img {
+    width: 60px;
+    height: 60px;
+  }
+}

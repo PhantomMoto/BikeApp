@@ -104,18 +104,23 @@ document.getElementById('brand-select').addEventListener('change', function() {
       background: rgb(223, 213, 213);
   }
 }
-.category-buttons {
+  .category-buttons {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  margin-bottom: 40px;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  padding: 0 10px;
+  box-sizing: border-box;
 }
+
 .category-btn {
+  flex: 0 1 calc(50% - 20px);
+  max-width: calc(50% - 20px);
+  height: 180px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 260px;
-  height: 180px;
   background-size: cover;
   background-position: center;
   border-radius: 18px;
@@ -123,18 +128,19 @@ document.getElementById('brand-select').addEventListener('change', function() {
   position: relative;
   text-decoration: none;
   overflow: hidden;
-  margin-bottom: 10px;
   transition: transform 0.2s, box-shadow 0.2s;
-  background-image: var(--cat-bg-img);
 }
+
 .category-btn[style] {
   background-size: cover !important;
   background-position: center !important;
 }
+
 .category-btn:hover {
   transform: scale(1.04);
   box-shadow: 0 8px 24px rgba(0,0,0,0.18);
 }
+
 .category-label {
   position: absolute;
   top: 50%;
@@ -151,10 +157,11 @@ document.getElementById('brand-select').addEventListener('change', function() {
   opacity: 0.95;
   z-index: 2;
 }
+
 @media (max-width: 900px) {
   .category-btn {
-    width: 48vw;
-    min-width: 140px;
+    flex: 0 1 calc(50% - 10px);
+    max-width: calc(50% - 10px);
     height: 140px;
   }
   .category-label {
@@ -162,20 +169,21 @@ document.getElementById('brand-select').addEventListener('change', function() {
     padding: 8px 12px;
   }
 }
+
+/* Mobile: switch to grid with 2 columns */
 @media (max-width: 600px) {
   .category-buttons {
-    gap: 3vw;
-    padding: 0 2vw;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px; /* minimal space between boxes */
+    padding: 0 5px;
   }
   .category-btn {
-    width: 30vw;
-    min-width: 0;
+    flex: unset; /* remove flex */
+    max-width: 100%;
+    width: 100%;
     height: 120px;
     border-radius: 12px;
-    margin-bottom: 0;
-    margin-right: 0;
-    margin-left: 0;
-    flex: 0 1 100%;
   }
   .category-label {
     font-size: 0.98rem;
@@ -183,6 +191,7 @@ document.getElementById('brand-select').addEventListener('change', function() {
     padding: 7px 8px;
   }
 }
+
 </style>
 <script>
 // Set background images via JS for inline style compatibility

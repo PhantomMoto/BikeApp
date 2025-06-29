@@ -54,7 +54,7 @@ PhantomMoto is India’s premier destination for top-quality bike accessories, b
 <h2 id="Shop-By-Category">Shop by Category</h2> <br>
 <div class="category-buttons">
   {% for cat in categories %}
-    <a href="/products/?category={{ cat.name }}" class="category-btn" style="background-image: url('{{ cat.image_url }}');height: 140px;">
+    <a href="/products/?category={{ cat.name }}" class="category-btn">
       <span class="category-label">{{ cat.name }}</span>
     </a>
   {% endfor %}
@@ -113,7 +113,7 @@ document.getElementById('brand-select').addEventListener('change', function() {
 }
 .category-btn {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
   width: 260px;
   height: 180px;
@@ -126,53 +126,71 @@ document.getElementById('brand-select').addEventListener('change', function() {
   overflow: hidden;
   margin-bottom: 10px;
   transition: transform 0.2s, box-shadow 0.2s;
+  background-image: var(--cat-bg-img);
+}
+.category-btn[style] {
+  background-size: cover !important;
+  background-position: center !important;
 }
 .category-btn:hover {
   transform: scale(1.04);
   box-shadow: 0 8px 24px rgba(0,0,0,0.18);
 }
 .category-label {
-  color: #fff;
-  font-size: 1.4rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(90deg, #ffe066 0%, #ffd700 100%);
+  color: #222;
+  font-size: 1.3rem;
   font-weight: 900;
   text-transform: uppercase;
-  width: 100%;
-  text-align: center;
-  padding: 5px 0 12px 0;
-  border-bottom-left-radius: 18px;
-  border-bottom-right-radius: 18px;
+  padding: 10px 24px;
+  border-radius: 32px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
   letter-spacing: 1px;
-  position: absolute;
-  bottom: 0;
-  left: 0;
+  opacity: 0.95;
+  z-index: 2;
+  border: 2px solid #fffbe7;
 }
 @media (max-width: 900px) {
   .category-btn {
     width: 48vw;
-    min-width: 160px;
-    height: 120px;
+    min-width: 140px;
+    height: 140px;
   }
   .category-label {
     font-size: 1.1rem;
-    padding: 10px 0 8px 0;
+    padding: 8px 12px;
   }
 }
 @media (max-width: 600px) {
   .category-buttons {
-    gap: 12px;
+    gap: 10px;
   }
   .category-btn {
-    width: 45vw;
+    width: 48vw;
     min-width: 0;
-    height: 90px;
+    height: 120px;
     border-radius: 12px;
+    margin-bottom: 0;
   }
   .category-label {
-    font-size: 1rem;
-    border-bottom-left-radius: 12px;
-    border-bottom-right-radius: 12px;
-    padding: 7px 0 6px 0;
+    font-size: 0.98rem;
+    border-radius: 20px;
+    padding: 7px 8px;
   }
 }
 </style>
+<script>
+// Set background images via JS for inline style compatibility
+const catBtns = document.querySelectorAll('.category-btn');
+const categories = {{ categories|safe }};
+catBtns.forEach((btn, idx) => {
+  if (categories[idx] && categories[idx].image_url) {
+    btn.style.backgroundImage = `url('${categories[idx].image_url}')`;
+  }
+});
+</script>
 {% endblock %}

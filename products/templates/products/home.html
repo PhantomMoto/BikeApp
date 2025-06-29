@@ -61,6 +61,8 @@ PhantomMoto is India’s premier destination for top-quality bike accessories, b
 </div>
 
 </section>
+<br><br><br> <br><br><br>
+<br><br>
 <br><br><br>
 <script>
 document.getElementById('brand-select').addEventListener('change', function() {
@@ -84,12 +86,12 @@ document.getElementById('brand-select').addEventListener('change', function() {
 });
 </script>
 <style> {% load static %}
-.home-main{
-    width: 100vw;
-    height: 90vh;
-   background-image: url("{% static 'bg1.webp' %}");
-   background-repeat: no-repeat;
-   background-size: cover;
+.home-main {
+  width: 100vw;
+  height: 90vh;
+  background-image: url("{% static 'bg1.webp' %}");
+  background-repeat: no-repeat;
+  background-size: cover;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -98,13 +100,13 @@ document.getElementById('brand-select').addEventListener('change', function() {
   box-sizing: border-box;
 }
 
-
 @media (max-width: 600px) {
   .home-main {
-      background: rgb(223, 213, 213);
+    background: rgb(223, 213, 213);
   }
 }
-  .category-buttons {
+
+.category-buttons {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -131,6 +133,21 @@ document.getElementById('brand-select').addEventListener('change', function() {
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
+.category-btn::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.45); /* Overlay darkness */
+  z-index: 1;
+  transition: background 0.3s;
+}
+
+.category-btn:hover::before {
+  background: rgba(0,0,0,0.55);
+}
+
 .category-btn[style] {
   background-size: cover !important;
   background-position: center !important;
@@ -142,20 +159,17 @@ document.getElementById('brand-select').addEventListener('change', function() {
 }
 
 .category-label {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #222;
+  position: relative; /* above overlay */
+  z-index: 2;
+  color: white;
   font-size: 1.3rem;
   font-weight: 900;
   text-transform: uppercase;
   padding: 10px 24px;
   border-radius: 32px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
   letter-spacing: 1px;
   opacity: 0.95;
-  z-index: 2;
+  transition: background 0.3s, color 0.3s;
 }
 
 @media (max-width: 900px) {
@@ -179,7 +193,7 @@ document.getElementById('brand-select').addEventListener('change', function() {
     padding: 0 5px;
   }
   .category-btn {
-    flex: unset; /* remove flex */
+    flex: unset; /* remove flex behavior */
     max-width: 100%;
     width: 100%;
     height: 120px;
@@ -191,6 +205,7 @@ document.getElementById('brand-select').addEventListener('change', function() {
     padding: 7px 8px;
   }
 }
+
 
 </style>
 <script>

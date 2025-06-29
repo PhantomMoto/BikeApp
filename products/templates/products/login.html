@@ -18,7 +18,6 @@ Login - Phantom Moto
 {% block content %}
 
 <style>
-<style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
 body {
@@ -113,8 +112,16 @@ body {
 }
 </style>
 
-
+{% block extra_style %}
+<style>
+body {
+  background-image: url('{% static 'bg.jpg' %}');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
 </style>
+{% endblock %}
+
 <section class="auth-section">
   <div class="auth-box">
     <h2 class="auth-title">Login to Your Account</h2>

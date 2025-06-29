@@ -130,3 +130,12 @@ Your selected accessories are just a click away. Review your cart, make changes,
 {% endif %}
 
 {% endblock %}
+{% block extra_style %}
+<style>
+body {
+  background-image: url('{% static 'bg.jpg' %}');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+</style>
+{% endblock %}

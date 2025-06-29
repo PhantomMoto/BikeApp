@@ -51,11 +51,7 @@ PhantomMoto is India’s premier destination for top-quality bike accessories, b
 </form>
 </section>
 <section class="home-cat" style="position:relative;">
-  <h2 id="Shop-By-Category" style="padding-bottom: 15px;">Shop by Category
-    <a href="/static/PhantomMotoApp.apk" class="download-app-btn" title="Download App" download>
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F97A00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
-    </a>
-  </h2>
+  <h2 id="Shop-By-Category" style="padding-bottom: 15px;">Shop by Category</h2>
   <div class="category-scroll-wrapper">
     <button class="cat-scroll-btn left" aria-label="Scroll left">&#8592;</button>
     <div class="category-buttons" tabindex="0">
@@ -66,6 +62,9 @@ PhantomMoto is India’s premier destination for top-quality bike accessories, b
       {% endfor %}
     </div>
     <button class="cat-scroll-btn right" aria-label="Scroll right">&#8594;</button>
+    <a href="/static/PhantomMotoApp.apk" class="download-app-btn" title="Download App" download>
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F97A00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+    </a>
   </div>
   <br> <br>
   <div style='height:10vh;'> </div>
@@ -311,9 +310,9 @@ document.getElementById('brand-select').addEventListener('change', function() {
 }
 .download-app-btn {
   position: absolute;
-  top: 0;
-  right: 0;
-  margin: 0 10px 0 0;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
   background: #fffbe7;
   border-radius: 50%;
   box-shadow: 0 2px 8px rgba(0,0,0,0.10);
@@ -324,9 +323,22 @@ document.getElementById('brand-select').addEventListener('change', function() {
   transition: background 0.2s, box-shadow 0.2s;
   z-index: 20;
 }
-.download-app-btn:hover {
-  background: #ffe066;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+@media (max-width: 900px) {
+  .download-app-btn {
+    right: 8px;
+    width: 38px;
+    height: 38px;
+    padding: 4px;
+  }
+}
+@media (max-width: 600px) {
+  .download-app-btn {
+    right: 2vw;
+    width: 38px;
+    height: 38px;
+    padding: 4px;
+    top: 60%;
+  }
 }
 </style>
 <script>
@@ -347,11 +359,11 @@ document.addEventListener('DOMContentLoaded', function() {
     if (catScrollBtns.length === 2 && catScrollContainer) {
       catScrollBtns[0].onclick = function(e) {
         e.preventDefault();
-        catScrollContainer.scrollBy({left: -catScrollContainer.offsetWidth * 0.7, behavior: 'smooth'});
+        catScrollContainer.scrollLeft -= Math.floor(catScrollContainer.offsetWidth * 0.7);
       };
       catScrollBtns[1].onclick = function(e) {
         e.preventDefault();
-        catScrollContainer.scrollBy({left: catScrollContainer.offsetWidth * 0.7, behavior: 'smooth'});
+        catScrollContainer.scrollLeft += Math.floor(catScrollContainer.offsetWidth * 0.7);
       };
     }
   }

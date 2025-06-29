@@ -9,3 +9,12 @@
     <a href="/products/">Back to Products</a>
   </div>
 {% endblock %}
+{% block extra_style %}
+<style>
+body {
+  background-image: url('{% static 'bg.jpg' %}');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+</style>
+{% endblock %}

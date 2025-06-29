@@ -5,6 +5,8 @@
 -->
 {% extends 'products/base.html' %}
 {% block content %}
+{% load static %}
+
   <h2>Shipping & Order Details</h2>
   <form method="post" action="{% url 'products:submit_to_delhivery' %}">
     {% csrf_token %}

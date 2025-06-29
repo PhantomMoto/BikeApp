@@ -1,5 +1,7 @@
 {% extends 'products/base.html' %}
 {% block content %}
+{% load static %}
+
   <div class="order-fail">
     <h2>Order Failed</h2>
     <p>{{ error|default:'There was a problem processing your order. Please try again or contact support.' }}</p>

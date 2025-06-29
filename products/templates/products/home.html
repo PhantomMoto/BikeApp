@@ -50,21 +50,25 @@ PhantomMoto is India’s premier destination for top-quality bike accessories, b
   <button type="submit">Search</button>
 </form>
 </section>
-<section class="home-cat">
-<h2 id="Shop-By-Category" style="padding-bottom: 15px;">Shop by Category</h2>
-<div class="category-scroll-wrapper">
-  <button class="cat-scroll-btn left" aria-label="Scroll left">&#8592;</button>
-  <div class="category-buttons" tabindex="0">
-    {% for cat in categories %}
-      <a href="/products/?category={{ cat.name }}" class="category-btn" style="background: url('{{cat.image_url}}');">
-        <span class="category-label">{{ cat.name }}</span>
-      </a>
-    {% endfor %}
+<section class="home-cat" style="position:relative;">
+  <h2 id="Shop-By-Category" style="padding-bottom: 15px;">Shop by Category
+    <a href="/static/PhantomMotoApp.apk" class="download-app-btn" title="Download App" download>
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F97A00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+    </a>
+  </h2>
+  <div class="category-scroll-wrapper">
+    <button class="cat-scroll-btn left" aria-label="Scroll left">&#8592;</button>
+    <div class="category-buttons" tabindex="0">
+      {% for cat in categories %}
+        <a href="/products/?category={{ cat.name }}" class="category-btn" style="background: url('{{cat.image_url}}');">
+          <span class="category-label">{{ cat.name }}</span>
+        </a>
+      {% endfor %}
+    </div>
+    <button class="cat-scroll-btn right" aria-label="Scroll right">&#8594;</button>
   </div>
-  <button class="cat-scroll-btn right" aria-label="Scroll right">&#8594;</button>
-</div>
-<br> <br>
-<div style='height:10vh;'> </div>
+  <br> <br>
+  <div style='height:10vh;'> </div>
 </section>
 <br><br><br> <br><br><br>
 <br><br>
@@ -133,14 +137,14 @@ document.getElementById('brand-select').addEventListener('change', function() {
 }
 
 .category-btn {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
   flex: 0 0 260px;
   width: 260px;
   max-width: 80vw;
   min-width: 180px;
   height: 180px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   background-size: cover;
   background-position: center;
   border-radius: 18px;
@@ -175,23 +179,21 @@ document.getElementById('brand-select').addEventListener('change', function() {
 }
 
 .category-label {
-  position: relative;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background: linear-gradient(90deg, #ffe066 0%, #ffd700 100%);
+  color: #222;
+  font-size: 1.1rem;
+  border-radius: 0 0 18px 18px;
+  padding: 10px 0 8px 18px;
+  margin: 0;
+  font-weight: 700;
+  opacity: 0.98;
   z-index: 2;
-  color: white;
-  font-weight: 900;
-  text-transform: capitalize;
-  padding: 10px 16px;
-  border-radius: 32px;
-  letter-spacing: 1px;
-  opacity: 0.95;
-  text-align: center;
-  white-space: normal;
-  overflow-wrap: break-word;
-  font-size: clamp(0.5rem, 1.2vw + 0.5rem, 1.3rem);
-  font-weight: 400;
-  font-style: normal;
-
-
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.10);
+  text-align: left;
 }
 
 @media (max-width: 900px) {
@@ -200,6 +202,11 @@ document.getElementById('brand-select').addEventListener('change', function() {
     width: 48vw;
     min-width: 140px;
     height: 140px;
+  }
+  .category-label {
+    font-size: 1rem;
+    padding: 8px 0 7px 12px;
+    border-radius: 0 0 14px 14px;
   }
 }
 .cat-scroll-btn {
@@ -302,23 +309,52 @@ document.getElementById('brand-select').addEventListener('change', function() {
     overflow-x: hidden;
   }
 }
-
-
+.download-app-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0 10px 0 0;
+  background: #fffbe7;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  padding: 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, box-shadow 0.2s;
+  z-index: 20;
+}
+.download-app-btn:hover {
+  background: #ffe066;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+}
 </style>
 <script>
-// Set background images via JS for inline style compatibility
-const catBtns = document.querySelectorAll('.category-btn');
-const categories = {{ categories|safe }};
-catBtns.forEach((btn, idx) => {
-  if (categories[idx] && categories[idx].image_url) {
-    btn.style.backgroundImage = `url('${categories[idx].image_url}')`;
+document.addEventListener('DOMContentLoaded', function() {
+  // Set background images via JS for inline style compatibility
+  const catBtns = document.querySelectorAll('.category-btn');
+  const categories = {{ categories|safe }};
+  catBtns.forEach((btn, idx) => {
+    if (categories[idx] && categories[idx].image_url) {
+      btn.style.backgroundImage = `url('${categories[idx].image_url}')`;
+    }
+  });
+  // Horizontal scroll buttons
+  const catScrollWrapper = document.querySelector('.category-scroll-wrapper');
+  if (catScrollWrapper) {
+    const catScrollBtns = catScrollWrapper.querySelectorAll('.cat-scroll-btn');
+    const catScrollContainer = catScrollWrapper.querySelector('.category-buttons');
+    if (catScrollBtns.length === 2 && catScrollContainer) {
+      catScrollBtns[0].onclick = function(e) {
+        e.preventDefault();
+        catScrollContainer.scrollBy({left: -catScrollContainer.offsetWidth * 0.7, behavior: 'smooth'});
+      };
+      catScrollBtns[1].onclick = function(e) {
+        e.preventDefault();
+        catScrollContainer.scrollBy({left: catScrollContainer.offsetWidth * 0.7, behavior: 'smooth'});
+      };
+    }
   }
 });
-// Horizontal scroll buttons
-const catScrollWrapper = document.querySelector('.category-scroll-wrapper');
-const catScrollBtns = catScrollWrapper.querySelectorAll('.cat-scroll-btn');
-const catScrollContainer = catScrollWrapper.querySelector('.category-buttons');
-catScrollBtns[0].onclick = () => catScrollContainer.scrollBy({left: -catScrollContainer.offsetWidth * 0.7, behavior: 'smooth'});
-catScrollBtns[1].onclick = () => catScrollContainer.scrollBy({left: catScrollContainer.offsetWidth * 0.7, behavior: 'smooth'});
 </script>
 {% endblock %}

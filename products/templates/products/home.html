@@ -104,25 +104,18 @@ document.getElementById('brand-select').addEventListener('change', function() {
       background: rgb(223, 213, 213);
   }
 }
-
-
 .category-buttons {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between; /* distribute evenly without extra gaps on side */
-  gap: 20px;
-  width: 100%;
-  padding: 0 10px;
-  box-sizing: border-box;
+  justify-content: center;
+  margin-bottom: 40px;
 }
-
 .category-btn {
-  flex: 0 1 calc(50% - 20px);
-  max-width: calc(50% - 20px);
-  height: 180px;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 260px;
+  height: 180px;
   background-size: cover;
   background-position: center;
   border-radius: 18px;
@@ -130,19 +123,18 @@ document.getElementById('brand-select').addEventListener('change', function() {
   position: relative;
   text-decoration: none;
   overflow: hidden;
+  margin-bottom: 10px;
   transition: transform 0.2s, box-shadow 0.2s;
+  background-image: var(--cat-bg-img);
 }
-
 .category-btn[style] {
   background-size: cover !important;
   background-position: center !important;
 }
-
 .category-btn:hover {
   transform: scale(1.04);
   box-shadow: 0 8px 24px rgba(0,0,0,0.18);
 }
-
 .category-label {
   position: absolute;
   top: 50%;
@@ -159,12 +151,10 @@ document.getElementById('brand-select').addEventListener('change', function() {
   opacity: 0.95;
   z-index: 2;
 }
-
-/* Tablet and below: reduce width */
 @media (max-width: 900px) {
   .category-btn {
-    flex: 0 1 calc(50% - 10px);
-    max-width: calc(50% - 10px);
+    width: 48vw;
+    min-width: 140px;
     height: 140px;
   }
   .category-label {
@@ -172,14 +162,21 @@ document.getElementById('brand-select').addEventListener('change', function() {
     padding: 8px 12px;
   }
 }
-
-/* Mobile: full width one per row */
 @media (max-width: 600px) {
+  .category-buttons {
+    gap: 3vw;
+    padding: 0 2vw;
+  }
   .category-btn {
+    width: 30vw;
+    min-width: 0;
+    height: 90px;
+    border-radius: 12px;
+    margin-bottom: 0;
+    margin-right: 0;
+    margin-left: 0;
     flex: 0 1 100%;
     max-width: 100%;
-    height: 120px;
-    border-radius: 12px;
   }
   .category-label {
     font-size: 0.98rem;
@@ -187,7 +184,6 @@ document.getElementById('brand-select').addEventListener('change', function() {
     padding: 7px 8px;
   }
 }
-
 </style>
 <script>
 // Set background images via JS for inline style compatibility

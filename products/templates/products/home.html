@@ -52,7 +52,7 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
   <div class="category-scroll-wrapper">
     <div class="category-buttons" id="cat-scroll-row" tabindex="0">
       {% for cat in categories %}
-        <a href="/products/?category={{ cat.name }}" class="category-btn" style="background-image: url('{{ cat.image.url }}');">
+        <a href="/products/?category={{ cat.name }}" class="category-btn" style="background-image: url('{{ cat.image_url }}');">
           <span class="category-label">{{ cat.name }}</span>
         </a>
       {% endfor %}

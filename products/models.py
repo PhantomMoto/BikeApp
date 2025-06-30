@@ -22,8 +22,8 @@ class BikeModel(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    # Use image_url for ImageKit CDN
-    image_url = models.URLField(max_length=500, blank=True, null=True)
+    # image_url = models.URLField(max_length=500, blank=True, null=True)
+    image = models.ImageField(upload_to='category_images/', blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -36,8 +36,8 @@ class Accessory(models.Model):
     categories = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     bike_models = models.ManyToManyField(BikeModel, related_name='accessories')
     created_at = models.DateTimeField(auto_now_add=True)
-    # Use image_url for ImageKit CDN
-    image_url = models.URLField(max_length=500, blank=True, null=True)
+    # image_url = models.URLField(max_length=500, blank=True, null=True)
+    image = models.ImageField(upload_to='accessory_images/', blank=True, null=True)
     is_universal = models.BooleanField(default=False)
     def __str__(self):
         return self.name
@@ -47,8 +47,8 @@ class Blog(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
     content = models.TextField()
-    # Use image_url for ImageKit CDN
-    thumbnail_url = models.URLField(max_length=500, blank=True, null=True)
+    # thumbnail_url = models.URLField(max_length=500, blank=True, null=True)
+    thumbnail = models.ImageField(upload_to='blog_thumbnails/', blank=True, null=True)
     published_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -58,8 +58,8 @@ class Blog(models.Model):
 class YouTubeVideo(models.Model):
     title = models.CharField(max_length=200)
     video_url = models.URLField()
-    # Use image_url for ImageKit CDN
-    thumbnail_url = models.URLField(max_length=500, blank=True, null=True)
+    # thumbnail_url = models.URLField(max_length=500, blank=True, null=True)
+    thumbnail = models.ImageField(upload_to='video_thumbnails/', blank=True, null=True)
 
     def __str__(self):
         return self.title

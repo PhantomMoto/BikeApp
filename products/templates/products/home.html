@@ -56,10 +56,10 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
         <a href="/products/?category={{ cat.name }}" class="category-btn" style="background: url('{{cat.image_url}}');">
           <span class="category-label">{{ cat.name }}</span>
         </a>
+        <a href="/static/PhantomMotoApp.apk" class="download-app-btn" title="Download App" download>
       {% endfor %}
     </div>
     <button class="cat-scroll-btn right" id="cat-scroll-right" aria-label="Scroll right">&#8594;</button>
-    <a href="/static/PhantomMotoApp.apk" class="download-app-btn" title="Download App" download>
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F97A00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
     </a>
   </div>
@@ -111,6 +111,7 @@ document.getElementById('brand-select').addEventListener('change', function() {
   scroll-behavior: smooth;
   scrollbar-width: thin;
   scrollbar-color: #ffd700 #eee;
+  
 }
 
 .category-buttons::-webkit-scrollbar {
@@ -127,7 +128,7 @@ document.getElementById('brand-select').addEventListener('change', function() {
 .category-btn {
   flex: 0 0 260px;
   height: 200px;
-  background-size: cover;
+  background-size: contain;
   background-position: center;
   border-radius: 18px;
   text-decoration: none;

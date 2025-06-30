@@ -1,200 +1,211 @@
 {% extends 'products/base.html' %}
 {% block title %}
-Phantom Moto - Welcome
+  Phantom Moto - Welcome
 {% endblock %}
+
+
 
 {% block meta_keywords %}
 bike accessories, exhausts, handlebars, PhantomMoto, motorcycle parts, bike upgrades, performance accessories
 {% endblock %}
 
 {% block meta_description %}
+Home Page
 PhantomMoto is India’s premier destination for top-quality bike accessories, built for true riding enthusiasts. From stylish exhausts to performance-driven add-ons, our collection enhances your ride in both looks and power. Discover what your machine truly deserves — only at PhantomMoto.
 {% endblock %}
 
 {% block og_title %}
-Phantom Moto - Welcome
+  Phantom Moto - Welcome
 {% endblock %}
 
 {% block og_description %}
-Welcome to Phantom Moto, your ultimate destination for premium bike accessories. Explore our curated selection designed to enhance your ride's performance and style. Join the PhantomMoto community today!
+  Welcome to Phantom Moto, your ultimate destination for premium bike accessories. Explore our curated selection designed to enhance your ride's performance and style. Join the PhantomMoto community today!
 {% endblock %}
 
 {% block content %}
-<section class="home-main" style="padding-bottom: 10vh;">
+<section class="home-main">
 <h2 id="Shop-By-Category">Select your Brand</h2>
+
 <form method="get" action="/products/" class="filter">
-<div class="filter-group">
-<label for="brand">Bike Brand:</label>
-<select name="brand" id="brand-select">
-<option value="">All</option>
-{% for brand in brands %}
-<option value="{{ brand.id }}">{{ brand.name }}</option>
-{% endfor %}
-</select>
-</div>
+  <div class="filter-group">
+    <label for="brand">Bike Brand:</label>
+    <select name="brand" id="brand-select">
+      <option value="">All</option>
+      {% for brand in brands %}
+        <option value="{{ brand.id }}">{{ brand.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
 
-<div class="filter-group">
-<label for="model">Bike Model:</label>
-<select name="model" id="model-select">
-<option value="">All</option>
-{% for model in models %}
-<option value="{{ model.id }}"> {{ model.name }}</option>
-{% endfor %}
-</select>
-</div>
+  <div class="filter-group">
+    <label for="model">Bike Model:</label>
+    <select name="model" id="model-select">
+      <option value="">All</option>
+      {% for model in models %}
+        <option value="{{ model.id }}"> {{ model.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
 
-<button type="submit">Search</button>
+  <button type="submit">Search</button>
 </form>
 </section>
+<section class="home-cat">
+<h2 id="Shop-By-Category">Shop by Category</h2> <br>
+<div class="category-buttons" style="margin-bottom: 70px;">
+  {% for cat in categories %}
+    <a href="/products/?category={{ cat.name }}" class="category-btn" style="background: url('{{cat.image_url}}');">
+      <span class="category-label">{{ cat.name }}</span>
+    </a>
+  {% endfor %}
+</div>
 
-<section class="home-cat" style="position:relative;">
-<h2 id="Shop-By-Category" style="padding-bottom: 15px;">Shop by Category</h2>
-<div class="category-scroll-wrapper">
-<div class="category-buttons" id="cat-scroll-row" tabindex="0">
-{% for cat in categories %}
-<a href="/products/?category={{ cat.name }}" class="category-btn" style="background: url('{{cat.image_url}}');">
-<span class="category-label">{{ cat.name }}</span>
-</a>
-<a href="/static/PhantomMotoApp.apk" class="download-app-btn" title="Download App" download>
-<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F97A00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
-</a>
-{% endfor %}
-</div>
-</div>
 </section>
-
+<br><br><br> <br><br><br>
+<br><br>
+<br><br><br>
 <script>
 document.getElementById('brand-select').addEventListener('change', function() {
-const brandId = this.value;
-const modelSelect = document.getElementById('model-select');
-modelSelect.innerHTML = '<option value="">All</option>';
+  const brandId = this.value;
+  const modelSelect = document.getElementById('model-select');
 
-if (brandId) {
-fetch(`/ajax/get-models/?brand_id=${brandId}`)
-.then(res => res.json())
-.then(data => {
-data.forEach(model => {
-const option = document.createElement('option');
-option.value = model.id;
-option.textContent = model.name;
-modelSelect.appendChild(option);
-});
-});
-}
+  modelSelect.innerHTML = '<option value="">All</option>';
+
+  if(brandId) {
+    fetch(/ajax/get-models/?brand_id=${brandId})
+      .then(res => res.json())
+      .then(data => {
+        data.forEach(model => {
+          const option = document.createElement('option');
+          option.value = model.id;
+          option.textContent = model.name;
+          modelSelect.appendChild(option);
+        });
+      });
+  }
 });
 </script>
-
-<style>
-.category-scroll-wrapper {
-position: relative;
-width: 100vw;
-overflow-x: hidden;
-display: flex;
-align-items: center;
+<style> {% load static %}
+.home-main{
+    width: 100vw;
+    height: 90vh;
+   background-image: url("{% static 'bg1.webp' %}");
+   background-repeat: no-repeat;
+   background-size: cover;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
-.category-buttons {
-display: flex;
-flex-wrap: nowrap;
-overflow-x: auto;
-gap: 18px;
-width: 100%;
-height: fit-content;
-padding: 0 4vw 10px 4vw;
-scroll-snap-type: x mandatory;
-box-sizing: border-box;
-scroll-behavior: smooth;
-scrollbar-width: thin;
-scrollbar-color: #ffd700 #eee;
+
+@media (max-width: 600px) {
+  .home-main {
+      background: rgb(223, 213, 213);
+  }
 }
-.category-buttons::-webkit-scrollbar {
-height: 6px;
-}
-.category-buttons::-webkit-scrollbar-track {
-background: #eee;
-}
-.category-buttons::-webkit-scrollbar-thumb {
-background-color: #ffd700;
-border-radius: 4px;
+  .category-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  padding: 0 10px;
+  box-sizing: border-box;
 }
 
 .category-btn {
-flex: 0 0 300px; /* 👈 bigger width */
-height: 300px; /* 👈 bigger height */
-background-size: contain;
-background-position: center;
-border-radius: 18px;
-text-decoration: none;
-  height: fit-content;
-scroll-snap-align: start;
-position: relative;
-transition: transform 0.2s, box-shadow 0.2s;
+  flex: 0 1 calc(50% - 20px);
+  max-width: calc(50% - 20px);
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  position: relative;
+  text-decoration: none;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
+
+.category-btn[style] {
+  background-size: cover !important;
+  background-position: center !important;
+}
+
 .category-btn:hover {
-transform: scale(1.04);
-box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  transform: scale(1.04);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
 }
 
 .category-label {
-position: absolute;
-left: 0;
-bottom: 0;
-width: 100%;
-background: linear-gradient(90deg, #ffe066 0%, #ffd700 100%);
-color: #222;
-font-weight: 700;
-padding: 10px 0 8px 18px;
-border-radius: 0 0 18px 18px;
-opacity: 0.98;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #222;
+  font-size: 1.3rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  padding: 10px 24px;
+  border-radius: 32px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  letter-spacing: 1px;
+  opacity: 0.95;
+  z-index: 2;
+  background: #000000 ;
+  opacity: 0.4;
+  transition: background 0.3s, color 0.3s;
 }
 
-.download-app-btn {
-position: absolute;
-right: 18px;
-top: 50%;
-transform: translateY(-50%);
-background: #fffbe7;
-border-radius: 50%;
-box-shadow: 0 2px 8px rgba(0,0,0,0.10);
-padding: 7px;
-display: inline-flex;
-align-items: center;
-justify-content: center;
-transition: background 0.2s, box-shadow 0.2s;
+@media (max-width: 900px) {
+  .category-btn {
+    flex: 0 1 calc(50% - 10px);
+    max-width: calc(50% - 10px);
+    height: 140px;
+  }
+  .category-label {
+    font-size: 1.1rem;
+    padding: 8px 12px;
+  }
 }
+
+/* Mobile: switch to grid with 2 columns */
+@media (max-width: 600px) {
+  .category-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px; /* minimal space between boxes */
+    padding: 0 5px;
+  }
+  .category-btn {
+    flex: unset; /* remove flex */
+    max-width: 100%;
+    width: 100%;
+    height: 120px;
+    border-radius: 12px;
+  }
+  .category-label {
+    font-size: 0.98rem;
+    border-radius: 20px;
+    padding: 7px 8px;
+  }
+}
+
 </style>
-
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-const row = document.getElementById('cat-scroll-row');
-const buttons = row.querySelectorAll('.category-btn');
-let index = 0;
-let autoScrollActive = true;
-
-function scrollToItem(i) {
-if (buttons[i]) {
-buttons[i].scrollIntoView({ behavior: 'smooth', inline: 'start' });
-}
-}
-
-function startAutoScroll() {
-setInterval(() => {
-if (!autoScrollActive) return;
-
-scrollToItem(index);
-index++;
-if (index >= buttons.length) {
-index = 0;
-}
-}, 3000);
-}
-
-row.addEventListener('mouseenter', () => { autoScrollActive = false; });
-row.addEventListener('mouseleave', () => { autoScrollActive = true; });
-row.addEventListener('touchstart', () => { autoScrollActive = false; });
-row.addEventListener('touchend', () => { autoScrollActive = true; });
-
-startAutoScroll();
+// Set background images via JS for inline style compatibility
+const catBtns = document.querySelectorAll('.category-btn');
+const categories = {{ categories|safe }};
+catBtns.forEach((btn, idx) => {
+  if (categories[idx] && categories[idx].image_url) {
+    btn.style.backgroundImage = url('${categories[idx].image_url}');
+  }
 });
 </script>
 {% endblock %}

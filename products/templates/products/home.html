@@ -52,7 +52,7 @@ PhantomMoto is India’s premier destination for top-quality bike accessories, b
 </section>
 <section class="home-cat">
 <h2 id="Shop-By-Category">Shop by Category</h2> <br>
-<div class="category-buttons" style="margin-bottom: 70px;">
+<div class="category-buttons" style="max-width: 100%;">
   {% for cat in categories %}
     <a href="/products/?category={{ cat.name }}" class="category-btn" style="background: url('{{cat.image_url}}');">
       <span class="category-label">{{ cat.name }}</span>
@@ -110,7 +110,6 @@ body{
   justify-content: space-between;
   gap: 20px;
   width: 100%;
-  padding: 0 10px;
   box-sizing: border-box;
 }
 
@@ -174,7 +173,7 @@ body{
   .category-btn {
     flex: unset; /* remove flex */
     max-width: 100%;
-    width: 100%;
+    width: 45vw;
     height: 120px;
     border-radius: 12px;
   }

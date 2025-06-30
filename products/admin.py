@@ -1,19 +1,36 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
-from .models import Accessory, Blog, Category, YouTubeVideo, BikeBrand, BikeModel
+from .models import Accessory, Blog, Category, YouTubeVideo, BikeBrand, BikeModel, FeaturedProduct, Color
 
 ### Accessory Admin ###
 @admin.register(Accessory)
 class AccessoryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'price', 'is_universal', 'preview_img']
-    search_fields = ['name']
-    list_filter = ['is_universal', 'bike_models', 'categories']
+    list_display = ['name', 'mrp', 'offer_price', 'discount_percent', 'stock', 'is_universal', 'preview_img']
+    search_fields = ['name', 'size']
+    list_filter = ['is_universal', 'bike_models', 'categories', 'bike_brands', 'shipping_category']
+    filter_horizontal = ['categories', 'bike_models', 'bike_brands', 'colors']
+    fieldsets = (
+        (None, {
+            'fields': ('image', 'name', 'colors', 'size', 'mrp', 'offer_price', 'discount_percent', 'stock', 'shipping_category', 'categories', 'bike_models', 'bike_brands', 'is_universal', 'description')
+        }),
+    )
 
     def preview_img(self, obj):
-        if obj.image_url:
-            return mark_safe(f'<img src="{obj.image_url}" width="80" />')
+        if obj.image:
+            return mark_safe(f'<img src="{obj.image.url}" width="80" />')
         return "No Image"
     preview_img.short_description = "Image Preview"
+
+### Featured Product Admin ###
+@admin.register(FeaturedProduct)
+class FeaturedProductAdmin(admin.ModelAdmin):
+    filter_horizontal = ['accessories']
+    list_display = ['featured_at', 'get_accessories']
+    search_fields = ['accessories__name']
+    list_filter = ['featured_at']
+    def get_accessories(self, obj):
+        return ", ".join([a.name for a in obj.accessories.all()])
+    get_accessories.short_description = "Accessories"
 
 ### Blog Admin ###
 @admin.register(Blog)
@@ -63,3 +80,12 @@ class BikeModelAdmin(admin.ModelAdmin):
     list_display = ['brand', 'name']
     search_fields = ['name']
     list_filter = ['brand']
+
+### Color Admin ###
+@admin.register(Color)
+class ColorAdmin(admin.ModelAdmin):
+    list_display = ['name', 'hex_code', 'color_preview']
+    search_fields = ['name', 'hex_code']
+    def color_preview(self, obj):
+        return mark_safe(f'<span style="display:inline-block;width:24px;height:24px;background:{obj.hex_code};border-radius:50%;border:1px solid #ccc;"></span>')
+    color_preview.short_description = "Preview"

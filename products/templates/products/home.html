@@ -51,7 +51,29 @@ PhantomMoto is India’s premier destination for top-quality bike accessories, b
 </form>
 </section>
 <section class="feat-pro">
-  <h2 id="Shop-By-Category">Featured Products</h2> <br>
+  <h2 id="Shop-By-Category">Featured Products</h2>
+  <div class="cards-container">
+    {% for accessory in featured_products %}
+      <div class="card">
+        <h3>{{ accessory.name }}</h3>
+        {% if accessory.image %}
+          <img src="{{ accessory.image.url }}" alt="{{ accessory.name }}">
+        {% endif %}
+        <p><strong>₹{{ accessory.offer_price }}</strong> <span style="text-decoration:line-through;color:#888;font-size:0.95em;">₹{{ accessory.mrp }}</span></p>
+        {% if accessory.discount_percent %}<p style="color:#27ae60;font-weight:600;">{{ accessory.discount_percent }}% OFF</p>{% endif %}
+        <p>{{ accessory.description }}</p>
+        <p>Category: {% for cat in accessory.categories.all %}{{ cat.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+        <form action="{% url 'products:cart_add' accessory.id %}" method="post" style="margin-top:10px;">
+          {% csrf_token %}
+          <div class="cart-control" data-accessory-id="{{ accessory.id }}">
+            <button class="btn-add-cart">Add to Cart</button>
+          </div>
+        </form>
+      </div>
+    {% empty %}
+      <p>No featured products yet.</p>
+    {% endfor %}
+  </div>
 </section>
 <section class="home-cat">
 <h2 id="Shop-By-Category">Shop by Category</h2> <br>
@@ -149,6 +171,68 @@ body{
   
 }
 
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  width: 100%;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.card h3 {
+  font-size: 1.2rem;
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.card p {
+  margin: 5px 0;
+  color: #555;
+}
+
+.card strong {
+  color: #e74c3c;
+  font-size: 1.1rem;
+}
+
+.btn-add-cart {
+  background-color: #27ae60;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-add-cart:hover {
+  background-color: #219150;
+}
+
 @media (max-width: 900px) {
   .category-btn {
     flex: 0 1 calc(33% - 10px);
@@ -192,6 +276,48 @@ const categories = {{ categories|safe }};
 catBtns.forEach((btn, idx) => {
   if (categories[idx] && categories[idx].image_url) {
     btn.style.backgroundImage = url('${categories[idx].image_url}');
+  }
+});
+
+// Cart logic for featured products (same as product_list)
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.feat-pro .btn-add-cart').forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.preventDefault();
+      const accessoryId = this.closest('.cart-control').dataset.accessoryId;
+      fetch(`/ajax/cart/add/${accessoryId}/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken'),
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({})
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          const cartCountBubble = document.getElementById('cart-count-bubble');
+          if (cartCountBubble) {
+            cartCountBubble.textContent = data.total_qty;
+            cartCountBubble.style.display = 'inline-block';
+          }
+        }
+      });
+    });
+  });
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
   }
 });
 </script>

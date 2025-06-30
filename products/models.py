@@ -29,18 +29,39 @@ class Category(models.Model):
         return self.name
 
 
-class Accessory(models.Model):
-    name = models.CharField(max_length=150)
-    description = models.TextField(blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    categories = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
-    bike_models = models.ManyToManyField(BikeModel, related_name='accessories')
-    created_at = models.DateTimeField(auto_now_add=True)
-    # Use image_url for ImageKit CDN
-    image_url = models.URLField(max_length=500, blank=True, null=True)
-    is_universal = models.BooleanField(default=False)
+class Color(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    hex_code = models.CharField(max_length=7, help_text="Hex code, e.g. #ff0000")
+
     def __str__(self):
         return self.name
+
+
+class Accessory(models.Model):
+    name = models.CharField(max_length=150)
+    image = models.ImageField(upload_to='accessory_images/', blank=True, null=True)
+    colors = models.ManyToManyField(Color, related_name='accessories', blank=True)
+    size = models.CharField(max_length=50, blank=True, null=True)
+    mrp = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='MRP')
+    offer_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Offer Price')
+    discount_percent = models.PositiveIntegerField(blank=True, null=True)
+    shipping_category = models.CharField(max_length=20, choices=[('1kg','1kg'),('2kg','2kg'),('3kg','3kg'),('4kg','4kg'),('5kg','5kg')], blank=True, null=True)
+    categories = models.ManyToManyField(Category, related_name='accessories')
+    bike_models = models.ManyToManyField(BikeModel, related_name='accessories')
+    bike_brands = models.ManyToManyField(BikeBrand, related_name='accessories', blank=True)
+    stock = models.PositiveIntegerField(default=0)
+    description = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_universal = models.BooleanField(default=False)
+    size = models.CharField(max_length=50, blank=True, null=True)
+    def __str__(self):
+        name = self.name
+        color_names = ', '.join([c.name for c in self.colors.all()])
+        if color_names:
+            name += f" ({color_names})"
+        if self.size:
+            name += f" {self.size}"
+        return name
 
 
 class Blog(models.Model):
@@ -77,10 +98,7 @@ class Message(models.Model):
 
 
 class FeaturedProduct(models.Model):
-    accessory = models.OneToOneField(Accessory, on_delete=models.CASCADE, related_name='featured')
+    accessories = models.ManyToManyField(Accessory, related_name='featured_in')
     featured_at = models.DateTimeField(auto_now_add=True)
-    # Optionally, add a display order field
-    order = models.PositiveIntegerField(default=0)
-
     def __str__(self):
-        return f"Featured: {self.accessory.name}"
+        return f"Featured: {', '.join([a.name for a in self.accessories.all()])}"

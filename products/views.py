@@ -1,11 +1,17 @@
 from django.shortcuts import render
-from .models import Accessory, BikeModel, Category , BikeBrand
+from .models import Accessory, BikeModel, Category, BikeBrand, FeaturedProduct
 
 def home(request):
     categories = Category.objects.all()
     brands = BikeBrand.objects.all()
     models = BikeModel.objects.all()
-    return render(request, 'products/home.html', {'categories': categories,'brands':brands,'models':models})
+    featured = FeaturedProduct.objects.select_related('accessory').order_by('order')
+    return render(request, 'products/home.html', {
+        'categories': categories,
+        'brands': brands,
+        'models': models,
+        'featured_products': [f.accessory for f in featured],
+    })
 
 
 

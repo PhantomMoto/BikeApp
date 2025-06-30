@@ -94,9 +94,8 @@ document.getElementById('brand-select').addEventListener('change', function() {
 .category-buttons {
   display: flex;
   flex-wrap: nowrap;
-  height: fit-content;
   overflow-x: auto;
-  gap: 18px;
+  gap: 24px; /* more breathing space */
   width: 100%;
   padding: 0 4vw 10px 4vw;
   scroll-snap-type: x mandatory;
@@ -105,6 +104,7 @@ document.getElementById('brand-select').addEventListener('change', function() {
   scrollbar-width: thin;
   scrollbar-color: #ffd700 #eee;
 }
+
 .category-buttons::-webkit-scrollbar {
   height: 6px;
 }
@@ -117,9 +117,9 @@ document.getElementById('brand-select').addEventListener('change', function() {
 }
 
 .category-btn {
-  flex: 0 0 300px;
-  height: fit-content;
-  background-size: cover; /* 👈 changed to cover for full image fit */
+  flex: 0 0 350px; /* wider! */
+  height: 280px; /* taller */
+  background-size: cover;
   background-position: center;
   border-radius: 18px;
   text-decoration: none;
@@ -144,7 +144,7 @@ document.getElementById('brand-select').addEventListener('change', function() {
   padding: 10px 0 8px 18px;
   border-radius: 0 0 18px 18px;
   opacity: 0.98;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
 }
 
 @media (max-width: 768px) {
@@ -158,26 +158,16 @@ document.getElementById('brand-select').addEventListener('change', function() {
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const row = document.getElementById('cat-scroll-row');
-  const buttons = row.querySelectorAll('.category-btn');
-  let index = 0;
   let autoScrollActive = true;
-
-  function scrollToItem(i) {
-    if (buttons[i]) {
-      buttons[i].scrollIntoView({ behavior: 'smooth', inline: 'start' });
-    }
-  }
 
   function startAutoScroll() {
     setInterval(() => {
       if (!autoScrollActive) return;
-
-      scrollToItem(index);
-      index++;
-      if (index >= buttons.length) {
-        index = 0;
+      row.scrollLeft += 1.5; // slow smooth scroll
+      if (row.scrollLeft + row.clientWidth >= row.scrollWidth) {
+        row.scrollTo({ left: 0, behavior: 'smooth' });
       }
-    }, 3000);
+    }, 16); // ~60fps
   }
 
   row.addEventListener('mouseenter', () => { autoScrollActive = false; });

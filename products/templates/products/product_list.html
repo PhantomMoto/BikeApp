@@ -51,7 +51,7 @@ Explore Accessories - Phantom Moto
     <div class="card">
       <h3>{{ accessory.name }}</h3>
       {% if accessory.image_url %}
-  <img src="{{ accessory.image.url }}" alt="{{ accessory.name }}">
+  <img src="{{ accessory.image_url }}" alt="{{ accessory.name }}">
 {% endif %}
       <p><strong>₹{{ accessory.price }}</strong></p>
       <p>{{ accessory.description }}</p>

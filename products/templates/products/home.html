@@ -53,15 +53,15 @@ PhantomMoto is India’s premier destination for top-quality bike accessories, b
 <section class="home-cat" style="position:relative;">
   <h2 id="Shop-By-Category" style="padding-bottom: 15px;">Shop by Category</h2>
   <div class="category-scroll-wrapper">
-    <button class="cat-scroll-btn left" aria-label="Scroll left">&#8592;</button>
-    <div class="category-buttons" tabindex="0">
+    <button class="cat-scroll-btn left" id="cat-scroll-left" aria-label="Scroll left">&#8592;</button>
+    <div class="category-buttons" id="cat-scroll-row" tabindex="0">
       {% for cat in categories %}
         <a href="/products/?category={{ cat.name }}" class="category-btn" style="background: url('{{cat.image_url}}');">
           <span class="category-label">{{ cat.name }}</span>
         </a>
       {% endfor %}
     </div>
-    <button class="cat-scroll-btn right" aria-label="Scroll right">&#8594;</button>
+    <button class="cat-scroll-btn right" id="cat-scroll-right" aria-label="Scroll right">&#8594;</button>
     <a href="/static/PhantomMotoApp.apk" class="download-app-btn" title="Download App" download>
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F97A00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
     </a>
@@ -215,32 +215,24 @@ document.getElementById('brand-select').addEventListener('change', function() {
   z-index: 10;
   border: none;
   border-radius: 50%;
-  width: 44px;
-  height: 44px;
-  font-size: 2rem;
-  color: #222;
+  width: 36px;
+  height: 36px;
+  font-size: 1.3rem;
+  color: #fff;
+  background: #F97A00;
   box-shadow: 0 2px 8px rgba(0,0,0,0.13);
   cursor: pointer;
-  opacity: 0.85;
+  opacity: 0.92;
   transition: background 0.2s, box-shadow 0.2s, opacity 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
   outline: none;
 }
-.cat-scroll-btn.left {
-  left: 0;
-  margin-left: 4px;
-}
-.cat-scroll-btn.right {
-  right: 0;
-  margin-right: 4px;
-}
-.cat-scroll-btn:hover, .cat-scroll-btn:focus {
-  background: linear-gradient(135deg, #ffd700 60%, #fffbe7 100%);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
-  opacity: 1;
-}
+.cat-scroll-btn.left { left: 0; margin-left: 4px; }
+.cat-scroll-btn.right { right: 0; margin-right: 4px; }
+.cat-scroll-btn:hover, .cat-scroll-btn:focus { background: #c75c00; opacity: 1; }
+.cat-scroll-btn.hide { opacity: 0; pointer-events: none; }
 @media (max-width: 600px) {
   .category-scroll-wrapper {
     width: 100vw;
@@ -351,22 +343,31 @@ document.addEventListener('DOMContentLoaded', function() {
       btn.style.backgroundImage = `url('${categories[idx].image_url}')`;
     }
   });
-  // Horizontal scroll buttons
-  const catScrollWrapper = document.querySelector('.category-scroll-wrapper');
-  if (catScrollWrapper) {
-    const catScrollBtns = catScrollWrapper.querySelectorAll('.cat-scroll-btn');
-    const catScrollContainer = catScrollWrapper.querySelector('.category-buttons');
-    if (catScrollBtns.length === 2 && catScrollContainer) {
-      catScrollBtns[0].onclick = function(e) {
-        e.preventDefault();
-        catScrollContainer.scrollLeft -= Math.floor(catScrollContainer.offsetWidth * 0.7);
-      };
-      catScrollBtns[1].onclick = function(e) {
-        e.preventDefault();
-        catScrollContainer.scrollLeft += Math.floor(catScrollContainer.offsetWidth * 0.7);
-      };
+  // Simple scroll logic like blog page
+  function scrollCatRow(dir) {
+    const row = document.getElementById('cat-scroll-row');
+    const card = row.querySelector('.category-btn');
+    if (!card) return;
+    const scrollAmount = card.offsetWidth + 18;
+    row.scrollBy({ left: dir * scrollAmount * 2, behavior: 'smooth' });
+  }
+  document.getElementById('cat-scroll-left').onclick = function() { scrollCatRow(-1); };
+  document.getElementById('cat-scroll-right').onclick = function() { scrollCatRow(1); };
+  // Hide buttons if not needed
+  function updateCatScrollBtns() {
+    const row = document.getElementById('cat-scroll-row');
+    const leftBtn = document.getElementById('cat-scroll-left');
+    const rightBtn = document.getElementById('cat-scroll-right');
+    if (row.scrollWidth <= row.clientWidth + 2) {
+      leftBtn.classList.add('hide');
+      rightBtn.classList.add('hide');
+    } else {
+      leftBtn.classList.remove('hide');
+      rightBtn.classList.remove('hide');
     }
   }
+  updateCatScrollBtns();
+  window.addEventListener('resize', updateCatScrollBtns);
 });
 </script>
 {% endblock %}

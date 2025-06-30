@@ -273,7 +273,7 @@ body {
     max-width: 1100px;
     margin: 20px auto 40px;
   }
-
+  
   .filter label {
     white-space: nowrap;
     flex-shrink: 0;
@@ -314,7 +314,7 @@ body {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     padding: 0 10px;
   }
-
+  
   .card {
     max-width: 100%;
     padding: 10px;
@@ -1118,5 +1118,8 @@ footer a:hover {
   .category-img {
     width: 60px;
     height: 160px;
+  }
+  .category-buttons {
+    max-width: 100%;
   }
 }

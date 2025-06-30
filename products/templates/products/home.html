@@ -90,8 +90,6 @@ document.getElementById('brand-select').addEventListener('change', function() {
 .home-main{
     width: 100vw;
     height: 90vh;
-   background-repeat: no-repeat;
-   background-size: cover;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -102,6 +100,7 @@ document.getElementById('brand-select').addEventListener('change', function() {
 
 body{
    background-image: url('{% static 'bg.jpg' %}');
+   max-height: max-content; 
 }
 
   .category-buttons {

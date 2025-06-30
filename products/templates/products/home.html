@@ -52,11 +52,8 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
   <div class="category-scroll-wrapper">
     <div class="category-buttons" id="cat-scroll-row" tabindex="0">
       {% for cat in categories %}
-        <a href="/products/?category={{ cat.name }}" class="category-btn" style="background: url('{{cat.image_url}}');">
+        <a href="/products/?category={{ cat.name }}" class="category-btn" style="background-image: url('{{ cat.image_url }}');">
           <span class="category-label">{{ cat.name }}</span>
-        </a>
-        <a href="/static/PhantomMotoApp.apk" class="download-app-btn" title="Download App" download>
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F97A00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
         </a>
       {% endfor %}
     </div>
@@ -99,7 +96,6 @@ document.getElementById('brand-select').addEventListener('change', function() {
   overflow-x: auto;
   gap: 18px;
   width: 100%;
-  height: max-content;
   padding: 0 4vw 10px 4vw;
   scroll-snap-type: x mandatory;
   box-sizing: border-box;
@@ -119,16 +115,16 @@ document.getElementById('brand-select').addEventListener('change', function() {
 }
 
 .category-btn {
-  flex: 0 0 300px; /* 👈 bigger width */
-  height: 300px; /* 👈 bigger height */
-  background-size: contain;
+  flex: 0 0 300px;
+  height: 300px;
+  background-size: cover; /* 👈 changed to cover for full image fit */
   background-position: center;
   border-radius: 18px;
   text-decoration: none;
-  height: max-content;
   scroll-snap-align: start;
   position: relative;
   transition: transform 0.2s, box-shadow 0.2s;
+  overflow: hidden;
 }
 .category-btn:hover {
   transform: scale(1.04);
@@ -146,21 +142,14 @@ document.getElementById('brand-select').addEventListener('change', function() {
   padding: 10px 0 8px 18px;
   border-radius: 0 0 18px 18px;
   opacity: 0.98;
+  font-size: 1.1rem;
 }
 
-.download-app-btn {
-  position: absolute;
-  right: 18px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: #fffbe7;
-  border-radius: 50%;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
-  padding: 7px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s, box-shadow 0.2s;
+@media (max-width: 768px) {
+  .category-btn {
+    flex: 0 0 80vw;
+    height: 220px;
+  }
 }
 </style>
 

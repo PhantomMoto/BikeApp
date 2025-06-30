@@ -125,14 +125,15 @@ document.getElementById('brand-select').addEventListener('change', function() {
 .category-buttons {
   display: flex;
   flex-wrap: nowrap;
-  overflow-x: auto;
+  overflow-x: auto !important;
   gap: 18px;
-  height: fit-content;
   width: 100vw;
   padding: 0 4vw 10px 4vw;
   box-sizing: border-box;
+  scrollbar-width: thin;
   scrollbar-color: #ffd700 #eee;
   scroll-behavior: smooth;
+  border: 2px dashed #ffd70033; /* debug border, remove later */
 }
 
 .category-btn {
@@ -348,8 +349,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const row = document.getElementById('cat-scroll-row');
     const card = row.querySelector('.category-btn');
     if (!card) return;
-    const scrollAmount = card.offsetWidth + 18;
-    row.scrollBy({ left: dir * scrollAmount * 2, behavior: 'smooth' });
+    const scrollAmount = card.offsetWidth * 1.2 + 18;
+    row.scrollBy({ left: dir * scrollAmount, behavior: 'smooth' });
   }
   document.getElementById('cat-scroll-left').onclick = function() { scrollCatRow(-1); };
   document.getElementById('cat-scroll-right').onclick = function() { scrollCatRow(1); };

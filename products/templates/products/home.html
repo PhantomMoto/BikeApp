@@ -87,7 +87,8 @@ document.getElementById('brand-select').addEventListener('change', function() {
   position: relative;
   width: 100vw;
   overflow-x: hidden;
-  height: fit-content;
+  overflow-y: hidden;
+  height: max-content;
   display: flex;
   align-items: center;
 }
@@ -96,6 +97,7 @@ document.getElementById('brand-select').addEventListener('change', function() {
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
+  height: max-content;
   gap: 24px;
   width: 100%;
   padding: 0 4vw 10px 4vw;

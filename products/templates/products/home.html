@@ -369,6 +369,22 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   updateCatScrollBtns();
   window.addEventListener('resize', updateCatScrollBtns);
+
+  // Continuous auto-scroll effect
+  const row = document.getElementById('cat-scroll-row');
+  let autoScrollActive = true;
+  let autoScroll = setInterval(() => {
+    if (!autoScrollActive) return;
+    if (row.scrollLeft + 2 >= row.scrollWidth - row.clientWidth) {
+      row.scrollTo({ left: 0, behavior: 'auto' });
+    } else {
+      row.scrollLeft += 1.5; // smooth, slow scroll
+    }
+  }, 16); // ~60fps
+  row.addEventListener('mouseenter', () => { autoScrollActive = false; });
+  row.addEventListener('mouseleave', () => { autoScrollActive = true; });
+  row.addEventListener('touchstart', () => { autoScrollActive = false; });
+  row.addEventListener('touchend', () => { autoScrollActive = true; });
 });
 </script>
 {% endblock %}

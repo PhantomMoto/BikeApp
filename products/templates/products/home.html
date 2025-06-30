@@ -1,6 +1,6 @@
 {% extends 'products/base.html' %}
 {% block title %}
-  Phantom Moto - Welcome
+Phantom Moto - Welcome
 {% endblock %}
 
 {% block meta_keywords %}
@@ -23,160 +23,178 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
 <section class="home-main" style="padding-bottom: 10vh;">
 <h2 id="Shop-By-Category">Select your Brand</h2>
 <form method="get" action="/products/" class="filter">
-  <div class="filter-group">
-    <label for="brand">Bike Brand:</label>
-    <select name="brand" id="brand-select">
-      <option value="">All</option>
-      {% for brand in brands %}
-        <option value="{{ brand.id }}">{{ brand.name }}</option>
-      {% endfor %}
-    </select>
-  </div>
+<div class="filter-group">
+<label for="brand">Bike Brand:</label>
+<select name="brand" id="brand-select">
+<option value="">All</option>
+{% for brand in brands %}
+<option value="{{ brand.id }}">{{ brand.name }}</option>
+{% endfor %}
+</select>
+</div>
 
-  <div class="filter-group">
-    <label for="model">Bike Model:</label>
-    <select name="model" id="model-select">
-      <option value="">All</option>
-      {% for model in models %}
-        <option value="{{ model.id }}"> {{ model.name }}</option>
-      {% endfor %}
-    </select>
-  </div>
+<div class="filter-group">
+<label for="model">Bike Model:</label>
+<select name="model" id="model-select">
+<option value="">All</option>
+{% for model in models %}
+<option value="{{ model.id }}"> {{ model.name }}</option>
+{% endfor %}
+</select>
+</div>
 
-  <button type="submit">Search</button>
+<button type="submit">Search</button>
 </form>
 </section>
 
 <section class="home-cat" style="position:relative;">
-  <h2 id="Shop-By-Category" style="padding-bottom: 15px;">Shop by Category</h2>
-  <div class="category-scroll-wrapper">
-    <div class="category-buttons" id="cat-scroll-row" tabindex="0">
-      {% for cat in categories %}
-        <a href="/products/?category={{ cat.name }}" class="category-btn" style="background-image: url('{{ cat.image_url }}');">
-          <span class="category-label">{{ cat.name }}</span>
-        </a>
-      {% endfor %}
-    </div>
-  </div>
-  <div style="height: 10vh;"></div>
+<h2 id="Shop-By-Category" style="padding-bottom: 15px;">Shop by Category</h2>
+<div class="category-scroll-wrapper">
+<div class="category-buttons" id="cat-scroll-row" tabindex="0">
+{% for cat in categories %}
+<a href="/products/?category={{ cat.name }}" class="category-btn" style="background: url('{{cat.image_url}}');">
+<span class="category-label">{{ cat.name }}</span>
+</a>
+<a href="/static/PhantomMotoApp.apk" class="download-app-btn" title="Download App" download>
+<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F97A00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+</a>
+{% endfor %}
+</div>
+</div>
 </section>
 
 <script>
 document.getElementById('brand-select').addEventListener('change', function() {
-  const brandId = this.value;
-  const modelSelect = document.getElementById('model-select');
-  modelSelect.innerHTML = '<option value="">All</option>';
+const brandId = this.value;
+const modelSelect = document.getElementById('model-select');
+modelSelect.innerHTML = '<option value="">All</option>';
 
-  if (brandId) {
-    fetch(`/ajax/get-models/?brand_id=${brandId}`)
-      .then(res => res.json())
-      .then(data => {
-        data.forEach(model => {
-          const option = document.createElement('option');
-          option.value = model.id;
-          option.textContent = model.name;
-          modelSelect.appendChild(option);
-        });
-      });
-  }
+if (brandId) {
+fetch(`/ajax/get-models/?brand_id=${brandId}`)
+.then(res => res.json())
+.then(data => {
+data.forEach(model => {
+const option = document.createElement('option');
+option.value = model.id;
+option.textContent = model.name;
+modelSelect.appendChild(option);
+});
+});
+}
 });
 </script>
 
 <style>
 .category-scroll-wrapper {
-  position: relative;
-  width: 100vw;
-  overflow-x: hidden;
-  overflow-y: hidden;
-  height: max-content;
-  display: flex;
-  align-items: center;
+position: relative;
+width: 100vw;
+overflow-x: hidden;
+display: flex;
+align-items: center;
 }
 
 .category-buttons {
-  display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  height: max-content;
-  gap: 24px;
-  width: 100%;
-  scroll-snap-type: none;
-  box-sizing: border-box;
-  scroll-behavior: smooth;
-  scrollbar-width: thin;
-  scrollbar-color: #ffd700 #eee;
+display: flex;
+flex-wrap: nowrap;
+overflow-x: auto;
+gap: 18px;
+width: 100%;
+height: fit-content;
+padding: 0 4vw 10px 4vw;
+scroll-snap-type: x mandatory;
+box-sizing: border-box;
+scroll-behavior: smooth;
+scrollbar-width: thin;
+scrollbar-color: #ffd700 #eee;
 }
-
 .category-buttons::-webkit-scrollbar {
-  height: 6px;
+height: 6px;
 }
 .category-buttons::-webkit-scrollbar-track {
-  background: #eee;
+background: #eee;
 }
 .category-buttons::-webkit-scrollbar-thumb {
-  background-color: #ffd700;
-  border-radius: 4px;
+background-color: #ffd700;
+border-radius: 4px;
 }
 
 .category-btn {
-  flex: 0 0 350px;
-  height: 280px;
-  background-size: cover;
-  background-position: center;
-  border-radius: 18px;
-  text-decoration: none;
-  position: relative;
-  transition: transform 0.2s, box-shadow 0.2s;
-  overflow: hidden;
+flex: 0 0 300px; /* 👈 bigger width */
+height: 300px; /* 👈 bigger height */
+background-size: contain;
+background-position: center;
+border-radius: 18px;
+text-decoration: none;
+  height: fit-content;
+scroll-snap-align: start;
+position: relative;
+transition: transform 0.2s, box-shadow 0.2s;
 }
 .category-btn:hover {
-  transform: scale(1.04);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+transform: scale(1.04);
+box-shadow: 0 8px 24px rgba(0,0,0,0.18);
 }
 
 .category-label {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  background: linear-gradient(90deg, #ffe066 0%, #ffd700 100%);
-  color: #222;
-  font-weight: 700;
-  padding: 10px 0 8px 18px;
-  border-radius: 0 0 18px 18px;
-  opacity: 0.98;
-  font-size: 1.2rem;
+position: absolute;
+left: 0;
+bottom: 0;
+width: 100%;
+background: linear-gradient(90deg, #ffe066 0%, #ffd700 100%);
+color: #222;
+font-weight: 700;
+padding: 10px 0 8px 18px;
+border-radius: 0 0 18px 18px;
+opacity: 0.98;
 }
 
-@media (max-width: 768px) {
-  .category-btn {
-    flex: 0 0 80vw;
-    height: 180px;
-  }
+.download-app-btn {
+position: absolute;
+right: 18px;
+top: 50%;
+transform: translateY(-50%);
+background: #fffbe7;
+border-radius: 50%;
+box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+padding: 7px;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+transition: background 0.2s, box-shadow 0.2s;
 }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  const row = document.getElementById('cat-scroll-row');
-  let autoScrollActive = true;
+const row = document.getElementById('cat-scroll-row');
+const buttons = row.querySelectorAll('.category-btn');
+let index = 0;
+let autoScrollActive = true;
 
-  function startAutoScroll() {
-    setInterval(() => {
-      if (!autoScrollActive) return;
-      row.scrollLeft += 1.2; // Smoothly move a little each tick
-      if (row.scrollLeft + row.clientWidth >= row.scrollWidth) {
-        row.scrollTo({ left: 0, behavior: 'smooth' }); // Loop back
-      }
-    }, 16); // ~60fps
-  }
+function scrollToItem(i) {
+if (buttons[i]) {
+buttons[i].scrollIntoView({ behavior: 'smooth', inline: 'start' });
+}
+}
 
-  row.addEventListener('mouseenter', () => { autoScrollActive = false; });
-  row.addEventListener('mouseleave', () => { autoScrollActive = true; });
-  row.addEventListener('touchstart', () => { autoScrollActive = false; });
-  row.addEventListener('touchend', () => { autoScrollActive = true; });
+function startAutoScroll() {
+setInterval(() => {
+if (!autoScrollActive) return;
 
-  startAutoScroll();
+scrollToItem(index);
+index++;
+if (index >= buttons.length) {
+index = 0;
+}
+}, 3000);
+}
+
+row.addEventListener('mouseenter', () => { autoScrollActive = false; });
+row.addEventListener('mouseleave', () => { autoScrollActive = true; });
+row.addEventListener('touchstart', () => { autoScrollActive = false; });
+row.addEventListener('touchend', () => { autoScrollActive = true; });
+
+startAutoScroll();
 });
 </script>
 {% endblock %}

@@ -21,30 +21,30 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
 
 {% block content %}
 <section class="home-main" style="padding-bottom: 10vh;">
-  <h2 id="Shop-By-Category">Select your Brand</h2>
-  <form method="get" action="/products/" class="filter">
-    <div class="filter-group">
-      <label for="brand">Bike Brand:</label>
-      <select name="brand" id="brand-select">
-        <option value="">All</option>
-        {% for brand in brands %}
-          <option value="{{ brand.id }}">{{ brand.name }}</option>
-        {% endfor %}
-      </select>
-    </div>
+<h2 id="Shop-By-Category">Select your Brand</h2>
+<form method="get" action="/products/" class="filter">
+  <div class="filter-group">
+    <label for="brand">Bike Brand:</label>
+    <select name="brand" id="brand-select">
+      <option value="">All</option>
+      {% for brand in brands %}
+        <option value="{{ brand.id }}">{{ brand.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
 
-    <div class="filter-group">
-      <label for="model">Bike Model:</label>
-      <select name="model" id="model-select">
-        <option value="">All</option>
-        {% for model in models %}
-          <option value="{{ model.id }}"> {{ model.name }}</option>
-        {% endfor %}
-      </select>
-    </div>
+  <div class="filter-group">
+    <label for="model">Bike Model:</label>
+    <select name="model" id="model-select">
+      <option value="">All</option>
+      {% for model in models %}
+        <option value="{{ model.id }}"> {{ model.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
 
-    <button type="submit">Search</button>
-  </form>
+  <button type="submit">Search</button>
+</form>
 </section>
 
 <section class="home-cat" style="position:relative;">
@@ -52,7 +52,7 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
   <div class="category-scroll-wrapper">
     <div class="category-buttons" id="cat-scroll-row" tabindex="0">
       {% for cat in categories %}
-        <a href="/products/?category={{ cat.name }}" class="category-btn" style="background-image: url('{{ cat.image.url }}');">
+        <a href="/products/?category={{ cat.name }}" class="category-btn" style="background-image: url('{{ cat.image_url }}');">
           <span class="category-label">{{ cat.name }}</span>
         </a>
       {% endfor %}
@@ -86,21 +86,41 @@ document.getElementById('brand-select').addEventListener('change', function() {
 .category-scroll-wrapper {
   position: relative;
   width: 100vw;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  height: max-content;
+  display: flex;
+  align-items: center;
 }
 
 .category-buttons {
   display: flex;
   flex-wrap: nowrap;
+  overflow-x: auto;
+  height: max-content;
   gap: 24px;
-  width: max-content;
+  width: 100%;
+  scroll-snap-type: none;
   box-sizing: border-box;
   scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: #ffd700 #eee;
+}
+
+.category-buttons::-webkit-scrollbar {
+  height: 6px;
+}
+.category-buttons::-webkit-scrollbar-track {
+  background: #eee;
+}
+.category-buttons::-webkit-scrollbar-thumb {
+  background-color: #ffd700;
+  border-radius: 4px;
 }
 
 .category-btn {
-  flex: 0 0 300px;
-  height: 220px;
+  flex: 0 0 350px;
+  height: 280px;
   background-size: cover;
   background-position: center;
   border-radius: 18px;
@@ -139,22 +159,14 @@ document.getElementById('brand-select').addEventListener('change', function() {
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const row = document.getElementById('cat-scroll-row');
-  let direction = 1;
   let autoScrollActive = true;
-
-  // Duplicate content to give infinite scroll feel
-  row.innerHTML += row.innerHTML;
 
   function startAutoScroll() {
     setInterval(() => {
       if (!autoScrollActive) return;
-
-      row.scrollLeft += 1.2 * direction;
-
+      row.scrollLeft += 1.2; // Smoothly move a little each tick
       if (row.scrollLeft + row.clientWidth >= row.scrollWidth) {
-        direction = -1;
-      } else if (row.scrollLeft <= 0) {
-        direction = 1;
+        row.scrollTo({ left: 0, behavior: 'smooth' }); // Loop back
       }
     }, 16); // ~60fps
   }

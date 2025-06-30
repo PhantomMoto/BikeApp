@@ -55,11 +55,11 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
         <a href="/products/?category={{ cat.name }}" class="category-btn" style="background: url('{{cat.image_url}}');">
           <span class="category-label">{{ cat.name }}</span>
         </a>
+        <a href="/static/PhantomMotoApp.apk" class="download-app-btn" title="Download App" download>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F97A00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+        </a>
       {% endfor %}
     </div>
-    <a href="/static/PhantomMotoApp.apk" class="download-app-btn" title="Download App" download>
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F97A00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
-    </a>
   </div>
 </section>
 
@@ -99,6 +99,7 @@ document.getElementById('brand-select').addEventListener('change', function() {
   overflow-x: auto;
   gap: 18px;
   width: 100%;
+  height: fit-content;
   padding: 0 4vw 10px 4vw;
   scroll-snap-type: x mandatory;
   box-sizing: border-box;
@@ -120,7 +121,7 @@ document.getElementById('brand-select').addEventListener('change', function() {
 .category-btn {
   flex: 0 0 300px; /* 👈 bigger width */
   height: 300px; /* 👈 bigger height */
-  background-size: cover;
+  background-size: contain;
   background-position: center;
   border-radius: 18px;
   text-decoration: none;

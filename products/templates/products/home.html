@@ -52,7 +52,7 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
   <div class="category-scroll-wrapper">
     <div class="category-buttons" id="cat-scroll-row" tabindex="0">
       {% for cat in categories %}
-        <a href="/products/?category={{ cat.name }}" class="category-btn" style="background-image: url('{{ cat.image_url }}');">
+        <a href="/products/?category={{ cat.name }}" class="category-btn" style="background-image: url('{{ cat.image.url }}');">
           <span class="category-label">{{ cat.name }}</span>
         </a>
       {% endfor %}
@@ -86,6 +86,7 @@ document.getElementById('brand-select').addEventListener('change', function() {
   position: relative;
   width: 100vw;
   overflow-x: hidden;
+  height: fit-content;
   display: flex;
   align-items: center;
 }
@@ -93,6 +94,7 @@ document.getElementById('brand-select').addEventListener('change', function() {
 .category-buttons {
   display: flex;
   flex-wrap: nowrap;
+  height: fit-content;
   overflow-x: auto;
   gap: 18px;
   width: 100%;
@@ -116,7 +118,7 @@ document.getElementById('brand-select').addEventListener('change', function() {
 
 .category-btn {
   flex: 0 0 300px;
-  height: 300px;
+  height: fit-content;
   background-size: cover; /* 👈 changed to cover for full image fit */
   background-position: center;
   border-radius: 18px;

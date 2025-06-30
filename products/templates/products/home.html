@@ -58,6 +58,7 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
       {% endfor %}
     </div>
   </div>
+  <div style="height: 10vh;"></div>
 </section>
 
 <script>
@@ -95,10 +96,10 @@ document.getElementById('brand-select').addEventListener('change', function() {
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
-  gap: 24px; /* more breathing space */
+  gap: 24px;
   width: 100%;
   padding: 0 4vw 10px 4vw;
-  scroll-snap-type: x mandatory;
+  scroll-snap-type: none;
   box-sizing: border-box;
   scroll-behavior: smooth;
   scrollbar-width: thin;
@@ -117,13 +118,12 @@ document.getElementById('brand-select').addEventListener('change', function() {
 }
 
 .category-btn {
-  flex: 0 0 350px; /* wider! */
-  height: 280px; /* taller */
+  flex: 0 0 350px;
+  height: 280px;
   background-size: cover;
   background-position: center;
   border-radius: 18px;
   text-decoration: none;
-  scroll-snap-align: start;
   position: relative;
   transition: transform 0.2s, box-shadow 0.2s;
   overflow: hidden;
@@ -163,9 +163,9 @@ document.addEventListener('DOMContentLoaded', function() {
   function startAutoScroll() {
     setInterval(() => {
       if (!autoScrollActive) return;
-      row.scrollLeft += 1.5; // slow smooth scroll
+      row.scrollLeft += 1.2; // Smoothly move a little each tick
       if (row.scrollLeft + row.clientWidth >= row.scrollWidth) {
-        row.scrollTo({ left: 0, behavior: 'smooth' });
+        row.scrollTo({ left: 0, behavior: 'smooth' }); // Loop back
       }
     }, 16); // ~60fps
   }

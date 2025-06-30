@@ -176,7 +176,6 @@ body {
   gap: 20px;
   justify-content: flex-start;
   margin-bottom: 40px;
-  max-width: 70%;
   height: 130px;
   background-repeat: no-repeat;
   background-size: contain;
@@ -1105,6 +1104,9 @@ footer a:hover {
   .category-img {
     width: 70px;
     height: 70px;
+  }
+  .category-buttons {
+    max-width: 70%;
   }
 }
 

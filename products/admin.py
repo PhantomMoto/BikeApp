@@ -11,7 +11,7 @@ class AccessoryAdmin(admin.ModelAdmin):
 
     def preview_img(self, obj):
         if obj.image_url:
-            return mark_safe(f'<img src="{obj.image_url}" width="80" />')
+            return mark_safe(f'<img src="{obj.image.url}" width="80" />')
         return "No Image"
     preview_img.short_description = "Image Preview"
 
@@ -23,7 +23,7 @@ class BlogAdmin(admin.ModelAdmin):
 
     def preview_img(self, obj):
         if obj.thumbnail_url:
-            return mark_safe(f'<img src="{obj.thumbnail_url}" width="80" />')
+            return mark_safe(f'<img src="{obj.thumbnail.url}" width="80" />')
         return "No Image"
     preview_img.short_description = "Image Preview"
 
@@ -35,7 +35,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
     def preview_img(self, obj):
         if obj.image_url:
-            return mark_safe(f'<img src="{obj.image_url}" width="80" />')
+            return mark_safe(f'<img src="{obj.image.url}" width="80" />')
         return "No Image"
     preview_img.short_description = "Image Preview"
 
@@ -47,7 +47,7 @@ class YouTubeVideoAdmin(admin.ModelAdmin):
 
     def preview_img(self, obj):
         if obj.thumbnail_url:
-            return mark_safe(f'<img src="{obj.thumbnail_url}" width="80" />')
+            return mark_safe(f'<img src="{obj.thumbnail.url}" width="80" />')
         return "No Thumbnail"
     preview_img.short_description = "Thumbnail Preview"
 

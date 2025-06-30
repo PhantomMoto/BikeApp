@@ -50,7 +50,6 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
 <section class="home-cat" style="position:relative;">
   <h2 id="Shop-By-Category" style="padding-bottom: 15px;">Shop by Category</h2>
   <div class="category-scroll-wrapper">
-    <button class="cat-scroll-btn left" id="cat-scroll-left" aria-label="Scroll left">&#8592;</button>
     <div class="category-buttons" id="cat-scroll-row" tabindex="0">
       {% for cat in categories %}
         <a href="/products/?category={{ cat.name }}" class="category-btn" style="background: url('{{cat.image_url}}');">
@@ -58,7 +57,6 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
         </a>
       {% endfor %}
     </div>
-    <button class="cat-scroll-btn right" id="cat-scroll-right" aria-label="Scroll right">&#8594;</button>
     <a href="/static/PhantomMotoApp.apk" class="download-app-btn" title="Download App" download>
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F97A00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
     </a>
@@ -120,9 +118,9 @@ document.getElementById('brand-select').addEventListener('change', function() {
 }
 
 .category-btn {
-  flex: 0 0 260px;
-  height: 200px;
-  background-size: cover; /* 👈 Changed to cover */
+  flex: 0 0 300px; /* 👈 bigger width */
+  height: 300px; /* 👈 bigger height */
+  background-size: cover;
   background-position: center;
   border-radius: 18px;
   text-decoration: none;
@@ -148,27 +146,20 @@ document.getElementById('brand-select').addEventListener('change', function() {
   opacity: 0.98;
 }
 
-.cat-scroll-btn {
+.download-app-btn {
   position: absolute;
+  right: 18px;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 10;
-  border: none;
+  background: #fffbe7;
   border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  font-size: 1.3rem;
-  color: #fff;
-  background: #F97A00;
-  cursor: pointer;
-  opacity: 0.92;
-  display: flex;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  padding: 7px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition: background 0.2s, box-shadow 0.2s;
 }
-.cat-scroll-btn.left { left: 0; margin-left: 4px; }
-.cat-scroll-btn.right { right: 0; margin-right: 4px; }
-.cat-scroll-btn.hide { opacity: 0; pointer-events: none; }
 </style>
 
 <script>
@@ -185,8 +176,6 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function startAutoScroll() {
-    if (window.innerWidth > 768) return; // Only mobile
-
     setInterval(() => {
       if (!autoScrollActive) return;
 

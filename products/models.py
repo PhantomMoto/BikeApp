@@ -74,3 +74,13 @@ class Message(models.Model):
 
     def __str__(self):
         return f"Message from {self.name} ({self.email})"
+
+
+class FeaturedProduct(models.Model):
+    accessory = models.OneToOneField(Accessory, on_delete=models.CASCADE, related_name='featured')
+    featured_at = models.DateTimeField(auto_now_add=True)
+    # Optionally, add a display order field
+    order = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"Featured: {self.accessory.name}"

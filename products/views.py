@@ -293,20 +293,21 @@ def ajax_cart_items(request):
             acc_id, color = key.split('|', 1)
         else:
             acc_id, color = key, ''
-        accessory = Accessory.objects.filter(pk=acc_id).first()
+        try:
+            acc_id_int = int(acc_id)
+        except Exception:
+            continue
+        accessory = Accessory.objects.filter(pk=acc_id_int).first()
         if accessory:
-            color_list = list(accessory.colors.values('name', 'hex_code'))
             display_name = accessory.name
             if color:
                 display_name = f"{accessory.name} {color}"
             items.append({
-                'id': str(acc_id),
+                'id': str(acc_id_int),
                 'name': display_name,
                 'quantity': qty,
                 'price': str(accessory.offer_price),
-                'mrp': str(accessory.mrp),
-                'colors': color_list,
-                'selected_color': color,
+                'color': color if color else None,
                 'image': accessory.image.url if accessory.image else '',
             })
     return JsonResponse({'items': items})

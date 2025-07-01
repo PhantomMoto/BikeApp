@@ -5,12 +5,16 @@ def home(request):
     categories = Category.objects.all()
     brands = BikeBrand.objects.all()
     models = BikeModel.objects.all()
-    featured = FeaturedProduct.objects.select_related('accessory').order_by('order')
+    featured = FeaturedProduct.objects.order_by('featured_at')
+    # For new FeaturedProduct model, use accessories.all()
+    featured_products = []
+    for f in featured:
+        featured_products.extend(f.accessories.all())
     return render(request, 'products/home.html', {
         'categories': categories,
         'brands': brands,
         'models': models,
-        'featured_products': [f.accessory for f in featured],
+        'featured_products': featured_products,
     })
 
 

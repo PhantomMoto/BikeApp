@@ -292,7 +292,7 @@ document.addEventListener('DOMContentLoaded', function () {
     button.addEventListener('click', function(e) {
       e.preventDefault();
       const card = this.closest('.card');
-      const accessoryId = this.closest('.cart-control').dataset.accessoryId;
+      const accessoryId = this.closest('.cart-control').dataset.accessoryId; // always numeric
       const color = card.querySelector('input[name="color"]') ? card.querySelector('input[name="color"]').value : '';
       if (card.querySelector('.color-select') && !color) {
         alert('Please select a color before adding to cart.');
@@ -310,7 +310,7 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(data => {
         if (data.success) {
           const cartCountBubble = document.getElementById('cart-count-bubble');
-          if cartCountBubble) {
+          if (cartCountBubble) {
             cartCountBubble.textContent = data.total_qty;
             cartCountBubble.style.display = 'inline-block';
           }

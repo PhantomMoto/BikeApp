@@ -238,26 +238,35 @@ def cart_view(request):
 
 def cart_add(request, accessory_id):
     color = request.POST.get('color', '').strip()
+    numeric_id = str(accessory_id).split('|')[0]
     cart = request.session.get('cart', {})
-    key = f"{accessory_id}|{color}" if color else str(accessory_id)
+    key = f"{numeric_id}|{color}" if color else str(numeric_id)
     cart[key] = cart.get(key, 0) + 1
     request.session['cart'] = cart
     return redirect('products:cart')
 
 def cart_remove(request, accessory_id):
+    numeric_id = str(accessory_id).split('|')[0]
     cart = request.session.get('cart', {})
-    cart.pop(str(accessory_id), None)
+    # Remove all keys matching this accessory id (with or without color)
+    keys_to_remove = [k for k in cart if k.split('|')[0] == str(numeric_id)]
+    for k in keys_to_remove:
+        cart.pop(k, None)
     request.session['cart'] = cart
     return redirect('products:cart')
 
 def cart_update(request, accessory_id):
+    numeric_id = str(accessory_id).split('|')[0]
     if request.method == 'POST':
         qty = int(request.POST.get('quantity', 1))
         cart = request.session.get('cart', {})
-        if qty > 0:
-            cart[str(accessory_id)] = qty
-        else:
-            cart.pop(str(accessory_id), None)
+        # Update all keys matching this accessory id (with or without color)
+        for k in list(cart.keys()):
+            if k.split('|')[0] == str(numeric_id):
+                if qty > 0:
+                    cart[k] = qty
+                else:
+                    cart.pop(k, None)
         request.session['cart'] = cart
     return redirect('products:cart')
 
@@ -273,8 +282,9 @@ def ajax_cart_add(request, accessory_id):
     import json
     data = json.loads(request.body.decode('utf-8')) if request.body else {}
     color = data.get('color', '').strip()
+    numeric_id = str(accessory_id).split('|')[0]
     cart = request.session.get('cart', {})
-    key = f"{accessory_id}|{color}" if color else str(accessory_id)
+    key = f"{numeric_id}|{color}" if color else str(numeric_id)
     cart[key] = cart.get(key, 0) + 1
     request.session['cart'] = cart
     total_qty = sum(cart.values())
@@ -310,7 +320,7 @@ def ajax_cart_items(request):
                 'color': color if color else None,
                 'image': accessory.image.url if accessory.image else '',
             })
-    return JsonResponse({'items': items})
+    return JsonResponse({'items': items, 'total_qty': sum(cart.values())})
 
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse

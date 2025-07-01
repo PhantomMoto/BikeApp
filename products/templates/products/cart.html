@@ -38,11 +38,10 @@ Your selected accessories are just a click away. Review your cart, make changes,
           {% if item.accessory.image %}
             <img src="{{ item.accessory.image.url }}" alt="{{ item.accessory.name }}" style="max-width:60px;display:block;" />
           {% endif %}
-          {% if item.colors %}
-            <div style="margin-top:5px;">
-              {% for color in item.colors %}
-                <span title="{{ color.name }}" style="display:inline-block;width:18px;height:18px;border-radius:50%;background:{{ color.hex_code }};border:1px solid #ccc;margin-right:3px;"></span>
-              {% endfor %}
+          {% if item.color %}
+            <div style="margin-top:5px;display:flex;align-items:center;gap:6px;">
+              <span title="{{ item.color }}" style="display:inline-block;width:18px;height:18px;border-radius:50%;background:{{ item.color|default:'#ccc' }};border:1px solid #ccc;"></span>
+              <span style="font-size:0.95em;color:#333;">{{ item.color }}</span>
             </div>
           {% endif %}
         </td>

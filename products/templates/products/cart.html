@@ -71,9 +71,7 @@ Your selected accessories are just a click away. Review your cart, make changes,
         </td>
         <td>
           <span style="color:#27ae60;font-weight:600;">₹{{ item.accessory.offer_price }}</span>
-          {% if item.accessory.mrp and item.accessory.mrp > item.accessory.offer_price %}
-            <span style="text-decoration:line-through;color:#888;font-size:0.95em;">₹{{ item.accessory.mrp }}</span>
-          {% endif %}
+          
         </td>
         <td>₹{{ item.subtotal }}</td>
         <td>

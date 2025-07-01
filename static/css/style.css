@@ -11,14 +11,8 @@
   cursor: pointer;
 }
 
-.home-main, .home-cat {
-    background: transparent;
-}
-html, body {
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-}
+
+
 
 /* Logo */
 #logo-box img {
@@ -384,6 +378,7 @@ body {
   margin: 0 5px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  padding: 1px 6px;
 }
 
 @media screen and (max-width: 360px) {

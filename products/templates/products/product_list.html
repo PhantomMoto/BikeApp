@@ -54,15 +54,7 @@ Explore Accessories - Phantom Moto
         <img src="{{ accessory.image.url }}" alt="{{ accessory.name }}">
       {% endif %}
       {% if accessory.colors.all %}
-        <div class="color-select-block" style="margin-bottom:8px;">
-          <label for="color-select-{{ accessory.id }}">Select Color:</label>
-          <select name="color" class="color-select" id="color-select-{{ accessory.id }}">
-            <option value="">-- Select --</option>
-            {% for color in accessory.colors.all %}
-              <option value="{{ color.name }}">{{ color.name }}</option>
-            {% endfor %}
-          </select>
-        </div>
+        
       {% endif %}
       <p><strong>₹{{ accessory.offer_price }}</strong> {% if accessory.mrp and accessory.mrp > accessory.offer_price %}<span style="text-decoration:line-through;color:#888;font-size:0.95em;">₹{{ accessory.mrp }}</span>{% endif %}</p>
       <p>{{ accessory.description }}</p>

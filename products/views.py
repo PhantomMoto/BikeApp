@@ -246,14 +246,20 @@ def cart_add(request, accessory_id):
     numeric_id = str(accessory_id).split('|')[0]
     accessory = get_object_or_404(Accessory, pk=numeric_id)
     cart = request.session.get('cart', {})
-    # If accessory has colors, require color selection
-    if accessory.colors.exists() and not color:
-        # Optionally, add a message or redirect with error
-        return redirect('products:cart')
-    key = f"{numeric_id}|{color}" if color else str(numeric_id)
-    # Remove entry without color if adding with color
-    if color:
-        cart.pop(str(numeric_id), None)
+    # If accessory has colors, require color selection (for home/featured)
+    if accessory.colors.exists():
+        if color:
+            # Remove entry without color if adding with color
+            cart.pop(str(numeric_id), None)
+            key = f"{numeric_id}|{color}"
+        else:
+            # Remove all entries with color if adding without color
+            keys_to_remove = [k for k in cart if k.startswith(f"{numeric_id}|")]
+            for k in keys_to_remove:
+                cart.pop(k, None)
+            key = str(numeric_id)
+    else:
+        key = str(numeric_id)
     cart[key] = cart.get(key, 0) + 1
     request.session['cart'] = cart
     return redirect('products:cart')
@@ -298,13 +304,20 @@ def ajax_cart_add(request, accessory_id):
     numeric_id = str(accessory_id).split('|')[0]
     accessory = get_object_or_404(Accessory, pk=numeric_id)
     cart = request.session.get('cart', {})
-    # If accessory has colors, require color selection
-    if accessory.colors.exists() and not color:
-        return JsonResponse({'success': False, 'error': 'Color required'})
-    key = f"{numeric_id}|{color}" if color else str(numeric_id)
-    # Remove entry without color if adding with color
-    if color:
-        cart.pop(str(numeric_id), None)
+    # If accessory has colors, require color selection (for home/featured)
+    if accessory.colors.exists():
+        if color:
+            # Remove entry without color if adding with color
+            cart.pop(str(numeric_id), None)
+            key = f"{numeric_id}|{color}"
+        else:
+            # Remove all entries with color if adding without color
+            keys_to_remove = [k for k in cart if k.startswith(f"{numeric_id}|")]
+            for k in keys_to_remove:
+                cart.pop(k, None)
+            key = str(numeric_id)
+    else:
+        key = str(numeric_id)
     cart[key] = cart.get(key, 0) + 1
     request.session['cart'] = cart
     total_qty = sum(cart.values())

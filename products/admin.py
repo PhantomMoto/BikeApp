@@ -7,11 +7,11 @@ from .models import Accessory, Blog, Category, YouTubeVideo, BikeBrand, BikeMode
 class AccessoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'mrp', 'offer_price', 'discount_percent', 'stock', 'is_universal', 'preview_img']
     search_fields = ['name', 'size']
-    list_filter = ['is_universal', 'bike_models', 'categories', 'bike_brands', 'shipping_category']
-    filter_horizontal = ['categories', 'bike_models', 'bike_brands', 'colors']
+    list_filter = ['is_universal', 'bike_models', 'categories', 'shipping_category']
+    filter_horizontal = ['categories', 'bike_models', 'colors']
     fieldsets = (
         (None, {
-            'fields': ('image', 'name', 'colors', 'size', 'mrp', 'offer_price', 'discount_percent', 'stock', 'shipping_category', 'categories', 'bike_models', 'bike_brands', 'is_universal', 'description')
+            'fields': ('image', 'name', 'colors', 'size', 'mrp', 'offer_price', 'discount_percent', 'stock', 'shipping_category', 'categories', 'bike_models', 'is_universal', 'description')
         }),
     )
 

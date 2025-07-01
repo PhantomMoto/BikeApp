@@ -33,7 +33,19 @@ Your selected accessories are just a click away. Review your cart, make changes,
     <tbody>
       {% for item in cart_items %}
       <tr>
-        <td>{{ item.accessory.name }}</td>
+        <td>
+          {{ item.accessory.name }}
+          {% if item.accessory.image %}
+            <img src="{{ item.accessory.image.url }}" alt="{{ item.accessory.name }}" style="max-width:60px;display:block;" />
+          {% endif %}
+          {% if item.colors %}
+            <div style="margin-top:5px;">
+              {% for color in item.colors %}
+                <span title="{{ color.name }}" style="display:inline-block;width:18px;height:18px;border-radius:50%;background:{{ color.hex_code }};border:1px solid #ccc;margin-right:3px;"></span>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </td>
         <td>
           <form action="{% url 'products:cart_update' item.accessory.id %}" method="post" class="cart-qty-form">
             {% csrf_token %}
@@ -41,7 +53,12 @@ Your selected accessories are just a click away. Review your cart, make changes,
             <button type="submit" class="cart-btn cart-btn-update">Update</button>
           </form>
         </td>
-        <td>₹{{ item.accessory.price }}</td>
+        <td>
+          <span style="color:#27ae60;font-weight:600;">₹{{ item.accessory.offer_price }}</span>
+          {% if item.accessory.mrp and item.accessory.mrp > item.accessory.offer_price %}
+            <span style="text-decoration:line-through;color:#888;font-size:0.95em;">₹{{ item.accessory.mrp }}</span>
+          {% endif %}
+        </td>
         <td>₹{{ item.subtotal }}</td>
         <td>
           <form action="{% url 'products:cart_remove' item.accessory.id %}" method="post" class="cart-remove-form">

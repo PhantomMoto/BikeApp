@@ -50,19 +50,25 @@ Explore Accessories - Phantom Moto
   {% for accessory in accessories %}
     <div class="card">
       <h3>{{ accessory.name }}</h3>
-      {% if accessory.image_url %}
-  <img src="{{ accessory.image_url }}" alt="{{ accessory.name }}">
-{% endif %}
-      <p><strong>₹{{ accessory.price }}</strong></p>
+      {% if accessory.image %}
+        <img src="{{ accessory.image.url }}" alt="{{ accessory.name }}">
+      {% endif %}
+      {% if accessory.colors.all %}
+        <div style="margin-bottom:5px;">
+          {% for color in accessory.colors.all %}
+            <span title="{{ color.name }}" style="display:inline-block;width:18px;height:18px;border-radius:50%;background:{{ color.hex_code }};border:1px solid #ccc;margin-right:3px;"></span>
+          {% endfor %}
+        </div>
+      {% endif %}
+      <p><strong>₹{{ accessory.offer_price }}</strong> {% if accessory.mrp and accessory.mrp > accessory.offer_price %}<span style="text-decoration:line-through;color:#888;font-size:0.95em;">₹{{ accessory.mrp }}</span>{% endif %}</p>
       <p>{{ accessory.description }}</p>
-      <p>Category: {{ accessory.categories.name }}</p>
+      <p>Category: {% for cat in accessory.categories.all %}{{ cat.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
       <form action="{% url 'products:cart_add' accessory.id %}" method="post" style="margin-top:10px;">
-  {% csrf_token %}
-  <div class="cart-control" data-accessory-id="{{ accessory.id }}">
-  <button class="btn-add-cart">Add to Cart</button>
-</div>
-</form>
-
+        {% csrf_token %}
+        <div class="cart-control" data-accessory-id="{{ accessory.id }}">
+          <button class="btn-add-cart">Add to Cart</button>
+        </div>
+      </form>
     </div>
   {% empty %}
     <p>No accessories found.</p>

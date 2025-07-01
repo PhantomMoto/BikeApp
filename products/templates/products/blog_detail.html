@@ -82,7 +82,7 @@ Get the latest insights, bike modification tips, riding guides, and reviews stra
     <div class="blog-detail-date">Published on {{ blog.published_at|date:"d M Y" }}</div>
   </div>
   {% if blog.thumbnail %}
-  <img src="{{ blog.thumbnail.url }}" alt="{{ blog.title }}" class="blog-detail-thumbnail" />
+  <img src="{% if blog.thumbnail %}{{ blog.thumbnail.url }}{% else %}https://via.placeholder.com/600x300?text=No+Image{% endif %}" alt="{{ blog.title }}" class="blog-detail-thumbnail" />
   {% endif %}
   <div class="blog-detail-content">
     {{ blog.content|linebreaks }}

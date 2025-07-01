@@ -133,6 +133,15 @@
       @media (max-width: 767px) {
         .whatsapp-float { font-size: 18px; padding: 8px 14px 8px 12px; bottom: 70px; }
       }
+      .color-circle {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid #ccc;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
     </style>
   </head>
   <body>
@@ -462,13 +471,21 @@
                 .then(res => res.json())
                 .then(data => {
                   if(data.items && data.items.length > 0) {
-                    cartContent.innerHTML = data.items.map(item =>
-                      `<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;'>
-                        <span style='font-weight:500;'>${item.name}</span>
+                    cartContent.innerHTML = data.items.map(item => {
+                      let colorHtml = '';
+                      if (item.colors && item.colors.length > 0) {
+                        colorHtml = item.colors.map(c => `<span class="color-circle" title="${c.name}" style="background:${c.hex_code};border:1.5px solid #aaa;margin-right:2px;"></span>`).join('');
+                      }
+                      return `<div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;'>
+                        <div style='display:flex;align-items:center;'>
+                          ${item.image ? `<img src='${item.image}' alt='' style='width:32px;height:32px;object-fit:cover;border-radius:6px;margin-right:8px;'>` : ''}
+                          <span style='font-weight:500;'>${item.name}</span>
+                          ${colorHtml}
+                        </div>
                         <span style='color:#888;'>x${item.quantity}</span>
                         <span style='font-weight:600;'>₹${item.price}</span>
-                      </div>`
-                    ).join('');
+                      </div>`;
+                    }).join('');
                   } else {
                     cartContent.innerHTML = '<span>Your cart is empty.</span>';
                   }

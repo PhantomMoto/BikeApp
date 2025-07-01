@@ -209,23 +209,21 @@ def cart_view(request):
 
     for acc_id, qty in cart.items():
         accessory = get_object_or_404(Accessory, pk=acc_id)
-
-        subtotal = accessory.price * qty
+        subtotal = accessory.offer_price * qty
         accessories.append({
             'accessory': accessory,
             'quantity': qty,
-            'subtotal': subtotal
+            'subtotal': subtotal,
+            'colors': accessory.colors.all(),
         })
-
-        # 🟢 Only this part goes to session
         pay_items.append({
             'id': accessory.id,
             'name': accessory.name,
-            'price': float(accessory.price),  # convert Decimal to float
+            'offer_price': float(accessory.offer_price),
+            'mrp': float(accessory.mrp),
             'quantity': qty,
             'subtotal': float(subtotal),
         })
-
         total += subtotal
 
     request.session['paydetails'] = {
@@ -290,11 +288,15 @@ def ajax_cart_items(request):
     for acc_id, qty in cart.items():
         accessory = Accessory.objects.filter(pk=acc_id).first()
         if accessory:
+            color_list = list(accessory.colors.values('name', 'hex_code'))
             items.append({
-                'id': acc_id,
+                'id': str(acc_id),
                 'name': accessory.name,
                 'quantity': qty,
-                'price': str(accessory.price),
+                'price': str(accessory.offer_price),
+                'mrp': str(accessory.mrp),
+                'colors': color_list,
+                'image': accessory.image.url if accessory.image else '',
             })
     return JsonResponse({'items': items})
 

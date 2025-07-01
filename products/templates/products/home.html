@@ -79,7 +79,7 @@ PhantomMoto is India’s premier destination for top-quality bike accessories, b
 <h2 id="Shop-By-Category">Shop by Category</h2> <br>
 <div class="category-buttons">
   {% for cat in categories %}
-  <a href="/products/?category={{ cat.name }}" class="category-btn" style="background: url('{{cat.image_url}}');">
+  <a href="/products/?category={{ cat.name }}" class="category-btn" style="background: url('{% if cat.image %}{{ cat.image.url }}{% else %}/static/bg.jpg{% endif %}');">
     <span class="category-label">{{ cat.name }}</span>
   </a>
   {% endfor %}
@@ -274,8 +274,10 @@ body{
 const catBtns = document.querySelectorAll('.category-btn');
 const categories = {{ categories|safe }};
 catBtns.forEach((btn, idx) => {
-  if (categories[idx] && categories[idx].image_url) {
-    btn.style.backgroundImage = url('${categories[idx].image_url}');
+  if (categories[idx] && categories[idx].image) {
+    btn.style.backgroundImage = `url('${categories[idx].image}')`;
+  } else {
+    btn.style.backgroundImage = `url('/static/bg.jpg')`; // Fallback image
   }
 });
 

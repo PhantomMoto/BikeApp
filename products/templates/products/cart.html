@@ -134,7 +134,7 @@ Your selected accessories are just a click away. Review your cart, make changes,
             })
           })
           .then(res => res.json())
-          .then(result => {
+          .then result => {
             if(result.success){
               alert('Payment successful! Payment ID: ' + response.razorpay_payment_id);
               window.location.href = "/post-payment/";
@@ -166,7 +166,6 @@ Your selected accessories are just a click away. Review your cart, make changes,
 {% block extra_style %}
 <style>
 body {
-  background-image: url('{% static 'bg.jpg' %}');
   background-size: cover;
   background-repeat: no-repeat;
 }

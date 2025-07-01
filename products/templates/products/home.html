@@ -51,7 +51,7 @@ PhantomMoto is India’s premier destination for top-quality bike accessories, b
 </form>
 </section>
 <section class="feat-pro">
-  <h2 id="Shop-By-Category">Featured Products</h2>
+  <h2 id="Shop-By-Category" style="font-size: 1.9rem;">Featured Products</h2>
   <div class="cards-container">
     {% for accessory in featured_products %}
       <div class="card">
@@ -83,7 +83,7 @@ PhantomMoto is India’s premier destination for top-quality bike accessories, b
 <h2 id="Shop-By-Category">Shop by Category</h2> <br>
 <div class="category-buttons">
   {% for cat in categories %}
-  <a href="/products/?category={{ cat.name }}" class="category-btn" style="background: url('{% if cat.image %}{{ cat.image.url }}{% else %}/static/bg.jpg{% endif %}');">
+  <a href="/products/?category={{ cat.name }}" class="category-btn" style="background: url('{% if cat.image %}{{ cat.image.url }}{% endif %}');">
     <span class="category-label">{{ cat.name }}</span>
   </a>
   {% endfor %}
@@ -284,7 +284,7 @@ catBtns.forEach((btn, idx) => {
   if (categories[idx] && categories[idx].image) {
     btn.style.backgroundImage = `url('${categories[idx].image}')`;
   } else {
-    btn.style.backgroundImage = `url('/static/bg.jpg')`; // Fallback image
+    btn.style.backgroundImage = '';
   }
 });
 

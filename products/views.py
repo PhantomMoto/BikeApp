@@ -207,14 +207,18 @@ def cart_view(request):
     total = 0
     pay_items = []
 
-    for acc_id, qty in cart.items():
+    for key, qty in cart.items():
+        if '|' in key:
+            acc_id, color = key.split('|', 1)
+        else:
+            acc_id, color = key, ''
         accessory = get_object_or_404(Accessory, pk=acc_id)
         subtotal = accessory.offer_price * qty
         accessories.append({
             'accessory': accessory,
             'quantity': qty,
             'subtotal': subtotal,
-            'colors': accessory.colors.all(),
+            'color': color,  # pass color for display
         })
         pay_items.append({
             'id': accessory.id,
@@ -223,6 +227,7 @@ def cart_view(request):
             'mrp': float(accessory.mrp),
             'quantity': qty,
             'subtotal': float(subtotal),
+            'color': color,
         })
         total += subtotal
 

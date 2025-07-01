@@ -577,12 +577,17 @@ def submit_to_delhivery(request):
     cart = request.session.get('cart', {})
     accessories = []
     total = 0
-    for acc_id, qty in cart.items():
+    for key, qty in cart.items():
+        if '|' in key:
+            acc_id, color = key.split('|', 1)
+        else:
+            acc_id, color = key, ''
         accessory = Accessory.objects.filter(pk=acc_id).first()
         if accessory:
             accessories.append({
                 'accessory': accessory,
                 'quantity': qty,
+                'color': color,
                 'subtotal': accessory.price * qty
             })
             total += accessory.price * qty

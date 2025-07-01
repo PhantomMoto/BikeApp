@@ -47,7 +47,6 @@ class Accessory(models.Model):
     shipping_category = models.CharField(max_length=20, choices=[('1kg','1kg'),('2kg','2kg'),('3kg','3kg'),('4kg','4kg'),('5kg','5kg')], blank=True, null=True)
     categories = models.ManyToManyField(Category, related_name='accessories')
     bike_models = models.ManyToManyField(BikeModel, related_name='accessories')
-    bike_brands = models.ManyToManyField(BikeBrand, related_name='accessories', blank=True)
     stock = models.PositiveIntegerField(default=0)
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

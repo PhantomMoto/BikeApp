@@ -54,9 +54,9 @@ Explore Accessories - Phantom Moto
         <img src="{{ accessory.image.url }}" alt="{{ accessory.name }}">
       {% endif %}
       {% if accessory.colors.all %}
-        <div style="margin-bottom:5px;">
+        <div class="color-select" data-accessory-id="{{ accessory.id }}" style="margin-bottom:8px;">
           {% for color in accessory.colors.all %}
-            <span title="{{ color.name }}" style="display:inline-block;width:18px;height:18px;border-radius:50%;background:{{ color.hex_code }};border:1px solid #ccc;margin-right:3px;"></span>
+            <span class="color-circle color-choice" data-color-name="{{ color.name }}" data-color-hex="{{ color.hex_code }}" title="{{ color.name }}" style="background:{{ color.hex_code }};border:2px solid #ccc;cursor:pointer;margin-right:4px;"></span>
           {% endfor %}
         </div>
       {% endif %}
@@ -66,6 +66,7 @@ Explore Accessories - Phantom Moto
       <form action="{% url 'products:cart_add' accessory.id %}" method="post" style="margin-top:10px;">
         {% csrf_token %}
         <div class="cart-control" data-accessory-id="{{ accessory.id }}">
+          <input type="hidden" name="color" value="">
           <button class="btn-add-cart">Add to Cart</button>
         </div>
       </form>
@@ -270,6 +271,73 @@ document.getElementById('brand-select').addEventListener('change', function() {
   }
 });
 
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Color selection logic
+  document.querySelectorAll('.color-select').forEach(function(colorBlock) {
+    colorBlock.addEventListener('click', function(e) {
+      if (e.target.classList.contains('color-choice')) {
+        // Remove selected from all siblings
+        colorBlock.querySelectorAll('.color-choice').forEach(function(c) {
+          c.style.outline = '';
+        });
+        // Mark selected
+        e.target.style.outline = '3px solid #222';
+        // Set hidden input value
+        const card = colorBlock.closest('.card');
+        if (card) {
+          const input = card.querySelector('input[name="color"]');
+          if (input) input.value = e.target.getAttribute('data-color-name');
+        }
+      }
+    });
+  });
+  // Cart logic for product list
+  document.querySelectorAll('.cards-container .btn-add-cart').forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.preventDefault();
+      const card = this.closest('.card');
+      const accessoryId = this.closest('.cart-control').dataset.accessoryId;
+      const color = card.querySelector('input[name="color"]') ? card.querySelector('input[name="color"]').value : '';
+      if (card.querySelector('.color-select') && !color) {
+        alert('Please select a color before adding to cart.');
+        return;
+      }
+      fetch(`/ajax/cart/add/${accessoryId}/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken'),
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ color: color })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          const cartCountBubble = document.getElementById('cart-count-bubble');
+          if (cartCountBubble) {
+            cartCountBubble.textContent = data.total_qty;
+            cartCountBubble.style.display = 'inline-block';
+          }
+        }
+      });
+    });
+  });
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+});
 </script>
 <style>
 body {

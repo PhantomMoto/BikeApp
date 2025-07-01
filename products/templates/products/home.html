@@ -63,9 +63,17 @@ PhantomMoto is India’s premier destination for top-quality bike accessories, b
         {% if accessory.discount_percent %}<p style="color:#27ae60;font-weight:600;">{{ accessory.discount_percent }}% OFF</p>{% endif %}
         <p>{{ accessory.description }}</p>
         <p>Category: {% for cat in accessory.categories.all %}{{ cat.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+        {% if accessory.colors.all %}
+        <div class="color-select" data-accessory-id="{{ accessory.id }}" style="margin-bottom:8px;">
+          {% for color in accessory.colors.all %}
+            <span class="color-circle color-choice" data-color-name="{{ color.name }}" data-color-hex="{{ color.hex_code }}" title="{{ color.name }}" style="background:{{ color.hex_code }};border:2px solid #ccc;cursor:pointer;margin-right:4px;"></span>
+          {% endfor %}
+        </div>
+        {% endif %}
         <form action="{% url 'products:cart_add' accessory.id %}" method="post" style="margin-top:10px;">
           {% csrf_token %}
           <div class="cart-control" data-accessory-id="{{ accessory.id }}">
+            <input type="hidden" name="color" value="">
             <button class="btn-add-cart">Add to Cart</button>
           </div>
         </form>
@@ -281,19 +289,44 @@ catBtns.forEach((btn, idx) => {
   }
 });
 
-// Cart logic for featured products (same as product_list)
 document.addEventListener('DOMContentLoaded', function () {
+  // Color selection logic
+  document.querySelectorAll('.color-select').forEach(function(colorBlock) {
+    colorBlock.addEventListener('click', function(e) {
+      if (e.target.classList.contains('color-choice')) {
+        // Remove selected from all siblings
+        colorBlock.querySelectorAll('.color-choice').forEach(function(c) {
+          c.style.outline = '';
+        });
+        // Mark selected
+        e.target.style.outline = '3px solid #222';
+        // Set hidden input value
+        const card = colorBlock.closest('.card');
+        if (card) {
+          const input = card.querySelector('input[name="color"]');
+          if (input) input.value = e.target.getAttribute('data-color-name');
+        }
+      }
+    });
+  });
+  // Cart logic for featured products (same as product_list)
   document.querySelectorAll('.feat-pro .btn-add-cart').forEach(button => {
     button.addEventListener('click', function(e) {
       e.preventDefault();
+      const card = this.closest('.card');
       const accessoryId = this.closest('.cart-control').dataset.accessoryId;
+      const color = card.querySelector('input[name="color"]') ? card.querySelector('input[name="color"]').value : '';
+      if (card.querySelector('.color-select') && !color) {
+        alert('Please select a color before adding to cart.');
+        return;
+      }
       fetch(`/ajax/cart/add/${accessoryId}/`, {
         method: 'POST',
         headers: {
           'X-CSRFToken': getCookie('csrftoken'),
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({})
+        body: JSON.stringify({ color: color })
       })
       .then(res => res.json())
       .then(data => {

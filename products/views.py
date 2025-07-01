@@ -237,8 +237,10 @@ def cart_view(request):
     })
 
 def cart_add(request, accessory_id):
+    color = request.POST.get('color', '').strip()
     cart = request.session.get('cart', {})
-    cart[str(accessory_id)] = cart.get(str(accessory_id), 0) + 1
+    key = f"{accessory_id}|{color}" if color else str(accessory_id)
+    cart[key] = cart.get(key, 0) + 1
     request.session['cart'] = cart
     return redirect('products:cart')
 
@@ -268,14 +270,15 @@ from .models import Accessory
 
 @require_POST
 def ajax_cart_add(request, accessory_id):
+    import json
+    data = json.loads(request.body.decode('utf-8')) if request.body else {}
+    color = data.get('color', '').strip()
     cart = request.session.get('cart', {})
-    cart[str(accessory_id)] = cart.get(str(accessory_id), 0) + 1
+    key = f"{accessory_id}|{color}" if color else str(accessory_id)
+    cart[key] = cart.get(key, 0) + 1
     request.session['cart'] = cart
-    
-    # Calculate total items in cart for bubble count
     total_qty = sum(cart.values())
     return JsonResponse({'success': True, 'total_qty': total_qty})
-
 
 def ajax_cart_count(request):
     cart = request.session.get('cart', {})
@@ -285,17 +288,25 @@ def ajax_cart_count(request):
 def ajax_cart_items(request):
     cart = request.session.get('cart', {})
     items = []
-    for acc_id, qty in cart.items():
+    for key, qty in cart.items():
+        if '|' in key:
+            acc_id, color = key.split('|', 1)
+        else:
+            acc_id, color = key, ''
         accessory = Accessory.objects.filter(pk=acc_id).first()
         if accessory:
             color_list = list(accessory.colors.values('name', 'hex_code'))
+            display_name = accessory.name
+            if color:
+                display_name = f"{accessory.name} {color}"
             items.append({
                 'id': str(acc_id),
-                'name': accessory.name,
+                'name': display_name,
                 'quantity': qty,
                 'price': str(accessory.offer_price),
                 'mrp': str(accessory.mrp),
                 'colors': color_list,
+                'selected_color': color,
                 'image': accessory.image.url if accessory.image else '',
             })
     return JsonResponse({'items': items})

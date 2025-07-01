@@ -50,17 +50,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'PhantomMoto.wsgi.application'
 
-import os
-import dj_database_url
+
+# Set persistent root for DB and media
+PERSISTENT_ROOT = '/persistent_data'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
-        'NAME': 'PhantomMoto',  # <-- yahan apna db name daalein
-        'HOST': 'mongodb+srv://IshanKashyap:IshanKashyap@cluster0.k3hr0l7.mongodb.net/PhantomMoto?retryWrites=true&w=majority',
-        'USER': 'IshanKashyap',
-        'PASSWORD': 'IshanKashyap',
-        'ENFORCE_SCHEMA': False,
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(PERSISTENT_ROOT, 'db.sqlite3'),
     }
 }
 

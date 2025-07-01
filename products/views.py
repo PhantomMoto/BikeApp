@@ -244,8 +244,16 @@ def cart_view(request):
 def cart_add(request, accessory_id):
     color = request.POST.get('color', '').strip()
     numeric_id = str(accessory_id).split('|')[0]
+    accessory = get_object_or_404(Accessory, pk=numeric_id)
     cart = request.session.get('cart', {})
+    # If accessory has colors, require color selection
+    if accessory.colors.exists() and not color:
+        # Optionally, add a message or redirect with error
+        return redirect('products:cart')
     key = f"{numeric_id}|{color}" if color else str(numeric_id)
+    # Remove entry without color if adding with color
+    if color:
+        cart.pop(str(numeric_id), None)
     cart[key] = cart.get(key, 0) + 1
     request.session['cart'] = cart
     return redirect('products:cart')
@@ -288,8 +296,15 @@ def ajax_cart_add(request, accessory_id):
     data = json.loads(request.body.decode('utf-8')) if request.body else {}
     color = data.get('color', '').strip()
     numeric_id = str(accessory_id).split('|')[0]
+    accessory = get_object_or_404(Accessory, pk=numeric_id)
     cart = request.session.get('cart', {})
+    # If accessory has colors, require color selection
+    if accessory.colors.exists() and not color:
+        return JsonResponse({'success': False, 'error': 'Color required'})
     key = f"{numeric_id}|{color}" if color else str(numeric_id)
+    # Remove entry without color if adding with color
+    if color:
+        cart.pop(str(numeric_id), None)
     cart[key] = cart.get(key, 0) + 1
     request.session['cart'] = cart
     total_qty = sum(cart.values())

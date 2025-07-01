@@ -54,7 +54,14 @@ import os
 import dj_database_url
 
 DATABASES = {
-    'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
+    'default': {
+        'ENGINE': 'djongo',
+        'NAME': 'PhantomMoto',  # <-- yahan apna db name daalein
+        'HOST': 'mongodb+srv://IshanKashyap:IshanKashyap@cluster0.k3hr0l7.mongodb.net/PhantomMoto?retryWrites=true&w=majority',
+        'USER': 'IshanKashyap',
+        'PASSWORD': 'IshanKashyap',
+        'ENFORCE_SCHEMA': False,
+    }
 }
 
 

@@ -25,6 +25,7 @@ Your selected accessories are just a click away. Review your cart, make changes,
       <tr>
         <th>Product</th>
         <th>Qty</th>
+        <th>Color</th>
         <th>Price</th>
         <th>Subtotal</th>
         <th>Actions</th>
@@ -38,19 +39,35 @@ Your selected accessories are just a click away. Review your cart, make changes,
           {% if item.accessory.image %}
             <img src="{{ item.accessory.image.url }}" alt="{{ item.accessory.name }}" style="max-width:60px;display:block;" />
           {% endif %}
-          {% if item.color %}
-            <div style="margin-top:5px;display:flex;align-items:center;gap:6px;">
-              <span title="{{ item.color }}" style="display:inline-block;width:18px;height:18px;border-radius:50%;background:{{ item.color|default:'#ccc' }};border:1px solid #ccc;"></span>
-              <span style="font-size:0.95em;color:#333;">{{ item.color }}</span>
-            </div>
-          {% endif %}
         </td>
         <td>
           <form action="{% url 'products:cart_update' item.accessory.id %}" method="post" class="cart-qty-form">
             {% csrf_token %}
             <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="cart-qty-input">
+            {% if item.accessory.colors.all %}
+              <select name="color" class="cart-color-select">
+                <option value="">-- Select --</option>
+                {% for color in item.accessory.colors.all %}
+                  <option value="{{ color.name }}" {% if color.name == item.color %}selected{% endif %}>{{ color.name }}</option>
+                {% endfor %}
+              </select>
+            {% elif item.color %}
+              <input type="hidden" name="color" value="{{ item.color }}">
+            {% endif %}
             <button type="submit" class="cart-btn cart-btn-update">Update</button>
           </form>
+        </td>
+        <td>
+          {% if item.color %}
+            {% for color_obj in item.accessory.colors.all %}
+              {% if color_obj.name == item.color %}
+                <span title="{{ color_obj.name }}" style="display:inline-block;width:18px;height:18px;border-radius:50%;background:{{ color_obj.hex_code }};border:1px solid #ccc;"></span>
+                <span style="font-size:0.95em;color:#333;">{{ color_obj.name }}</span>
+              {% endif %}
+            {% endfor %}
+          {% else %}
+            <span style="color:#888;">-</span>
+          {% endif %}
         </td>
         <td>
           <span style="color:#27ae60;font-weight:600;">₹{{ item.accessory.offer_price }}</span>
@@ -70,7 +87,7 @@ Your selected accessories are just a click away. Review your cart, make changes,
     </tbody>
     <tfoot>
       <tr>
-        <td colspan="3" class="cart-total-label"><strong>Total:</strong></td>
+        <td colspan="4" class="cart-total-label"><strong>Total:</strong></td>
         <td colspan="2" class="cart-total-value">₹{{ total }}</td>
       </tr>
     </tfoot>

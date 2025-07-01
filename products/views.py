@@ -278,14 +278,16 @@ def cart_update(request, accessory_id):
     numeric_id = str(accessory_id).split('|')[0]
     if request.method == 'POST':
         qty = int(request.POST.get('quantity', 1))
+        color = request.POST.get('color', '').strip()
         cart = request.session.get('cart', {})
-        # Update all keys matching this accessory id (with or without color)
-        for k in list(cart.keys()):
-            if k.split('|')[0] == str(numeric_id):
-                if qty > 0:
-                    cart[k] = qty
-                else:
-                    cart.pop(k, None)
+        # Remove all keys matching this accessory id (with or without color)
+        keys_to_remove = [k for k in list(cart.keys()) if k.split('|')[0] == str(numeric_id)]
+        for k in keys_to_remove:
+            cart.pop(k, None)
+        # Add new entry with updated color (if any)
+        key = f"{numeric_id}|{color}" if color else str(numeric_id)
+        if qty > 0:
+            cart[key] = qty
         request.session['cart'] = cart
     return redirect('products:cart')
 

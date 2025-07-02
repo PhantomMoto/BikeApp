@@ -211,6 +211,16 @@ document.getElementById('brand-select').addEventListener('change', function() {
   font-size: 1.2rem;
   margin: 0 0 10px 0;
   color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  transition: font-size 0.2s;
+}
+.card h3.dynamic-font {
+  white-space: normal;
+  font-size: 1.2rem;
+  word-break: break-word;
 }
 
 .card p {
@@ -332,6 +342,18 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       });
     });
+  });
+  // Dynamic font size for product names
+  document.querySelectorAll('.card h3').forEach(function(h3) {
+    const card = h3.closest('.card');
+    if (h3.scrollWidth > card.offsetWidth - 20) {
+      h3.classList.add('dynamic-font');
+      let fontSize = 1.2;
+      while (h3.scrollWidth > card.offsetWidth - 20 && fontSize > 0.8) {
+        fontSize -= 0.05;
+        h3.style.fontSize = fontSize + 'rem';
+      }
+    }
   });
   function getCookie(name) {
     let cookieValue = null;

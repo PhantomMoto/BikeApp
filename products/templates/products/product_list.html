@@ -339,6 +339,22 @@ body {
   justify-content: center;
 }
 
+.card h3 {
+  font-size: 1.2rem;
+  margin: 0 0 10px 0;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  transition: font-size 0.2s;
+}
+.card h3.dynamic-font {
+  white-space: normal;
+  font-size: 1.2rem;
+  word-break: break-word;
+}
+
 @media (max-width: 600px) {
   .cards-container {
     grid-template-columns: 1fr !important;

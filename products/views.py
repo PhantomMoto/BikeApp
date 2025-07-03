@@ -669,3 +669,9 @@ def create_delhivery_order(data):
         return response.json()
     except Exception as e:
         return {"error": str(e), "raw_response": response.text}
+
+from django.shortcuts import get_object_or_404
+
+def product_detail(request, slug):
+    accessory = get_object_or_404(Accessory, slug=slug)
+    return render(request, 'products/product_detail.html', {'accessory': accessory})

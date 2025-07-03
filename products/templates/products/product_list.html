@@ -48,7 +48,7 @@ Explore Accessories - Phantom Moto
   <!-- 🔸 Product Cards -->
  <div class="cards-container">
   {% for accessory in accessories %}
-    <div class="card">
+    <div class="card" onclick="window.location.href='{% url 'products:product_detail' accessory.slug %}'" style="cursor:pointer;">
       <h3>{{ accessory.name }}</h3>
       {% if accessory.image %}
         <img src="{{ accessory.image.url }}" alt="{{ accessory.name }}">
@@ -59,7 +59,7 @@ Explore Accessories - Phantom Moto
       <p><strong>₹{{ accessory.offer_price }}</strong> {% if accessory.mrp and accessory.mrp > accessory.offer_price %}<span style="text-decoration:line-through;color:#888;font-size:0.95em;">₹{{ accessory.mrp }}</span>{% endif %}</p>
       <p>{{ accessory.description }}</p>
       <p>Category: {% for cat in accessory.categories.all %}{{ cat.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
-      <form action="{% url 'products:cart_add' accessory.id %}" method="post" style="margin-top:10px;">
+      <form action="{% url 'products:cart_add' accessory.id %}" method="post" style="margin-top:10px;" onclick="event.stopPropagation();">
         {% csrf_token %}
         <div class="cart-control" data-accessory-id="{{ accessory.id }}">
           <input type="hidden" name="color" value="">

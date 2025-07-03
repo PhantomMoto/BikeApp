@@ -11,9 +11,10 @@ class AccessoryAdmin(admin.ModelAdmin):
     filter_horizontal = ['categories', 'bike_models', 'colors']
     fieldsets = (
         (None, {
-            'fields': ('image', 'name', 'colors', 'size', 'mrp', 'offer_price', 'discount_percent', 'stock', 'shipping_category', 'categories', 'bike_models', 'is_universal', 'description')
+            'fields': ('image', 'name', 'colors', 'size', 'mrp', 'offer_price', 'discount_percent', 'stock', 'shipping_category', 'categories', 'bike_models', 'is_universal', 'description', 'large_description', 'slug')
         }),
     )
+    prepopulated_fields = {"slug": ("name",)}
 
     def preview_img(self, obj):
         if obj.image:

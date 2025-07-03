@@ -1,6 +1,5 @@
 from django.db import models
-# from imagekit.models import ProcessedImageField
-# from imagekit.processors import ResizeToFill
+from django.utils.text import slugify
 
 class BikeBrand(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -49,9 +48,23 @@ class Accessory(models.Model):
     bike_models = models.ManyToManyField(BikeModel, related_name='accessories')
     stock = models.PositiveIntegerField(default=0)
     description = models.TextField(blank=True)
+    large_description = models.TextField(blank=True)
+    slug = models.SlugField(unique=True, blank=True, max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
     is_universal = models.BooleanField(default=False)
     size = models.CharField(max_length=50, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.name)
+            slug = base_slug
+            n = 1
+            while Accessory.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{n}"
+                n += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
+
     def __str__(self):
         name = self.name
         color_names = ', '.join([c.name for c in self.colors.all()])

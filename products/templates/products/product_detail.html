@@ -1,0 +1,138 @@
+{% extends 'products/base.html' %}
+{% block title %}{{ accessory.name }} - Phantom Moto{% endblock %}
+{% block meta_description %}{{ accessory.large_description|truncatewords:30 }}{% endblock %}
+{% block og_title %}{{ accessory.name }} - Phantom Moto{% endblock %}
+{% block og_description %}{{ accessory.large_description|truncatewords:30 }}{% endblock %}
+{% block content %}
+<div class="product-detail-container">
+  <div class="product-detail-header">
+    <h1>{{ accessory.name }}</h1>
+    {% if accessory.image %}
+      <img src="{{ accessory.image.url }}" alt="{{ accessory.name }}" class="product-detail-img" />
+    {% endif %}
+    <p class="product-detail-price">
+      <strong>₹{{ accessory.offer_price }}</strong>
+      {% if accessory.mrp and accessory.mrp > accessory.offer_price %}
+        <span style="text-decoration:line-through;color:#888;font-size:0.95em;">₹{{ accessory.mrp }}</span>
+      {% endif %}
+      {% if accessory.discount_percent %}
+        <span style="color:#27ae60;font-weight:600;">{{ accessory.discount_percent }}% OFF</span>
+      {% endif %}
+    </p>
+    <p class="product-detail-shortdesc">{{ accessory.description }}</p>
+  </div>
+  <div class="product-detail-body">
+    <h3>Product Details</h3>
+    <div class="product-detail-longdesc">{{ accessory.large_description|linebreaks }}</div>
+    <p><strong>Category:</strong> {% for cat in accessory.categories.all %}{{ cat.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+    <p><strong>Available Colors:</strong> {% for color in accessory.colors.all %}<span style="display:inline-block;width:18px;height:18px;border-radius:50%;background:{{ color.hex_code }};border:1px solid #ccc;vertical-align:middle;margin-right:4px;"></span> {{ color.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+    <form action="{% url 'products:cart_add' accessory.id %}" method="post" style="margin-top:10px;">
+      {% csrf_token %}
+      <div class="cart-control" data-accessory-id="{{ accessory.id }}">
+        <input type="hidden" name="color" value="">
+        <button class="btn-add-cart">Add to Cart</button>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.color-select').forEach(function(select) {
+    select.addEventListener('change', function() {
+      const card = select.closest('.product-detail-container');
+      if (card) {
+        const input = card.querySelector('input[name="color"]');
+        if (input) input.value = select.value;
+      }
+    });
+  });
+  document.querySelectorAll('.btn-add-cart').forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.preventDefault();
+      const card = this.closest('.product-detail-container');
+      const accessoryId = this.closest('.cart-control').dataset.accessoryId;
+      const color = card.querySelector('input[name="color"]') ? card.querySelector('input[name="color"]').value : '';
+      if (card.querySelector('.color-select') && !color) {
+        alert('Please select a color before adding to cart.');
+        return;
+      }
+      fetch(`/ajax/cart/add/${accessoryId}/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ color: color })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          const cartCountBubble = document.getElementById('cart-count-bubble');
+          if (cartCountBubble) {
+            cartCountBubble.textContent = data.total_qty;
+            cartCountBubble.style.display = 'inline-block';
+          }
+        }
+      });
+    });
+  });
+});
+</script>
+<style>
+.product-detail-container {
+  max-width: 800px;
+  margin: 3rem auto 4rem;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgb(0 0 0 / 0.08);
+  overflow: hidden;
+  padding-bottom: 2rem;
+}
+.product-detail-header {
+  padding: 2.5rem 2rem 1.5rem;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+.product-detail-header h1 {
+  margin: 0 0 0.5rem;
+  font-weight: 800;
+  font-size: 2rem;
+}
+.product-detail-img {
+  max-width: 320px;
+  width: 100%;
+  border-radius: 12px;
+  margin: 1.5rem auto 1rem;
+  display: block;
+}
+.product-detail-price {
+  font-size: 1.3rem;
+  margin: 0.5rem 0 0.7rem;
+}
+.product-detail-shortdesc {
+  color: #555;
+  font-size: 1.1rem;
+  margin-bottom: 1.2rem;
+}
+.product-detail-body {
+  padding: 2rem;
+}
+.product-detail-longdesc {
+  font-size: 1.08rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+.btn-add-cart {
+  background-color: #27ae60;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.btn-add-cart:hover {
+  background-color: #219150;
+}
+</style>
+{% endblock %}

@@ -83,9 +83,14 @@ PhantomMoto is India’s premier destination for top-quality bike accessories, b
 <h2 id="Shop-By-Category">Shop by Category</h2> <br>
 <div class="category-buttons">
   {% for cat in categories %}
-  <a href="/products/?category={{ cat.name }}" class="category-btn" style="background: url('{% if cat.image %}{{ cat.image.url }}{% endif %}');">
-    <span class="category-label">{{ cat.name }}</span>
-  </a>
+  <div class="category-btn-wrapper" style="position:relative;display:inline-block;">
+    <a href="/products/?category={{ cat.name }}" class="category-btn" style="background: url('{% if cat.image %}{{ cat.image.url }}{% endif %}');">
+      <span class="category-label">{{ cat.name }}</span>
+    </a>
+    <button class="download-category-btn" data-category="{{ cat.name }}" title="Download PDF" style="position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.85);border:none;border-radius:50%;padding:7px 9px;cursor:pointer;font-size:1.1rem;z-index:2;">
+      ⬇️
+    </button>
+  </div>
   {% endfor %}
 </div>
 
@@ -110,6 +115,14 @@ document.getElementById('brand-select').addEventListener('change', function() {
         });
       });
   }
+});
+document.querySelectorAll('.download-category-btn').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const cat = this.dataset.category;
+    window.location.href = `/products/category-pdf/?category=${encodeURIComponent(cat)}`;
+  });
 });
 </script>
 <style> {% load static %}

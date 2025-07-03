@@ -52,6 +52,7 @@ urlpatterns = [
      path('post-payment/', views.submit_to_delhivery, name='post_payment'),
     path('submit-to-delhivery/', views.submit_to_delhivery, name='submit_to_delhivery'),
     path('product/<slug:slug>/', views.product_detail, name='product_detail'),
+    path('category-pdf/', views.category_pdf, name='category_pdf'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 from django.conf import settings

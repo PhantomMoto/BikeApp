@@ -675,3 +675,42 @@ from django.shortcuts import get_object_or_404
 def product_detail(request, slug):
     accessory = get_object_or_404(Accessory, slug=slug)
     return render(request, 'products/product_detail.html', {'accessory': accessory})
+
+
+
+
+from django.http import HttpResponse
+import io
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+
+def category_pdf(request):
+    category_name = request.GET.get('category')
+    if not category_name:
+        return HttpResponse('No category specified.', status=400)
+    accessories = Accessory.objects.filter(categories__name=category_name)
+    buffer = io.BytesIO()
+    p = canvas.Canvas(buffer, pagesize=letter)
+    width, height = letter
+    y = height - 50
+    p.setFont('Helvetica-Bold', 16)
+    p.drawString(50, y, f'Products in Category: {category_name}')
+    y -= 30
+    p.setFont('Helvetica', 12)
+    for acc in accessories:
+        if y < 80:
+            p.showPage()
+            y = height - 50
+            p.setFont('Helvetica', 12)
+        p.drawString(60, y, f"{acc.name} - ₹{acc.offer_price} (MRP: ₹{acc.mrp})")
+        y -= 22
+        if acc.description:
+            p.setFont('Helvetica-Oblique', 10)
+            p.drawString(70, y, acc.description[:90])
+            y -= 18
+            p.setFont('Helvetica', 12)
+    p.save()
+    buffer.seek(0)
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{category_name}_products.pdf"'
+    return response

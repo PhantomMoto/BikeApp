@@ -6,7 +6,12 @@
 {% block content %}
 <div class="product-detail-container">
   <div class="product-detail-header">
-    <h1>{{ accessory.name }}</h1>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h1 style="margin-bottom:0;">{{ accessory.name }}</h1>
+      <button id="share-btn" title="Share this product" style="background:none;border:none;cursor:pointer;font-size:1.7rem;margin-left:10px;">
+        <span style="vertical-align:middle;">🔗</span>
+      </button>
+    </div>
     {% if accessory.image %}
       <img src="{{ accessory.image.url }}" alt="{{ accessory.name }}" class="product-detail-img" />
     {% endif %}
@@ -76,6 +81,20 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
   });
+  // Share button logic
+  const shareBtn = document.getElementById('share-btn');
+  if (shareBtn) {
+    shareBtn.addEventListener('click', function() {
+      const url = window.location.href;
+      const title = document.title;
+      if (navigator.share) {
+        navigator.share({ title: title, url: url });
+      } else {
+        navigator.clipboard.writeText(url);
+        alert('Product link copied to clipboard!');
+      }
+    });
+  }
 });
 </script>
 <style>

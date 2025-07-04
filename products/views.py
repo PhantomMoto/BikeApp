@@ -655,7 +655,7 @@ def create_delhivery_order(data):
     }
 
     response = requests.post(
-        "https://staging-express.delhivery.com/api/cmu/create.json",
+        "https://track.delhivery.com/api/cmu/create.json",
         headers=headers,
         data=payload
     )

@@ -37,7 +37,7 @@
         <tr>
           <td>{{ item.accessory.name }}</td>
           <td>{{ item.quantity }}</td>
-          <td>₹{{ item.accessory.price }}</td>
+          <td>₹{{ item.accessory.offer_price }}</td>
           <td>₹{{ item.subtotal }}</td>
         </tr>
         {% endfor %}
@@ -50,7 +50,7 @@
       </tfoot>
     </table>
     <!-- Hidden fields to send cart data -->
-    <input type="hidden" name="order_items" value='[{% for item in cart_items %}{"accessory": {"id": {{ item.accessory.id }}, "name": "{{ item.accessory.name }}", "price": {{ item.accessory.price }}}, "quantity": {{ item.quantity }} }{% if not forloop.last %},{% endif %}{% endfor %}]'>
+    <input type="hidden" name="order_items" value='[{% for item in cart_items %}{"accessory": {"id": {{ item.accessory.id }}, "name": "{{ item.accessory.name }}", "price": {{ item.accessory.offer_price }}}, "quantity": {{ item.quantity }} }{% if not forloop.last %},{% endif %}{% endfor %}]'>
     <input type="hidden" name="order_total" value="{{ total }}">
     <button type="submit">Submit Order</button>
   </form>

@@ -588,7 +588,7 @@ def submit_to_delhivery(request):
                 'accessory': accessory,
                 'quantity': qty,
                 'color': color,
-                'subtotal': accessory.price * qty
+                'subtotal': accessory.offer_price * qty
             })
             total += accessory.price * qty
     return render(request, 'shipping_form.html', {'cart_items': accessories, 'total': total})

@@ -5,10 +5,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 SECRET_KEY = 'django-insecure-*p3gkb&fy!1k(51q+hvnl%t#o=5pvf2z9keqnjg(x4jh0qcg3y'
-DEBUG = os.environ.get('DEBUG')
+# DEBUG = os.environ.get('DEBUG')
+DEBUG = True  # Set to False in production
 
-ALLOWED_HOSTS = ['phantommoto.in', 'www.phantommoto.in', '127.0.0.1', 'localhost','https://bikeapp-440n.onrender.com/']
-
+# ALLOWED_HOSTS = ['phantommoto.in', 'www.phantommoto.in', '127.0.0.1', 'localhost','https://bikeapp-440n.onrender.com/']
+ALLOWED_HOSTS = ['*']  # For development, use '*' to allow all hosts. Change in production.
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -52,7 +53,8 @@ WSGI_APPLICATION = 'PhantomMoto.wsgi.application'
 
 
 # Set persistent root for DB and media
-PERSISTENT_ROOT = '/persistent_data'
+# PERSISTENT_ROOT = '/persistent_data'
+PERSISTENT_ROOT = BASE_DIR
 
 DATABASES = {
     'default': {
@@ -66,7 +68,8 @@ DATABASES = {
 # Make sure to set these environment variables in your production environment
 # or replace with your actual values
 DELHIVERY_API_TOKEN = '5ef5b6f39ed14f7dc902f5d7aac7efcbff1c47d4'
-DELHIVERY_CLIENT = 'Phantom Moto'
+DELHIVERY_CLIENT_NAME = 'PHANTOM MOTO'     # <- replace karo jo delhivery client name diya hai
+
 
 
 
@@ -99,12 +102,12 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# 🔐 SECURITY HEADERS (for production)
-SECURE_HSTS_SECONDS = 31536000
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+# # 🔐 SECURITY HEADERS (for production)
+# SECURE_HSTS_SECONDS = 31536000
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_SSL_REDIRECT = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
 
 # ✅ LOGIN CONFIG
 LOGIN_REDIRECT_URL = 'products:product_list'

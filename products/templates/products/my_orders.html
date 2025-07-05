@@ -1,0 +1,77 @@
+{% extends 'products/base.html' %}
+{% block content %}
+<h2>My Orders</h2>
+<ul>
+  {% for order in orders %}
+    <li>
+      <strong>{{ order.order_id }}</strong> ₹{{ order.amount }} — {{ order.status }}
+      <a href="{% url 'products:track_order' order.order_id %}">Track</a>
+    </li>
+  {% empty %}
+    <li>No orders found. Time to shop 🤟</li>
+  {% endfor %}
+</ul>
+<style>
+h2 {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #222;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+li {
+  background: #fff;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+li:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+}
+
+li strong {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+li a {
+  align-self: flex-start;
+  text-decoration: none;
+  background: #000;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+}
+
+li a:hover {
+  background: #444;
+}
+
+li:last-child {
+  margin-bottom: 3rem;
+}
+
+li:empty {
+  text-align: center;
+  color: #777;
+  font-style: italic;
+}
+
+</style>
+
+{% endblock %}

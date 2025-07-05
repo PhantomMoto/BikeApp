@@ -523,26 +523,7 @@ body {
   margin-top: 2rem;
 }
 
-.cart-continue-link {
-  display: inline-block;
-  margin: 24px auto 0;
-  background: #27ae60;
-  color: #fff;
-  padding: 10px 22px;
-  border: none;
-  text-decoration: none;
-  font-weight: 600;
-  transition: background 0.2s;
-  text-align: center;
-  position: static;
-  left: unset;
-  transform: unset;
-  bottom: unset;
-}
 
-.cart-continue-link:hover {
-  background: #219150;
-}
 
 .cart-actions-row {
   display: flex;

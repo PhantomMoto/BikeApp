@@ -198,40 +198,37 @@
             <a href="/products/" class="hover:text-red-600">All Products</a>
             <a href="/blog/" class="hover:text-red-600">Blog & Videos</a>
             <a href="/contact/" class="hover:text-red-600">Contact Us</a>
-            <a href="#" class="hover:text-red-600">Track Order</a>
+            <a href="/my-orders" class="hover:text-red-600">Track Order</a>
           </div>
           <div id="mobile-menu" class="hidden md:hidden flex-col py-4 space-y-3 text-sm font-semibold text-gray-700">
             <a href="/" class="hover:text-red-600">Home</a>
             <a href="/products/" class="hover:text-red-600">All Products</a>
             <a href="/blog/" class="hover:text-red-600">Blog & Videos</a>
             <a href="/contact/" class="hover:text-red-600">Contact Us</a>
-            <a href="https://www.facebook.com/yourpage" target="_blank" class="hover:text-red-600">
+            <a href="/my-orders" class="hover:text-red-600">Track Order</a>
+            
+<!-- Social Icons Container -->
+<div class="social-icons">
 
-<!-- Container to align icons in one line -->
-<div class="social-icons" style="display: flex; gap: 16px; align-items: center;">
-  <!-- WhatsApp Channel -->
-  <a href="https://whatsapp.com/channel/0029Va5Lkzc3mFYDsn19nP01" target="_blank" class="hover:text-green-600">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="24" height="24" viewBox="0 0 24 24">
-      <path d="M22.675 0h-21.35C.596 0 0 .594 0 1.326v21.348C0 23.405.595 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.892-4.788 4.657-4.788 1.325 0 2.464.099 2.795.143v3.24l-1.918.001c-1.505 0-1.797.716-1.797 1.764v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.324-.595 1.324-1.326V1.326C24 .594 23.405 0 22.675 0z"/>
+
+  <a href="https://www.instagram.com/phantom_moto?igsh=M253Y3dpdThiejlm&utm_source=qr" target="_blank" rel="noopener" aria-label="Instagram" class="social-icon instagram">
+    <svg viewBox="0 0 24 24" fill="none"  >
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
     </svg>
   </a>
 
-  <!-- Instagram -->
-  <a href="https://www.instagram.com/phantom_moto?igsh=M253Y3dpdThiejlm&utm_source=qr" target="_blank" class="hover:text-pink-500">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="24" height="24" viewBox="0 0 24 24">
-      <path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zM12 7.25a4.75 4.75 0 1 0 0 9.5 4.75 4.75 0 0 0 0-9.5z"/>
-      <circle cx="17.5" cy="6.5" r="1.25"/>
-      <circle cx="12" cy="12" r="3"/>
-    </svg>
-  </a>
-
-  <!-- YouTube -->
-  <a href="https://youtube.com/@ronitsingh2829?si=imEmfMTrD38lMFQd" target="_blank" class="hover:text-red-600">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="24" height="24" viewBox="0 0 24 24">
-      <path d="M19.615 3.184A2.997 2.997 0 0 0 17.502 2H6.498a2.997 2.997 0 0 0-2.114 1.184A31.673 31.673 0 0 0 3 9.998a31.673 31.673 0 0 0 1.384 6.814A2.997 2.997 0 0 0 6.498 18h11.004a2.997 2.997 0 0 0 2.113-1.188A31.673 31.673 0 0 0 21 9.998a31.673 31.673 0 0 0-1.385-6.814zM10 15.5v-7l6 3.5-6 3.5z"/>
+  <a href="https://youtube.com/@ronitsingh2829?si=imEmfMTrD38lMFQd" target="_blank" rel="noopener" aria-label="YouTube" class="social-icon youtube">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" >
+      <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.95C18.88 4 12 4 12 4s-6.88 0-8.59.47a2.78 2.78 0 0 0-1.95 1.95A29 29 0 0 0 1 12a29 29 0 0 0 .47 5.58 2.78 2.78 0 0 0 1.95 1.95C5.12 20 12 20 12 20s6.88 0 8.59-.47a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"></path>
+      <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"></polygon>
     </svg>
   </a>
 </div>
+
+
+
+ 
 
 
           </div>
@@ -312,42 +309,61 @@
       }
       
       
+.social-icons {
+  display: flex;
+  gap: 25px;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+}
 
-      /* WhatsApp Floating Button */
-      .whatsapp-float {
-        position: fixed;
-        bottom: 40%;
-        background: #25d366;
-        color: #fff;
-        border-radius: 30px;
-        border-top-right-radius: 0 ;
-        border-bottom-right-radius: 0 ;
-        padding: 10px 18px 10px 14px;
-        font-size: 20px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.18);
-        z-index: 1100;
-        display: flex;
-        align-items: center;
-        text-decoration: none;
-        font-weight: 600;
-        transition: background 0.2s;
-        right : 0;
-      }
-      .whatsapp-float:hover {
-        background: #128c7e;
-        color: #fff;
-        text-decoration: none;
-      }
-      @media (max-width: 767px) {
-        .whatsapp-float { 
-          font-size: 18px;
-           padding: 8px 14px 8px 12px;
-            bottom: 40%;
-           border-top-right-radius: 0 ;
-        border-bottom-right-radius: 0 ;
-      right : 0;
-        }
-      }
+.social-icon {
+  display: inline-flex;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: #eee;
+  color: #444;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  outline: none;
+  border: none; /* kill any border */
+}
+
+.social-icon:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(100, 100, 255, 0.5); /* subtle focus ring */
+}
+
+.social-icon svg {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.social-icon.whatsapp:hover {
+  background-color: #25D366;
+  color: white;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.7);
+}
+
+.social-icon.instagram:hover {
+  background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(253, 89, 73, 0.7);
+}
+
+.social-icon.youtube:hover {
+  background-color: #FF0000;
+  color: white;
+  box-shadow: 0 4px 12px rgba(255, 0, 0, 0.7);
+}
+
     </style>
     <!-- Font Awesome already included in <head> -->
     <script>
@@ -476,12 +492,12 @@
                       }
                       return `<div style='display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;'>
                         <div style='display:flex;align-items:center;'>
-                          ${item.image ? `<img src='${item.image}' alt='' style='width:32px;height:32px;object-fit:cover;border-radius:6px;margin-right:8px;'>` : ''}
+                          ${item.image ? `<img src='${item.image}' alt='' style='width:52px;height:57px;object-fit:cover;border-radius:6px;margin-right:8px;'>` : ''}
                           <span style='font-weight:500;'>${item.name}</span>
                           ${colorHtml}
                         </div>
                         <span style='color:#888;'>x${item.quantity}</span>
-                        <span style='font-weight:600;'>₹${item.price}</span>
+                        <span style='font-weight:600;'>₹${item.offer_price}</span>
                       </div>`;
                     }).join('');
                   } else {
@@ -489,7 +505,7 @@
                   }
                 })
                 .catch(() => {
-                  cartContent.innerHTML = '<span style="color:red;">Error loading cart.</span>';
+                  cartContent.innerHTML = "<span style='color:red;'>Error loading cart</span>";
                 });
             } else {
               cartWindow.style.display = 'none';

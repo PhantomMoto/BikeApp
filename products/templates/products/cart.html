@@ -87,78 +87,19 @@ Your selected accessories are just a click away. Review your cart, make changes,
       <tr>
         <td colspan="4" class="cart-total-label"><strong>Total:</strong></td>
         <td colspan="2" class="cart-total-value">₹{{ total }}</td>
+        
       </tr>
     </tfoot>
   </table>
 </div>
 <div class="cart-actions-row">
-  <a href="/products/" class="cart-continue-link">Continue Shopping</a>
+  <a href="/products/" class="cart-continue-link" style="padding: 10px 10px;height: fit-content;border: none;">Continue Shopping</a>
   
-  <button id="rzp-checkout-btn" class="cart-btn cart-btn-checkout" style="background:#F97A00;color:#fff;padding:12px 32px;border-radius:8px;font-size:1.1rem;font-weight:600;border:none;cursor:pointer;">Checkout & Pay</button>
-</div>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script>
-  document.getElementById('rzp-checkout-btn').onclick = function(e){
-    e.preventDefault();
-    var amount = {{ total|floatformat:2|add:"0"|floatformat:0 }} * 100; // in paise
-    fetch("/razorpay/create-order/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": '{{ csrf_token }}'
-      },
-      body: JSON.stringify({ amount: amount })
-    })
-    .then(response => response.json())
-    .then(data => {
-      var options = {
-        "key": data.key,
-        "amount": amount,
-        "currency": "INR",
-        "name": "PhantomMoto",
-        "description": "Order Payment",
-        // "image": "/static/logo.png",
-        "order_id": data.order_id,
-        "handler": function (response){
-          // Verify payment on backend
-          fetch("/razorpay/verify/", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-CSRFToken": '{{ csrf_token }}'
-            },
-            body: JSON.stringify({
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_signature: response.razorpay_signature
-            })
-          })
-          .then(res => res.json())
-          .then(result => {
-            if(result.success){
-              alert('Payment successful! Payment ID: ' + response.razorpay_payment_id);
-              window.location.href = "/post-payment/";
-            } else {
-              alert('Payment verification failed: ' + (result.error || 'Unknown error'));
-            }
-          });
-        },
-        "prefill": {
-          "email": "{{ user.email|default:'' }}"
-        },
-        "theme": {
-          "color": "#F97A00"
-        }
-      };
-      var rzp1 = new Razorpay(options);
-      rzp1.open();
-    });
-  }
-</script>
+  
+ <button style="background-color: #1c5980;height: fit-content; padding: 10px 10px;border-radius: 10px;color: white;width: fit-content;margin-left: 30%;"><a href="/shipping_form" >Proceed to Checkout</a></button>
 {% else %}
 <p class="cart-empty">Your cart is empty.</p>
 <div class="cart-empty-actions">
-  <a href="/products/" class="cart-continue-link">Continue Shopping</a>
 </div>
 {% endif %}
 
@@ -169,5 +110,303 @@ body {
   background-size: cover;
   background-repeat: no-repeat;
 }
+/* Cart container and table */
+.cart-container {
+  max-width: 900px;
+  margin: 3rem auto 4rem;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.07);
+  padding: 2rem 2.5rem;
+  overflow-x: auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Table */
+.cart-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 12px;
+}
+
+.cart-table thead tr th {
+  text-align: left;
+  padding: 12px 15px;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #222;
+  border-bottom: 2px solid #ddd;
+}
+
+.cart-table tbody tr {
+  background: #fefefe;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.04);
+  border-radius: 12px;
+}
+
+.cart-table tbody tr td {
+  padding: 14px 15px;
+  vertical-align: middle;
+  font-size: 0.95rem;
+  color: #333;
+  position: relative;
+}
+
+/* Product image */
+.cart-table tbody tr td img {
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 1px 5px rgb(0 0 0 / 0.1);
+  margin-top: 6px;
+}
+
+/* Quantity input */
+.cart-qty-input {
+  width: 60px;
+  padding: 6px 8px;
+  border: 1.8px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-bottom: 8px;
+  transition: border-color 0.3s;
+}
+
+.cart-qty-input:focus {
+  border-color: #27ae60;
+  outline: none;
+}
+
+/* Color select */
+.cart-color-select {
+  width: 130px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  border: 1.8px solid #ccc;
+  font-size: 1rem;
+  display: block;
+  transition: border-color 0.3s;
+}
+
+.cart-color-select:focus {
+  border-color: #27ae60;
+  outline: none;
+}
+
+/* Buttons */
+.cart-btn {
+  cursor: pointer;
+  border-radius: 25px;
+  padding: 8px 20px;
+  font-weight: 700;
+  font-size: 1rem;
+  border: none;
+  transition: background-color 0.3s ease, transform 0.15s ease;
+  user-select: none;
+  display: inline-block;
+  min-width: 110px;
+  text-align: center;
+  letter-spacing: 0.05em;
+  margin-top: 6px;
+}
+
+.cart-btn-update {
+  background-color: #2980b9;
+  color: #fff;
+}
+
+.cart-btn-update:hover {
+  background-color: #1c5980;
+  transform: translateY(-2px);
+}
+
+.cart-btn-remove {
+  background-color: #e74c3c;
+  color: #fff;
+}
+
+.cart-btn-remove:hover {
+  background-color: #a82824;
+  transform: translateY(-2px);
+}
+
+/* Color indicator */
+td:nth-child(3) span {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+td:nth-child(3) span[title] {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  margin-right: 6px;
+  box-shadow: 0 0 4px rgba(0,0,0,0.1);
+}
+.cart-btn {
+  padding: 10px 26px;          /* More comfy padding */
+  border-radius: 30px;         /* Pill-shaped smooth corners */
+  font-weight: 700;
+  font-size: 1.05rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.25s ease, transform 0.15s ease;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+  user-select: none;
+  letter-spacing: 0.05em;
+  display: inline-block;
+  min-width: 120px;
+  text-align: center;
+  color: white;
+  background-color: #27ae60;   /* Green base */
+}
+
+/* Update button */
+.cart-btn-update {
+  background-color: #2980b9;
+}
+
+.cart-btn-update:hover {
+  background-color: #1c5980;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+}
+
+/* Remove button */
+.cart-btn-remove {
+  background-color: #e74c3c;
+}
+
+.cart-btn-remove:hover {
+  background-color: #a82824;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+}
+
+
+/* Total row */
+.cart-total-label {
+  text-align: right;
+  font-size: 1.15rem;
+  padding-right: 15px;
+  color: #111;
+  font-weight: 700;
+}
+
+.cart-total-value {
+  font-weight: 800;
+  font-size: 1.3rem;
+  color: #222;
+  padding-left: 15px;
+}
+
+/* Cart action buttons container */
+.cart-actions-row {
+  max-width: 900px;
+  width: fit-content;
+  margin: 0 auto 3rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 1rem;
+  gap: 1rem;
+}
+.cart-continue-link {
+  /* You have padding: 12px 32px; or big min-width or width somewhere? */
+  display: inline-block;
+  background-color: orange;
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-decoration: none;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  user-select: none;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.cart-continue-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+}
+
+
+.cart-actions-row button, 
+.cart-actions-row a.btn-proceed-checkout {
+  background-color: #27ae60;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 12px 32px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgb(39 174 96 / 0.5);
+  transition: background-color 0.3s ease, transform 0.15s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.cart-actions-row button:hover,
+.cart-actions-row a.btn-proceed-checkout:hover {
+  
+  transform: translateY(-3px);
+}
+
+/* Empty cart */
+.cart-empty {
+  text-align: center;
+  font-size: 1.4rem;
+  margin: 5rem 0 2rem;
+  color: #666;
+  font-style: italic;
+}
+
+.cart-empty-actions {
+  text-align: center;
+}
+
+.cart-empty-actions .cart-continue-link {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #27ae60;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.3s ease;
+}
+
+
+/* Responsive */
+@media (max-width: 700px) {
+  .cart-container {
+    padding: 2rem 1rem;
+  }
+  .cart-table thead {
+    display: none;
+  }
+  .cart-table tbody tr {
+    display: block;
+    margin-bottom: 1.8rem;
+    box-shadow: none;
+    border-radius: 12px;
+    background: #f9f9f9;
+    padding: 1rem;
+  }
+  .cart-table tbody tr td {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+  }
+  .cart-table tbody tr td:first-child {
+    font-weight: 700;
+  }
+  .cart-actions-row {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0 1rem;
+  }
+}
+
 </style>
 {% endblock %}

@@ -1,0 +1,145 @@
+{% extends 'products/base.html' %}
+{% block content %}
+{% load static %}
+
+<h2>Order Summary</h2>
+
+<!-- 🚚 Shipping details -->
+<div>
+  <h3>Shipping Details</h3>
+  <p><strong>Name:</strong> {{ shipping.name }}</p>
+  <p><strong>Address:</strong> {{ shipping.address }}, {{ shipping.city }}, {{ shipping.state }}, {{ shipping.pincode }}</p>
+  <p><strong>Phone:</strong> {{ shipping.phone }}</p>
+  <p><strong>Email:</strong> {{ shipping.email }}</p>
+  <p><strong>Priority:</strong> {{ shipping.priority }}</p>
+</div>
+
+<hr>
+
+<!-- 🛒 Cart items summary -->
+<h3>Cart Items</h3>
+<table border="1" cellpadding="8" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th>Qty</th>
+      <th>Price (₹)</th>
+      <th>Subtotal (₹)</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in cart_items %}
+    <tr>
+      <td>{{ item.accessory.name }}</td>
+      <td>{{ item.quantity }}</td>
+      <td>{{ item.accessory.offer_price }}</td>
+      <td>{{ item.subtotal }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="3"><strong>Subtotal:</strong></td>
+      <td>₹{{ subtotal }}</td>
+    </tr>
+    <tr>
+      <td colspan="3"><strong>Delivery Charge:</strong></td>
+      <td>₹{{ delivery_cost }}</td>
+    </tr>
+    <tr>
+      <td colspan="3"><strong>Grand Total:</strong></td>
+      <td><strong>₹{{ grand_total }}</strong></td>
+    </tr>
+  </tfoot>
+</table>
+
+<!-- 💳 Payment button -->
+<form method="post">
+  {% csrf_token %}
+   <button id="rzp-checkout-btn" class="cart-btn cart-btn-checkout" style="background:#F97A00;color:#fff;padding:12px 32px;border-radius:8px;font-size:1.1rem;font-weight:600;border:none;cursor:pointer;">Checkout & Pay</button>
+</div>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  document.getElementById('rzp-checkout-btn').onclick = function(e){
+    e.preventDefault();
+    var amount = {{ total|floatformat:2|add:"0"|floatformat:0 }} * 100; // in paise
+    fetch("/razorpay/create-order/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": '{{ csrf_token }}'
+      },
+      body: JSON.stringify({ amount: amount })
+    })
+    .then(response => response.json())
+    .then(data => {
+      var options = {
+        "key": data.key,
+        "amount": amount,
+        "currency": "INR",
+        "name": "PhantomMoto",
+        "description": "Order Payment",
+        // "image": "/static/logo.png",
+        "order_id": data.order_id,
+        "handler": function (response){
+          // Verify payment on backend
+          fetch("/razorpay/verify/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature
+            })
+          })
+          .then(res => res.json())
+          .then(result => {
+            if(result.success){
+              alert('Payment successful! Payment ID: ' + response.razorpay_payment_id);
+              window.location.href = "/submit-to-delhivery/";
+            } else {
+              alert('Payment verification failed: ' + (result.error || 'Unknown error'));
+            }
+          });
+        },
+        "prefill": {
+          "email": "{{ user.email|default:'' }}"
+        },
+        "theme": {
+          "color": "#F97A00"
+        }
+      };
+      var rzp1 = new Razorpay(options);
+      rzp1.open();
+    });
+  }
+</script>
+</form>
+
+{% endblock %}
+
+{% block extra_style %}
+<style>
+body {
+  background-color: #f9f9f9;
+}
+h2, h3 {
+  color: #222;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+table th {
+  background: #333;
+  color: #fff;
+}
+table td, table th {
+  border: 1px solid #ddd;
+}
+</style>
+{% endblock %}

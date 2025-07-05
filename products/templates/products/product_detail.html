@@ -6,61 +6,65 @@
 {% block content %}
 <div class="product-detail-container">
   <div class="product-detail-header">
-    <div style="display:flex;justify-content:space-between;align-items:center;">
+    <div style="display:flex;justify-content:space-between;align-items:center; gap: 1rem;">
       <h1 style="margin-bottom:0;">{{ accessory.name }}</h1>
       <button id="share-btn" title="Share this product" style="background:none;border:none;cursor:pointer;font-size:1.7rem;margin-left:10px;">
         <span style="vertical-align:middle;">🔗</span>
       </button>
     </div>
     {% if accessory.image %}
+    <div class="pdi">
+
       <img src="{{ accessory.image.url }}" alt="{{ accessory.name }}" class="product-detail-img" />
+    </div>
     {% endif %}
     <p class="product-detail-price">
       <strong>₹{{ accessory.offer_price }}</strong>
       {% if accessory.mrp and accessory.mrp > accessory.offer_price %}
-        <span style="text-decoration:line-through;color:#888;font-size:0.95em;">₹{{ accessory.mrp }}</span>
+        <span style="text-decoration:line-through;color:#888;font-size:0.95em; margin-left: 0.8rem;">₹{{ accessory.mrp }}</span>
       {% endif %}
       {% if accessory.discount_percent %}
-        <span style="color:#27ae60;font-weight:600;">{{ accessory.discount_percent }}% OFF</span>
+        <span style="color:#27ae60;font-weight:600; margin-left: 0.8rem;">{{ accessory.discount_percent }}% OFF</span>
       {% endif %}
     </p>
     <p class="product-detail-shortdesc">{{ accessory.description }}</p>
   </div>
   <div class="product-detail-body">
-    <h3>Product Details</h3>
+    <h2 class="pd">Product Details</h3>
     <div class="product-detail-longdesc">{{ accessory.large_description|linebreaks }}</div>
     <p><strong>Category:</strong> {% for cat in accessory.categories.all %}{{ cat.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
-    <p><strong>Available Colors:</strong> {% for color in accessory.colors.all %}<span style="display:inline-block;width:18px;height:18px;border-radius:50%;background:{{ color.hex_code }};border:1px solid #ccc;vertical-align:middle;margin-right:4px;"></span> {{ color.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
-    <form action="{% url 'products:cart_add' accessory.id %}" method="post" style="margin-top:10px;">
+    <p><strong>Available Colors:</strong> {% for color in accessory.colors.all %}<span class="color-circle" style="background:{{ color.hex_code }};" title="{{ color.name }}"></span> {{ color.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+    <form action="{% url 'products:cart_add' accessory.id %}" method="post" style="margin-top:20px;">
       {% csrf_token %}
       <div class="cart-control" data-accessory-id="{{ accessory.id }}">
         <input type="hidden" name="color" value="">
-        <button class="btn-add-cart">Add to Cart</button>
+        <div class="btnwrapper">
+
+          <button class="btn-add-cart">Add to Cart</button>
+        </div>
       </div>
     </form>
   </div>
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('.color-select').forEach(function(select) {
-    select.addEventListener('change', function() {
-      const card = select.closest('.product-detail-container');
-      if (card) {
-        const input = card.querySelector('input[name="color"]');
-        if (input) input.value = select.value;
-      }
-    });
-  });
-  document.querySelectorAll('.btn-add-cart').forEach(button => {
-    button.addEventListener('click', function(e) {
+  // Add to Cart button logic
+  const addCartBtn = document.querySelector('.btn-add-cart');
+  if (addCartBtn) {
+    addCartBtn.addEventListener('click', function (e) {
       e.preventDefault();
+      const container = this.closest('.cart-control');
+      const accessoryId = container.dataset.accessoryId;
       const card = this.closest('.product-detail-container');
-      const accessoryId = this.closest('.cart-control').dataset.accessoryId;
-      const color = card.querySelector('input[name="color"]') ? card.querySelector('input[name="color"]').value : '';
+      const colorInput = card.querySelector('input[name="color"]');
+      const color = colorInput ? colorInput.value : '';
+
+      // If color select is required, handle it
       if (card.querySelector('.color-select') && !color) {
         alert('Please select a color before adding to cart.');
         return;
       }
+
       fetch(`/ajax/cart/add/${accessoryId}/`, {
         method: 'POST',
         headers: {
@@ -69,22 +73,30 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         body: JSON.stringify({ color: color })
       })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          const cartCountBubble = document.getElementById('cart-count-bubble');
-          if (cartCountBubble) {
-            cartCountBubble.textContent = data.total_qty;
-            cartCountBubble.style.display = 'inline-block';
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            // Update bubble
+            const cartCountBubble = document.getElementById('cart-count-bubble');
+            if (cartCountBubble) {
+              cartCountBubble.textContent = data.total_qty;
+              cartCountBubble.style.display = 'inline-block';
+            }
+            // Redirect after update (final boss move)
+            window.location.href = '/cart/';
           }
-        }
-      });
+        })
+        .catch(err => {
+          console.error('Failed to add to cart:', err);
+          alert('Something went wrong. Please try again!');
+        });
     });
-  });
+  }
+
   // Share button logic
   const shareBtn = document.getElementById('share-btn');
   if (shareBtn) {
-    shareBtn.addEventListener('click', function() {
+    shareBtn.addEventListener('click', function () {
       const url = window.location.href;
       const title = document.title;
       if (navigator.share) {
@@ -98,57 +110,102 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 <style>
+  .btnwrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+  .pd{
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #333;
+    
+  text-decoration: underline;
+  }
 .product-detail-container {
   max-width: 800px;
-  margin: 3rem auto 4rem;
+  margin: 4rem auto 5rem;
   background: #fff;
   border-radius: 18px;
-  box-shadow: 0 2px 12px rgb(0 0 0 / 0.08);
+  box-shadow: 0 4px 20px rgb(0 0 0 / 0.12);
   overflow: hidden;
-  padding-bottom: 2rem;
+  padding-bottom: 3rem;
+  padding-left: 3rem;
+  padding-right: 3rem;
 }
 .product-detail-header {
-  padding: 2.5rem 2rem 1.5rem;
+  padding: 3rem 0 2rem;
   border-bottom: 1px solid #eee;
   text-align: center;
 }
 .product-detail-header h1 {
-  margin: 0 0 0.5rem;
-  font-weight: 800;
-  font-size: 2rem;
+  font-weight: 900;
+  font-size: 2.4rem;
+  letter-spacing: 0.03em;
+}
+.pdi{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
 }
 .product-detail-img {
-  max-width: 320px;
+  max-width: 380px;
   width: 100%;
-  border-radius: 12px;
-  margin: 1.5rem auto 1rem;
+  border-radius: 16px;
   display: block;
+  box-shadow: 0 6px 15px rgb(0 0 0 / 0.1);
 }
 .product-detail-price {
-  font-size: 1.3rem;
-  margin: 0.5rem 0 0.7rem;
+  font-size: 1.6rem;
+  margin: 1rem 0 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.product-detail-price span {
+  margin-left: 1rem;
 }
 .product-detail-shortdesc {
   color: #555;
-  font-size: 1.1rem;
-  margin-bottom: 1.2rem;
+  font-size: 1.25rem;
+  line-height: 1.5;
 }
 .product-detail-body {
-  padding: 2rem;
+  padding: 3rem 0 4rem;
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: #333;
 }
 .product-detail-longdesc {
-  font-size: 1.08rem;
-  color: #333;
-  margin-bottom: 1.5rem;
+  font-size: 1.12rem;
+  margin-bottom: 2.2rem;
+  color: #444;
+}
+.color-circle {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid #ccc;
+  vertical-align: middle;
+  margin-right: 6px;
+  box-shadow: 0 0 4px rgb(0 0 0 / 0.08);
 }
 .btn-add-cart {
   background-color: #27ae60;
   color: #fff;
   border: none;
-  padding: 10px;
-  border-radius: 5px;
+  padding: 14px 22px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  font-size: 1.2rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+  display: inline-block;
+  margin-top: 1rem;
+  min-width: 160px;
+  letter-spacing: 0.02em;
 }
 .btn-add-cart:hover {
   background-color: #219150;

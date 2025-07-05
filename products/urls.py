@@ -53,6 +53,12 @@ urlpatterns = [
     path('submit-to-delhivery/', views.submit_to_delhivery, name='submit_to_delhivery'),
     path('product/<slug:slug>/', views.product_detail, name='product_detail'),
     path('category-pdf/', views.category_pdf, name='category_pdf'),
+    path('shipping_form/', views.shipping_form, name='shipping_form'),
+    path('order_summary/', views.order_summary, name='order_summary'),
+    path('my-orders/', views.my_orders, name='my_orders'),
+    path('track-order/<str:order_id>/', views.track_order, name='track_order'),
+
+    
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 from django.conf import settings

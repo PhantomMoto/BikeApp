@@ -3,24 +3,36 @@ from django.utils.safestring import mark_safe
 from .models import Accessory, Blog, Category, YouTubeVideo, BikeBrand, BikeModel, FeaturedProduct, Color
 
 ### Accessory Admin ###
+from django.contrib import admin
+from django.utils.safestring import mark_safe
+from .models import Accessory
+
 @admin.register(Accessory)
 class AccessoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'mrp', 'offer_price', 'discount_percent', 'stock', 'is_universal', 'preview_img']
-    search_fields = ['name', 'size']
-    list_filter = ['is_universal', 'bike_models', 'categories', 'shipping_category']
+    search_fields = ['name']
+    list_filter = ['is_universal', 'bike_models', 'categories',]
     filter_horizontal = ['categories', 'bike_models', 'colors']
     fieldsets = (
         (None, {
-            'fields': ('image', 'name', 'colors', 'size', 'mrp', 'offer_price', 'discount_percent', 'stock', 'shipping_category', 'categories', 'bike_models', 'is_universal', 'description', 'large_description', 'slug')
+            'fields': (
+                'image', 'name', 'colors',
+                'shipment_width', 'shipment_height', 'shipment_weight',  # <-- Added here
+                'mrp', 'offer_price', 'discount_percent',
+                'stock',  'categories',
+                'bike_models', 'is_universal',
+                'description', 'large_description', 'slug'
+            ),
         }),
     )
     prepopulated_fields = {"slug": ("name",)}
 
     def preview_img(self, obj):
         if obj.image:
-            return mark_safe(f'<img src="{obj.image.url}" width="80" />')
+            return mark_safe(f'<img src="{obj.image.url}" style="width:80px; height:auto; border-radius:4px;" />')
         return "No Image"
     preview_img.short_description = "Image Preview"
+
 
 ### Featured Product Admin ###
 @admin.register(FeaturedProduct)
@@ -89,3 +101,38 @@ class ColorAdmin(admin.ModelAdmin):
     def color_preview(self, obj):
         return mark_safe(f'<span style="display:inline-block;width:24px;height:24px;background:{obj.hex_code};border-radius:50%;border:1px solid #ccc;"></span>')
     color_preview.short_description = "Preview"
+from django.contrib import admin
+from .models import Order
+
+
+## Order Admin
+# Register the Order model with the admin site
+from django.contrib import admin
+from .models import Order
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('order_id', 'user', 'amount', 'status', 'created_at', 'waybill')
+    list_filter = ('status', 'created_at')
+    search_fields = ('order_id', 'user__username', 'waybill', 'products_desc')
+    readonly_fields = ('created_at',)
+
+    fieldsets = (
+        ('Order Details', {
+            'fields': ('order_id', 'waybill', 'amount', 'products_desc', 'status')
+        }),
+        ('Customer Info', {
+            'fields': ('user', 'address')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at',)
+        }),
+    )
+
+    def has_add_permission(self, request):
+        # Prevent adding orders manually from admin
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        # Optional: Disable delete if you want full record keeping
+        return True

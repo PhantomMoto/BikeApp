@@ -1,0 +1,158 @@
+{% extends 'products/base.html' %}
+
+{% block content %}
+
+<style>
+/* Container for whole tracking box */
+.tracking-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  background: #f9f9f9;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
+}
+
+/* Headings */
+h2 {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #111;
+}
+
+h3 {
+  margin-top: 2rem;
+  font-size: 1.3rem;
+  color: #333;
+  border-left: 4px solid #000;
+  padding-left: 0.5rem;
+}
+
+/* Order details */
+.tracking-container p {
+  font-size: 1rem;
+  margin: 0.5rem 0;
+  color: #444;
+}
+
+strong {
+  color: #000;
+}
+
+/* Scan history as timeline style */
+ul.scan-history-list {
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0;
+  position: relative;
+}
+
+ul.scan-history-list::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(to bottom, #000, #555);
+}
+
+ul.scan-history-list li {
+  background: #fff;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+ul.scan-history-list li:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+ul.scan-history-list li::before {
+  content: '';
+  position: absolute;
+  left: 13px;
+  top: 20px;
+  width: 15px;
+  height: 15px;
+  background: #000;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+/* Back button styling */
+a.track-back-btn {
+  display: inline-block;
+  margin-top: 2rem;
+  text-decoration: none;
+  background: linear-gradient(135deg, #000, #333);
+  color: #fff;
+  padding: 0.8rem 1.6rem;
+  border-radius: 10px;
+  font-weight: bold;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+a.track-back-btn:hover {
+  background: linear-gradient(135deg, #222, #555);
+  transform: translateY(-2px);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+  .tracking-container {
+    padding: 1rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.2rem;
+  }
+
+  ul.scan-history-list li {
+    padding: 1rem;
+  }
+
+  a.track-back-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+</style>
+
+<div class="tracking-container">
+  <h2>Tracking: {{ order.order_id }}</h2>
+  <p><strong>Waybill:</strong> {{ order.waybill }}</p>
+
+  <p><strong>Current Status:</strong> {{ current_status }}</p>
+  <p><strong>Status Date:</strong> {{ current_status_date }}</p>
+  <p><strong>Location:</strong> {{ current_status_location }}</p>
+  <p><strong>Expected Delivery:</strong> {{ expected_delivery }}</p>
+
+  <h3>Scan History:</h3>
+  <ul class="scan-history-list">
+    {% for scan in scan_history %}
+      <li>
+        <strong style='margin-left: 10px;'>{{ scan.scan }}</strong> ({{ scan.type }}) <br>
+        Location: {{ scan.location }} <br>
+        Date & Time: {{ scan.datetime }} <br>
+        Note: {{ scan.instructions }}
+      </li>
+    {% empty %}
+      <li>No scan history available.</li>
+    {% endfor %}
+  </ul>
+
+  <a href="{% url 'products:my_orders' %}" class="track-back-btn">← Back to My Orders</a>
+</div>
+
+{% endblock %}

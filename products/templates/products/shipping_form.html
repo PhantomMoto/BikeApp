@@ -1,0 +1,276 @@
+{% extends 'products/base.html' %}
+{% block content %}
+{% load static %}
+
+<h2 class="page-title">Shipping & Order Details</h2>
+
+<form method="post" action="{% url 'products:shipping_form' %}" class="shipping-form" novalidate>
+  {% csrf_token %}
+  
+  <div class="form-group">
+    <label for="name" class="form-label">Full Name</label>
+    <input type="text" id="name" name="name" placeholder="Enter your full name" required autocomplete="name" />
+  </div>
+  
+  <div class="form-group">
+    <label for="email" class="form-label">Email</label>
+    <input type="email" id="email" name="email" placeholder="Enter your email" required autocomplete="email" />
+  </div>
+  
+  <div class="form-group">
+    <label for="phone" class="form-label">Phone (10 digits)</label>
+    <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required autocomplete="tel" pattern="[0-9]{10}" />
+  </div>
+  
+  <div class="form-group">
+    <label for="address" class="form-label">Full Address</label>
+    <textarea id="address" name="address" placeholder="Enter your full address" required rows="3"></textarea>
+  </div>
+  
+  <div class="form-row">
+    <div class="form-group half-width">
+      <label for="city" class="form-label">City</label>
+      <input type="text" id="city" name="city" placeholder="Enter your city" required />
+    </div>
+    <div class="form-group half-width">
+      <label for="state" class="form-label">State</label>
+      <input type="text" id="state" name="state" placeholder="Enter your state" required />
+    </div>
+  </div>
+  
+  <div class="form-row">
+    <div class="form-group half-width">
+      <label for="pincode" class="form-label">Pincode (6 digits)</label>
+      <input type="text" id="pincode" name="pincode" placeholder="Enter your pincode" required pattern="[0-9]{6}" />
+    </div>
+    <div class="form-group half-width">
+      <label for="priority" class="form-label">Shipping Priority</label>
+      <select id="priority" name="priority" required>
+        <option value="" disabled selected>Select shipping priority</option>
+        <option value="Surface">Surface</option>
+        <option value="Express">Express</option>
+      </select>
+    </div>
+  </div>
+
+  <h3 class="order-summary-title">Order Summary</h3>
+  <div class="order-summary">
+    {% for item in cart_items %}
+    <div class="order-item">
+      <div class="item-name">{{ item.accessory.name }}</div>
+      <div class="item-qty">Qty: {{ item.quantity }}</div>
+      <div class="item-price">₹{{ item.accessory.offer_price }}</div>
+      <div class="item-subtotal">₹{{ item.subtotal }}</div>
+    </div>
+    {% endfor %}
+    <div class="order-total">
+      <strong>Total:</strong> ₹{{ total }}
+    </div>
+  </div>
+
+  <!-- Hidden fields to send cart data -->
+  <input type="hidden" name="order_items" value='[{% for item in cart_items %}{"accessory": {"id": {{ item.accessory.id }}, "name": "{{ item.accessory.name }}", "price": {{ item.accessory.offer_price }}}, "quantity": {{ item.quantity }} }{% if not forloop.last %},{% endif %}{% endfor %}]'>
+  <input type="hidden" name="order_total" value="{{ total }}">
+
+  <button type="submit" class="btn-submit-order">Submit Order</button>
+</form>
+
+{% if error %}
+  <div class="error-message">{{ error }}</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_style %}
+<style>
+  body {
+    background-size: cover;
+    background-repeat: no-repeat;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .page-title {
+    text-align: center;
+    margin: 2.5rem 0 2rem;
+    font-weight: 900;
+    font-size: 2.4rem;
+    color: #27ae60;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+  }
+
+  .shipping-form {
+    max-width: 600px;
+    margin: 0 auto 4rem;
+    background: #fff;
+    padding: 2.5rem 3rem 3.5rem;
+    border-radius: 20px;
+    box-shadow: 0 12px 28px rgb(0 0 0 / 0.12);
+    border: 1.5px solid #27ae60;
+    transition: box-shadow 0.3s ease;
+  }
+  .shipping-form:hover {
+    box-shadow: 0 16px 40px rgb(39 174 96 / 0.35);
+  }
+
+  /* Labels on top */
+  .form-label {
+    display: block;
+    font-weight: 700;
+    color: #27ae60;
+    margin-bottom: 8px;
+    font-size: 1rem;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    user-select: none;
+  }
+
+  /* Inputs and selects */
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 1rem;
+    border-radius: 12px;
+    border: 2.5px solid #ccc;
+    background: #f9f9f9;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+    font-weight: 600;
+    color: #333;
+    resize: vertical;
+  }
+
+  .form-group input::placeholder,
+  .form-group textarea::placeholder {
+    color: #aaa;
+    font-weight: 400;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: #27ae60;
+    background: #fff;
+    box-shadow: 0 0 12px rgba(39, 174, 96, 0.4);
+  }
+
+  /* Hide native select arrow */
+  select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image:
+      linear-gradient(45deg, transparent 50%, #27ae60 50%),
+      linear-gradient(135deg, #27ae60 50%, transparent 50%);
+    background-position:
+      calc(100% - 20px) calc(1em + 2px),
+      calc(100% - 15px) calc(1em + 2px);
+    background-size: 6px 6px;
+    background-repeat: no-repeat;
+    padding-right: 42px;
+    cursor: pointer;
+  }
+
+  /* Form rows for side-by-side inputs */
+  .form-row {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .half-width {
+    flex: 1;
+  }
+
+  /* Order summary styles */
+  .order-summary {
+    border: 2px solid #27ae60;
+    border-radius: 16px;
+    padding: 1.2rem 2rem;
+    margin-top: 2.8rem;
+    background: #f6fff6;
+    box-shadow: inset 0 0 10px rgb(39 174 96 / 0.1);
+  }
+
+  .order-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid #c6e9c6;
+    font-size: 1.05rem;
+    color: #222;
+    font-weight: 600;
+  }
+
+  .order-item:last-child {
+    border-bottom: none;
+  }
+
+  .item-name {
+    flex: 2.5;
+  }
+
+  .item-qty,
+  .item-price,
+  .item-subtotal {
+    flex: 1;
+    text-align: center;
+    font-weight: 600;
+    color: #2e7d32;
+  }
+
+  .order-total {
+    text-align: right;
+    font-weight: 900;
+    font-size: 1.5rem;
+    margin-top: 1.3rem;
+    color: #27ae60;
+  }
+
+  /* Submit button */
+  .btn-submit-order {
+    background-color: #27ae60;
+    color: white;
+    font-weight: 800;
+    font-size: 1.25rem;
+    padding: 16px 38px;
+    border: none;
+    border-radius: 40px;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    margin-top: 3rem;
+    box-shadow: 0 8px 24px rgba(39, 174, 96, 0.5);
+    transition: background-color 0.3s ease, transform 0.15s ease;
+  }
+
+  .btn-submit-order:hover {
+    background-color: #1e8449;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 36px rgba(30, 132, 73, 0.7);
+  }
+
+  /* Error message */
+  .error-message {
+    max-width: 600px;
+    margin: 1rem auto;
+    padding: 1.2rem 1.5rem;
+    background-color: #ffeded;
+    color: #b32e2e;
+    border: 1.5px solid #b32e2e;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-align: center;
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .form-row {
+      flex-direction: column;
+    }
+  }
+</style>
+{% endblock %}

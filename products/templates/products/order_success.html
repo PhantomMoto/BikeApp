@@ -7,18 +7,89 @@
     {% if waybill %}
       <p>Your Delhivery Waybill: <strong>{{ waybill }}</strong></p>
     {% endif %}
-    {% if delhivery_response %}
-      <pre style="background:#f8f8f8;padding:1em;border-radius:6px;overflow-x:auto;font-size:0.95em;">{{ delhivery_response|safe|escape }}</pre>
-    {% endif %}
     <p>Thank you for your order. You will receive a confirmation soon.</p>
-    <a href="/products/">Continue Shopping</a>
+    <div class="success-buttons">
+      <a href="/my-orders/" class="btn-orders">Check My Orders</a>
+      <a href="/products/" class="btn-continue">Continue Shopping</a>
+    </div>
   </div>
-{% endblock %}
-{% block extra_style %}
-<style>
-body {
-  background-size: cover;
-  background-repeat: no-repeat;
+
+<style>body {
+  background: linear-gradient(135deg, #f0fff4, #e0f7fa);
+  font-family: 'Poppins', sans-serif;
 }
+
+.order-success {
+  max-width: 600px;
+  margin: 5rem auto;
+  background: #ffffffdd;
+  padding: 2.5rem 3rem;
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+
+.order-success h2 {
+  color: #2e7d32;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.order-success p {
+  color: #444;
+  margin: 0.5rem 0 1rem;
+  font-weight: 500;
+}
+
+.success-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.btn-orders,
+.btn-continue {
+  background: linear-gradient(135deg, #66bb6a, #43a047);
+  color: #fff;
+  text-decoration: none;
+  padding: 12px 26px;
+  border-radius: 50px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.btn-orders:hover,
+.btn-continue:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(67, 160, 71, 0.5);
+}
+
+.btn-continue {
+  background: linear-gradient(135deg, #F97A00, #d35400);
+}
+
+.btn-continue:hover {
+  box-shadow: 0 8px 20px rgba(249, 122, 0, 0.5);
+}
+
+@media (max-width: 600px) {
+  .order-success {
+    padding: 1.5rem 2rem;
+  }
+
+  .order-success h2 {
+    font-size: 1.5rem;
+  }
+
+  .success-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
 </style>
 {% endblock %}

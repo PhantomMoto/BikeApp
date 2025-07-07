@@ -9,19 +9,19 @@ from .models import Accessory
 
 @admin.register(Accessory)
 class AccessoryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'mrp', 'offer_price', 'discount_percent', 'stock', 'is_universal', 'preview_img']
-    search_fields = ['name']
-    list_filter = ['is_universal', 'bike_models', 'categories',]
+    list_display = ['name', 'mrp', 'offer_price', 'discount_percent', 'stock', 'is_universal', 'preview_img','is_COD']
+    search_fields = ['name', "is_COD"]
+    list_filter = ['is_universal', 'bike_models', 'categories',"is_COD"]
     filter_horizontal = ['categories', 'bike_models', 'colors']
     fieldsets = (
         (None, {
             'fields': (
                 'image', 'name', 'colors',
-                'shipment_width', 'shipment_height', 'shipment_weight',  # <-- Added here
+                'shipment_width', 'shipment_height', 'shipment_weight','shipment_length',  # <-- Added here
                 'mrp', 'offer_price', 'discount_percent',
                 'stock',  'categories',
                 'bike_models', 'is_universal',
-                'description', 'large_description', 'slug'
+                'description', 'large_description', 'slug','is_COD'
             ),
         }),
     )

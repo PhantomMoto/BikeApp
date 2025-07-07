@@ -2,67 +2,73 @@
 {% block content %}
 {% load static %}
 
-<h2>Order Summary</h2>
+<h2 class="page-title">Order Summary</h2>
 
-<!-- 🚚 Shipping details -->
-<div>
-  <h3>Shipping Details</h3>
-  <p><strong>Name:</strong> {{ shipping.name }}</p>
-  <p><strong>Address:</strong> {{ shipping.address }}, {{ shipping.city }}, {{ shipping.state }}, {{ shipping.pincode }}</p>
-  <p><strong>Phone:</strong> {{ shipping.phone }}</p>
-  <p><strong>Email:</strong> {{ shipping.email }}</p>
-  <p><strong>Priority:</strong> {{ shipping.priority }}</p>
+<div class="summary-container">
+  <!-- 🚚 Shipping details -->
+  <div class="shipping-details">
+    <p><strong>Name:</strong> {{ shipping.name }}</p>
+    <p><strong>Address:</strong> {{ shipping.address }}, {{ shipping.city }}, {{ shipping.state }}, {{ shipping.pincode }}</p>
+    <p><strong>Phone:</strong> {{ shipping.phone }}</p>
+    <p><strong>Email:</strong> {{ shipping.email }}</p>
+    <p><strong>Priority:</strong> {{ shipping.priority }}</p>
+    <p><strong>Payment Mode:</strong> {{ shipping.mode }}</p> <!-- ✅ Added -->
+  </div>
+  
+  <!-- 🛒 Cart items summary -->
+  <div class="cart-table-container">
+    <table class="cart-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Qty</th>
+          <th>Price (₹)</th>
+          <th>Subtotal (₹)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in cart_items %}
+        <tr>
+          <td>{{ item.accessory.name }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.accessory.offer_price }}</td>
+          <td>{{ item.subtotal }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" class="text-right">Subtotal:</td>
+          <td>₹{{ subtotal }}</td>
+        </tr>
+        <tr>
+          <td colspan="3" class="text-right">Delivery Charge:</td>
+          <td>₹{{ delivery_cost }}</td>
+        </tr>
+        <tr>
+          <td colspan="3" class="text-right total-label">Grand Total:</td>
+          <td class="grand-total">₹{{ grand_total }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <!-- 💳 Payment button -->
+ 
+    {% if shipping.mode == "COD" %}
+      <button type="submit" class="pay-button" id='cod-pay'><a href="/submit-to-delhivery">Place Order (COD)</a></button>
+    {% else %}
+      <button id="rzp-checkout-btn" class="pay-button">Checkout & Pay</button>
+    {% endif %}
+
 </div>
 
-<hr>
-
-<!-- 🛒 Cart items summary -->
-<h3>Cart Items</h3>
-<table border="1" cellpadding="8" cellspacing="0">
-  <thead>
-    <tr>
-      <th>Product</th>
-      <th>Qty</th>
-      <th>Price (₹)</th>
-      <th>Subtotal (₹)</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for item in cart_items %}
-    <tr>
-      <td>{{ item.accessory.name }}</td>
-      <td>{{ item.quantity }}</td>
-      <td>{{ item.accessory.offer_price }}</td>
-      <td>{{ item.subtotal }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-  <tfoot>
-    <tr>
-      <td colspan="3"><strong>Subtotal:</strong></td>
-      <td>₹{{ subtotal }}</td>
-    </tr>
-    <tr>
-      <td colspan="3"><strong>Delivery Charge:</strong></td>
-      <td>₹{{ delivery_cost }}</td>
-    </tr>
-    <tr>
-      <td colspan="3"><strong>Grand Total:</strong></td>
-      <td><strong>₹{{ grand_total }}</strong></td>
-    </tr>
-  </tfoot>
-</table>
-
-<!-- 💳 Payment button -->
-<form method="post">
-  {% csrf_token %}
-   <button id="rzp-checkout-btn" class="cart-btn cart-btn-checkout" style="background:#F97A00;color:#fff;padding:12px 32px;border-radius:8px;font-size:1.1rem;font-weight:600;border:none;cursor:pointer;">Checkout & Pay</button>
-</div>
+{% if shipping.mode != "COD" %}
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
   document.getElementById('rzp-checkout-btn').onclick = function(e){
     e.preventDefault();
-    var amount = {{ total|floatformat:2|add:"0"|floatformat:0 }} * 100; // in paise
+    var amount = {{ grand_total|floatformat:2|add:"0"|floatformat:0 }} * 100; // in paise
     fetch("/razorpay/create-order/", {
       method: "POST",
       headers: {
@@ -79,10 +85,8 @@
         "currency": "INR",
         "name": "PhantomMoto",
         "description": "Order Payment",
-        // "image": "/static/logo.png",
         "order_id": data.order_id,
         "handler": function (response){
-          // Verify payment on backend
           fetch("/razorpay/verify/", {
             method: "POST",
             headers: {
@@ -116,30 +120,124 @@
       rzp1.open();
     });
   }
+
+
+  document.getElementById('cod-pay').onclick = function(e){
+    window.location.href = '/submit-to-delhivery'
+  }
 </script>
-</form>
+{% endif %}
 
-{% endblock %}
-
-{% block extra_style %}
 <style>
 body {
-  background-color: #f9f9f9;
+  background: linear-gradient(135deg, #f0fff4, #e0f7fa);
+  font-family: 'Poppins', sans-serif;
 }
-h2, h3 {
-  color: #222;
+
+.page-title {
+  text-align: center;
+  margin: 2rem 0;
+  font-weight: 700;
+  font-size: 2.4rem;
+  color: #444444;
+  letter-spacing: 1px;
 }
-table {
+
+.summary-container {
+  max-width: 900px;
+  margin: 0 auto 4rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(5px);
+  border-radius: 18px;
+  padding: 2rem 2.5rem;
+  box-shadow: 0 16px 40px rgba(46, 125, 50, 0.1);
+}
+
+.shipping-details p {
+  margin: 6px 0;
+  font-weight: 500;
+  color: #444;
+}
+
+.cart-table-container {
+  overflow-x: auto;
+}
+
+.cart-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 15px;
+  margin-top: 1rem;
+  border-radius: 12px;
+  overflow: hidden;
 }
-table th {
-  background: #333;
+
+.cart-table thead {
+  background: #444444;
   color: #fff;
 }
-table td, table th {
-  border: 1px solid #ddd;
+
+.cart-table th, .cart-table td {
+  padding: 12px 14px;
+  text-align: center;
+}
+
+.cart-table tbody tr:nth-child(even) {
+  background: #f1fdf3;
+}
+
+.cart-table tbody tr:nth-child(odd) {
+  background: #ffffff;
+}
+
+.cart-table tfoot td {
+  font-weight: 600;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.total-label {
+  font-size: 1.1rem;
+}
+
+.grand-total {
+  font-size: 1.2rem;
+  color: #444444;
+  font-weight: 700;
+}
+
+.pay-button {
+  background: linear-gradient(135deg, #F97A00, #d35400);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.15rem;
+  padding: 14px 0;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  margin-top: 2.5rem;
+  box-shadow: 0 10px 30px rgba(249, 122, 0, 0.4);
+  transition: all 0.3s ease;
+}
+
+.pay-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(211, 84, 0, 0.6);
+}
+
+@media (max-width: 680px) {
+  .summary-container {
+    padding: 1.5rem;
+  }
+}
+@media (max-width: 700px) {
+  .cart-table {
+      min-width: 328px;
+      font-size: 0.97rem;
+  }
 }
 </style>
 {% endblock %}

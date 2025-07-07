@@ -4,7 +4,7 @@
 <ul>
   {% for order in orders %}
     <li>
-      <strong>{{ order.order_id }}</strong> ₹{{ order.amount }} — {{ order.status }}
+      <strong>{{ order.order_id }}</strong> ₹{{ order.amount }} 
       <a href="{% url 'products:track_order' order.order_id %}">Track</a>
     </li>
   {% empty %}

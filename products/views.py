@@ -579,15 +579,17 @@ def submit_to_delhivery(request):
         'state': shipping['state'],
         'pincode': shipping['pincode'],
         'priority': shipping['priority'],
-        'total_weight': shipping['total_weight'],  # Save total weight for Delhivery
-        'total_width': shipping['total_width'],    # Save total width for Delhivery
+        'total_weight': shipping['total_weight'], # Save total weight for Delhivery
+        'total_width': shipping['total_width'],   
+        'total_length':shipping['total_length'],# Save total width for Delhivery
         'total_height': shipping['total_height'],   # Save total height for Delhivery
         'amount': total,
+        'mode' : shipping['mode'],  # 'Pre-paid' or 'Cash on Delivery'
         'products_desc': products_desc,
     }
 
     # Call Delhivery API
-    response = create_delhivery_order(request,data)
+    response = create_delhivery_order(request,data,mode=shipping['mode'])
 
     waybill = None
     if response.get('packages') and response['packages'][0].get('waybill'):
@@ -638,7 +640,7 @@ from django.conf import settings
 from datetime import datetime
 
 
-def create_delhivery_order(request,data):
+def create_delhivery_order(request,data,mode):
     shipping = request.session.get('shipping')
     shipment = {
         "name": data['name'],
@@ -649,7 +651,7 @@ def create_delhivery_order(request,data):
         "country": "India",
         "phone": data['phone'],
         "order": data['order_id'],
-        "payment_mode": "Prepaid",
+        "payment_mode": mode,  # 'Pre-paid' or 'Cash on Delivery'
         "return_pin": "",  # Optional
         "return_city": "",
         "return_phone": "",
@@ -658,7 +660,7 @@ def create_delhivery_order(request,data):
         "return_country": "",
         "products_desc": data['products_desc'],
         "hsn_code": "",
-        "cod_amount": "",
+        "cod_amount": str(data['amount']) if mode=="COD" else 0,
         "total_amount": str(data['amount']),
         "seller_add": "",
         "seller_name": "",
@@ -667,8 +669,10 @@ def create_delhivery_order(request,data):
         "waybill": "",
         "shipment_width": float(shipping.get('total_width', '5')),  # Default to 5 if not set
         "shipment_height": float(shipping.get('total_height', '5')),  # Default to 5 if not set
+        "shipment_length": float(shipping.get('total_length', '5')),  # Default to 5 if not set
         "weight": float(shipping.get('total_weight', '1')),  # Default to 1 if not set
         "shipping_mode": data['priority'],
+        "mode": data['mode'],  # 'Pre-paid' or 'Cash on Delivery'
         "address_type": "",
         "order_date": datetime.now().strftime("%Y-%m-%d")
     }
@@ -816,6 +820,8 @@ def shipping_form(request):
         state = request.POST.get('state')
         pincode = request.POST.get('pincode')
         priority = request.POST.get('priority')
+        mode = request.POST.get('mode', 'Pre-paid')  # Default to Pre-paid if not set
+        # mode = 
         cart = request.session.get('cart', {})
         
         accessories = []
@@ -842,6 +848,7 @@ def shipping_form(request):
         total_width = 0
         total_height = 0
         total_weight = 0
+        total_length = 0
 
         
 
@@ -850,6 +857,7 @@ def shipping_form(request):
             accessory = Accessory.objects.filter(pk=acc_id).first()
             if accessory:
                 total_width += accessory.shipment_width * qty
+                total_length += accessory.shipment_length * qty
                 total_height += accessory.shipment_height * qty
                 total_weight += accessory.shipment_weight * qty
 
@@ -857,9 +865,9 @@ def shipping_form(request):
         # Here you can calculate delivery cost, e.g.:
         # delivery_cost = 150 if pincode.startswith('4') else 200l
         if priority == 'Express':
-            delivery_cost = get_delhivery_shipping_cost(dest_pin=pincode, weight_grams=total_weight, mode='E', payment_type='Pre-paid')
+            delivery_cost = get_delhivery_shipping_cost(dest_pin=pincode, weight_grams=total_weight, mode='E', payment_type=mode)
         else:
-            delivery_cost = get_delhivery_shipping_cost(dest_pin=pincode, weight_grams=total_weight, mode='S', payment_type='Pre-paid')
+            delivery_cost = get_delhivery_shipping_cost(dest_pin=pincode, weight_grams=total_weight, mode='S', payment_type=mode)
             
         print("Delivery cost calculated:", delivery_cost)
         # Save in session
@@ -878,14 +886,60 @@ def shipping_form(request):
             'total_weight': total_weight,  # Save total weight for Delhivery
             'total_width': total_width,    # Save total width for Delhivery
             'total_height': total_height,  # Save total height for Delhivery
+            'total_length': total_length,  # Assuming length is not used, set to 0
+            'mode': mode,  # 'Pre-paid' or 'Cash on Delivery'
             
         }
         request.session['order_items'] = order_items  # <-- Save order items in session too
 
         print("Shipping info saved in session:", request.session['shipping'])
         return redirect('products:order_summary')  # URL to summary page
+    else:
+        total = request.session.get('final_amount', 0)
+        cart = request.session.get('cart', {})
+        accessories = []
+        order_items = []
+        # accessory = Accessory.objects.filter(pk=acc_id).first()
+        # for key,qty in cart.items():
+        #     acc_id = key.split('|')[0]
+    
+            
+        can_cod = all(
+        Accessory.objects.get(pk=int(acc_key.split('|')[0])).is_COD
+        for acc_key in cart.keys()
+        )
 
-    return render(request, 'products/shipping_form.html')
+            # print("Can COD for all items:", can_cod)
+  
+        # Check if all items can be COD
+        # If you want to check if COD is available for all items, you can do it like this:
+        # request.session['is_COD'] = can_cod  # Save in session if COD is available
+        # print("Can COD:", can_cod)
+        # if not can_cod:
+        #     request.session['is_COD'] = False
+        # else:
+        #     request.session['is_COD'] = True
+        total = 0
+        for key, qty in cart.items():
+            acc_id = key.split('|')[0]
+            accessory = Accessory.objects.filter(pk=acc_id).first()
+            if accessory:
+                accessories.append({
+                    'accessory': accessory,
+                    'quantity': qty,
+                    'subtotal': accessory.offer_price * qty,
+                })
+                total += accessory.offer_price * qty
+                order_items.append({
+                    'accessory': {
+                        'id': accessory.id,
+                        'name': accessory.name,
+                        'price': float(accessory.offer_price),
+                    },
+                    'quantity': qty,
+                })
+        print(total)
+        return render(request, 'products/shipping_form.html',{'total': total,'isCOD': can_cod, 'accessories': accessories, 'order_items': order_items})
 @login_required
 def order_summary(request):
     cart = request.session.get('cart', {})

@@ -42,6 +42,7 @@ class Accessory(models.Model):
     shipment_width = models.FloatField(default=0.0)    # cm ya inch, jo bhi unit
     shipment_height = models.FloatField(default=0.0)    
     shipment_weight = models.FloatField(default=0.0)  # kg ya grams, jo bhi unit
+    shipment_length = models.FloatField(default=0.0)  # kg ya grams, jo bhi unit
     mrp = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='MRP')
     offer_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Offer Price')
     discount_percent = models.PositiveIntegerField(blank=True, null=True)
@@ -53,6 +54,7 @@ class Accessory(models.Model):
     slug = models.SlugField(unique=True, blank=True, max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
     is_universal = models.BooleanField(default=False)
+    is_COD = models.BooleanField(default=True, verbose_name='Cash on Delivery Available')
 
     def save(self, *args, **kwargs):
         if not self.slug:

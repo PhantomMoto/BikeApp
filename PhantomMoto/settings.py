@@ -5,11 +5,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 SECRET_KEY = 'django-insecure-*p3gkb&fy!1k(51q+hvnl%t#o=5pvf2z9keqnjg(x4jh0qcg3y'
-DEBUG = os.environ.get('DEBUG')
-# DEBUG = True  # Set to False in production
+# DEBUG = os.environ.get('DEBUG')
+DEBUG = True  # Set to False in production
 
-ALLOWED_HOSTS = ['phantommoto.in', 'www.phantommoto.in','https://bikeapp-440n.onrender.com/']
-# ALLOWED_HOSTS = ['*']  # For development, use '*' to allow all hosts. Change in production.
+# ALLOWED_HOSTS = ['phantommoto.in', 'www.phantommoto.in', '127.0.0.1', 'localhost','https://bikeapp-440n.onrender.com/']
+ALLOWED_HOSTS = ['*']  # For development, use '*' to allow all hosts. Change in production.
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -53,8 +53,8 @@ WSGI_APPLICATION = 'PhantomMoto.wsgi.application'
 
 
 # Set persistent root for DB and media
-PERSISTENT_ROOT = '/persistent_data'
-# PERSISTENT_ROOT = BASE_DIR
+# PERSISTENT_ROOT = '/persistent_data'
+PERSISTENT_ROOT = BASE_DIR
 
 DATABASES = {
     'default': {
@@ -87,7 +87,6 @@ USE_TZ = True
 
 # STATIC FILES
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [ BASE_DIR / 'static' ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 import os
@@ -97,8 +96,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-MEDIA_ROOT = os.path.join(PERSISTENT_ROOT, 'media')
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -115,7 +115,5 @@ LOGOUT_REDIRECT_URL = 'products:login'
 rzpkid = os.environ.get('RAZORPAY_KEY_ID')
 rzpkst = os.environ.get('RAZORPAY_KEY_SECRET')
 # 🪙 RAZORPAY KEYS
-# RAZORPAY_KEY_ID = 'rzp_test_cq7lxIhKWEMmCZ'
-# RAZORPAY_KEY_SECRET = 'JlTRultMrU8OS7izPky8fgqV'
-RAZORPAY_KEY_ID = rzpkid
-RAZORPAY_KEY_SECRET = rzpkst
+RAZORPAY_KEY_ID = 'rzp_test_cq7lxIhKWEMmCZ'
+RAZORPAY_KEY_SECRET = 'JlTRultMrU8OS7izPky8fgqV'

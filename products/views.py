@@ -33,7 +33,7 @@ def product_list(request):
     category_name = request.GET.get('category')
     search = request.GET.get('search')
 
-    accessories = Accessory.objects.all()
+    accessories = Accessory.objects.filter(stock__gt=0)
     
     if category_name:
         accessories = accessories.filter(categories__name=category_name).distinct()

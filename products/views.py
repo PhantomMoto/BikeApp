@@ -228,6 +228,7 @@ def cart_view(request):
             'quantity': qty,
             'subtotal': float(subtotal),
             'color': color,
+
         })
         total += subtotal
 
@@ -843,6 +844,7 @@ def shipping_form(request):
                         'name': accessory.name,
                         'price': float(accessory.offer_price),
                     },
+                    'color': key.split('|')[1] if '|' in key else '',  # ADD THIS LINE
                     'quantity': qty,
                 })
         total_width = 0

@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-*p3gkb&fy!1k(51q+hvnl%t#o=5pvf2z9keqnjg(x4jh0qcg3y'
 # DEBUG = os.environ.get('DEBUG')
-DEBUG = True  # Set to False in production
+DEBUG = False  # Set to False in production
 
 ALLOWED_HOSTS = ['phantommoto.in', '148.72.246.167','www.phantommoto.in', '127.0.0.1', 'localhost','https://bikeapp-440n.onrender.com/']
 # ALLOWED_HOSTS = ['*']  # For development, use '*' to allow all hosts. Change in production.
@@ -98,12 +98,12 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# # 🔐 SECURITY HEADERS (for production)
-# SECURE_HSTS_SECONDS = 31536000
-# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-# SECURE_SSL_REDIRECT = True
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
+# 🔐 SECURITY HEADERS (for production)
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 # ✅ LOGIN CONFIG
 LOGIN_REDIRECT_URL = 'products:product_list'

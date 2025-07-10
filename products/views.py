@@ -567,7 +567,7 @@ def submit_to_delhivery(request):
 
     # Build product description
     products_desc = ', '.join([f"{item['accessory']['name']} x{item['quantity']}" for item in order_items])
-
+    print('products_desc',products_desc)
     # Prepare data for Delhivery
     data = {
         'order_id': order_id,

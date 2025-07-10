@@ -51,14 +51,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'PhantomMoto.wsgi.application'
 
 
-# Set persistent root for DB and media
-# PERSISTENT_ROOT = '/persistent_data'
-PERSISTENT_ROOT = BASE_DIR
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(PERSISTENT_ROOT, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 

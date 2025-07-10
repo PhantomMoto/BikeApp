@@ -528,11 +528,7 @@ from .models import Accessory
 import requests
 import json
 
-# 🟢 Unified Shipping & Order Submission (no session juggling)
-@csrf_exempt
-@login_required
-def submit_to_delhivery(request):
-    import uuid
+
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
@@ -567,7 +563,7 @@ def submit_to_delhivery(request):
     order_id = f"ORD-{request.user.id}-{uuid.uuid4().hex[:8]}"
 
     # Build product description
-    products_desc = ', '.join([f"{item['accessory']['name']} x{item['quantity']}" for item in order_items])
+    products_desc = ', '.join([f"{item['accessory']['name']} x{item['quantity']}x{item['color']}" for item in order_items])
     print('products_desc',products_desc)
     # Prepare data for Delhivery
     data = {
@@ -843,6 +839,8 @@ def shipping_form(request):
                         'id': accessory.id,
                         'name': accessory.name,
                         'price': float(accessory.offer_price),
+                        'mrp': float(accessory.mrp),
+                        'color': accessory.colors.first().name if accessory.colors.exists() else '',  # ADD THIS LINE
                     },
                     'color': key.split('|')[1] if '|' in key else '',  # ADD THIS LINE
                     'quantity': qty,

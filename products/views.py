@@ -56,6 +56,11 @@ def product_list(request):
         'accessories': accessories,
         'brands': brands,
         'models': models,
+        'brand_id': brand_id,
+        'model_id': model_id,
+        'category_name': category_name,
+        'search': search,
+
     })
 
 
@@ -740,22 +745,18 @@ def category_pdf(request):
         brand_id = request.GET.get('brand')
         model_id = request.GET.get('model')
         category_name = request.GET.get('category')
-        search = request.GET.get('search')
 
         accessories = Accessory.objects.filter(stock__gt=0)
 
-        if category_name:
-            accessories = accessories.filter(categories__name=category_name).distinct()
-
+        if brand_id:
+            accessories = accessories.filter(bike_models__brand__id=brand_id)
+        
         if model_id:
-            accessories = accessories.filter(
-                Q(is_universal=True) | Q(bike_models__id=model_id)
-            ).distinct()
-        elif brand_id:
-            accessories = accessories.filter(bike_models__brand__id=brand_id).distinct()
+            accessories = accessories.filter(bike_models__id=model_id)
+        if category_name:
+            accessories = accessories.filter(categories__name__iexact=category_name)
 
-        if search:
-            accessories = accessories.filter(name__icontains=search)
+        accessories = accessories.distinct()
 
         buffer = BytesIO()
         doc = SimpleDocTemplate(buffer, pagesize=landscape(letter), rightMargin=30, leftMargin=30, topMargin=30, bottomMargin=18)
@@ -785,11 +786,11 @@ def category_pdf(request):
                 Paragraph(accessory.description or "", styles['Normal']),
             ])
 
-        table = Table(data, colWidths=[60, 120, 80, 80, 200], repeatRows=1)
+        table = Table(data, colWidths=[60, 120, 80, 80, 120])
         table.setStyle(TableStyle([
             ('BACKGROUND', (0,0), (-1,0), colors.darkblue),
             ('TEXTCOLOR',(0,0),(-1,0),colors.whitesmoke),
-            ('ALIGN',(2,1), (3,-1), 'RIGHT'),
+            ('ALIGN',(2,1),(3,-1),'RIGHT'),
             ('VALIGN',(0,0),(-1,-1),'TOP'),
             ('INNERGRID', (0,0), (-1,-1), 0.25, colors.gray),
             ('BOX', (0,0), (-1,-1), 0.5, colors.black),

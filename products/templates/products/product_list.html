@@ -23,15 +23,33 @@
   </select>
   <button type="submit">Filter</button>
 
- <div class="l" style="display: flex;justify-content: center;align-items: center; gap: 10px;flex-direction: row;">
+ <div class="l" style="display: flex; justify-content: center; align-items: center; gap: 10px; flex-direction: row;">
 
-   <a href="{% url 'products:category_pdf' %}?brand={{ request.GET.brand }}&model={{ request.GET.model }}" class="btn-download-pdf" style="margin-left:10px ;">
-     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
-       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 4v12" />
+  {% if brand_id %}
+    <a href="{% url 'products:category_pdf' %}?brand={{ brand_id }}{% if model_id %}&model={{ model_id }}{% endif %}" class="btn-download-pdf" style="margin-left:10px;">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 4v12" />
       </svg>
     </a>
-    <a href="{% url 'products:category_pdf' %}?brand={{ request.GET.brand }}&model={{ request.GET.model }}">Download PDF</a>
-  </div>
+    <a href="{% url 'products:category_pdf' %}?brand={{ brand_id }}{% if model_id %}&model={{ model_id }}{% endif %}">Download PDF</a>
+  {% elif category_name %}
+    <a href="{% url 'products:category_pdf' %}?category={{ category_name }}" class="btn-download-pdf" style="margin-left:10px;">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 4v12" />
+      </svg>
+    </a>
+    <a href="{% url 'products:category_pdf' %}?category={{ category_name }}">Download PDF</a>
+  {% else %}
+    <a href="{% url 'products:category_pdf' %}" class="btn-download-pdf" style="margin-left:10px;">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 4v12" />
+      </svg>
+    </a>
+    <a href="{% url 'products:category_pdf' %}">Download PDF</a>
+  {% endif %}
+
+</div>
+
     
 </form>
   

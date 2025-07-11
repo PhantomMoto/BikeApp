@@ -563,7 +563,7 @@ def submit_to_delhivery(request):
     order_id = f"ORD-{request.user.id}-{uuid.uuid4().hex[:8]}"
 
     # Build product description
-    products_desc = ', '.join([f"{item['accessory']['name']} x{item['quantity']}x{item['color']}" for item in order_items])
+    products_desc = ', '.join([f"{item['accessory']['name']} x{item['quantity']} x color-->{item['color']}" for item in order_items])
     print('products_desc',products_desc)
     # Prepare data for Delhivery
     data = {

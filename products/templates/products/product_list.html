@@ -3,82 +3,94 @@
 
 {% load static %}
 
-<form method="get" class="filter">
-  <label>Bike Brand:</label>
-  <select name="brand" id="brand-select">
-    <option value="">All</option>
-    {% for brand in brands %}
-      <option value="{{ brand.id }}" {% if request.GET.brand == brand.id|stringformat:"s" %}selected{% endif %}>{{ brand.name }}</option>
-    {% endfor %}
-  </select>
+<section class="filter-section" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding: 20px;">
+  <form method="get" class="filter" style="width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 10px;">
+    <select name="brand" id="brand-select" style="padding: 10px; width: 100%; border: 1px solid #ccc; border-radius: 6px;">
+      <option value="">All Brands</option>
+      {% for brand in brands %}
+        <option value="{{ brand.id }}" {% if request.GET.brand == brand.id|stringformat:"s" %}selected{% endif %}>{{ brand.name }}</option>
+      {% endfor %}
+    </select>
 
-  <label for="model">Bike Model:</label>
-  <select name="model" id="model-select">
-    <option value="">All</option>
-    {% for model in models %}
-      {% if not request.GET.brand or model.brand.id|stringformat:"s" == request.GET.brand %}
-        <option value="{{ model.id }}" {% if request.GET.model == model.id|stringformat:"s" %}selected{% endif %}>{{ model.name }}</option>
+    <select name="model" id="model-select" style="padding: 10px; width: 100%; border: 1px solid #ccc; border-radius: 6px;">
+      <option value="">All Models</option>
+      {% for model in models %}
+        {% if not request.GET.brand or model.brand.id|stringformat:"s" == request.GET.brand %}
+          <option value="{{ model.id }}" {% if request.GET.model == model.id|stringformat:"s" %}selected{% endif %}>{{ model.name }}</option>
+        {% endif %}
+      {% endfor %}
+    </select>
+
+    <button type="submit" style="padding: 10px; background-color: #27ae60; color: #fff; border: none; border-radius: 6px; font-weight: 600;">Filter</button>
+
+    <div class="l" style="display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap;">
+      {% if brand_id %}
+        <a href="{% url 'products:category_pdf' %}?brand={{ brand_id }}{% if model_id %}&model={{ model_id }}{% endif %}" style="display: flex; align-items: center; gap: 5px; text-decoration: none; color: #27ae60;">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 4v12" />
+          </svg> Download PDF
+        </a>
+      {% elif category_name %}
+        <a href="{% url 'products:category_pdf' %}?category={{ category_name }}" style="display: flex; align-items: center; gap: 5px; text-decoration: none; color: #27ae60;">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 4v12" />
+          </svg> Download PDF
+        </a>
+      {% else %}
+        <a href="{% url 'products:category_pdf' %}" style="display: flex; align-items: center; gap: 5px; text-decoration: none; color: #27ae60;">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 4v12" />
+          </svg> Download PDF
+        </a>
       {% endif %}
-    {% endfor %}
-  </select>
-  <button type="submit">Filter</button>
-
- <div class="l" style="display: flex; justify-content: center; align-items: center; gap: 10px; flex-direction: row;">
-
-  {% if brand_id %}
-    <a href="{% url 'products:category_pdf' %}?brand={{ brand_id }}{% if model_id %}&model={{ model_id }}{% endif %}" class="btn-download-pdf" style="margin-left:10px;">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 4v12" />
-      </svg>
-    </a>
-    <a href="{% url 'products:category_pdf' %}?brand={{ brand_id }}{% if model_id %}&model={{ model_id }}{% endif %}">Download PDF</a>
-  {% elif category_name %}
-    <a href="{% url 'products:category_pdf' %}?category={{ category_name }}" class="btn-download-pdf" style="margin-left:10px;">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 4v12" />
-      </svg>
-    </a>
-    <a href="{% url 'products:category_pdf' %}?category={{ category_name }}">Download PDF</a>
-  {% else %}
-    <a href="{% url 'products:category_pdf' %}" class="btn-download-pdf" style="margin-left:10px;">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 4v12" />
-      </svg>
-    </a>
-    <a href="{% url 'products:category_pdf' %}">Download PDF</a>
-  {% endif %}
-
-</div>
-
-    
-</form>
-  
-  <div class="cards-container">
-  {% for accessory in accessories %}
-    {% comment %} <div class="card" onclick="window.location.href='{% url 'products:product_detail' accessory.slug %}'" style="cursor:pointer;"> {% endcomment %}
-    <div class="card" data-detail-url="{% url 'products:product_detail' accessory.slug %}" style="cursor:pointer;">
-  <h3>{{ accessory.name }}</h3>
-  {% if accessory.image %}
-    <img src="{{ accessory.image.url }}" alt="{{ accessory.name }}" onclick="window.location.href=this.parentElement.dataset.detailUrl" style="cursor:pointer;">
-  {% endif %}
-  <p><strong>₹{{ accessory.offer_price }}</strong> {% if accessory.mrp and accessory.mrp > accessory.offer_price %}<span style="text-decoration:line-through;">₹{{ accessory.mrp }}</span>{% endif %}</p>
-  <p>{{ accessory.description }}</p>
-  <p>Category: {% for cat in accessory.categories.all %}{{ cat.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
-  <form method="post" style="margin-top:10px;" onclick="return false">
-    {% csrf_token %}
-    <div class="cart-control" data-accessory-id="{{ accessory.id }}">
-      <input type="hidden" name="color" value="">
-      <button type="button" class="btn-add-cart">Add to Cart</button>  
     </div>
   </form>
-</div>
-  {% empty %}
-    <p>No accessories found.</p>
-  {% endfor %}
-</div>
+</section>
 
+<section class="accessories-section" style="padding: 20px;">
+  <h2 style="font-size: 1.8rem; margin: 0 auto 20px auto; text-align: center;">Accessories</h2>
+  <div class="cards-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; max-width: 1200px; margin: 0 auto;">
+    {% for accessory in accessories %}
+      <div class="card" style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); padding: 15px; cursor: pointer; transition: transform 0.2s;" >
+        <h3 style="font-size: 1.1rem; margin: 0 0 10px 0; text-align: center;">{{ accessory.name }}</h3>
+        {% if accessory.image %}
+          <img src="{{ accessory.image.url }}" alt="{{ accessory.name }}" onclick="window.location.href='{% url 'products:product_detail' accessory.slug %}'" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 10px;">
+        {% endif %}
+        <p style="text-align: center;"><strong>₹{{ accessory.offer_price }}</strong> {% if accessory.mrp and accessory.mrp > accessory.offer_price %}<span style="text-decoration:line-through; color:#888;">₹{{ accessory.mrp }}</span>{% endif %}</p>
+        <p style="text-align: center;">{{ accessory.description|truncatechars:40 }}</p>
+        <p style="text-align: center;">Category: {% for cat in accessory.categories.all %}{{ cat.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+        <form method="post" style="margin-top:10px; text-align:center;" onclick="return false;">
+          {% csrf_token %}
+          <div class="cart-control" data-accessory-id="{{ accessory.id }}">
+            <input type="hidden" name="color" value="">
+            <button type="button" class="btn-add-cart" style="background-color: #27ae60; color: #fff; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">Add to Cart</button>
+          </div>
+        </form>
+      </div>
+    {% empty %}
+      <p style="text-align:center;">No accessories found.</p>
+    {% endfor %}
+  </div>
+</section>
 
-<script>
+<style>
+@media (max-width: 600px) {
+  .cards-container {
+    grid-template-columns: 1fr !important; /* Phone: 1 per row */
+  }
+}
+@media (min-width: 601px) and (max-width: 991px) {
+  .cards-container {
+    grid-template-columns: repeat(2, 1fr) !important; /* Tablet: 2 per row */
+  }
+}
+@media (min-width: 992px) {
+  .cards-container {
+    grid-template-columns: repeat(3, 1fr) !important; /* PC: 3 per row */
+  }
+}
+</style>
+<script> 
   document.addEventListener('DOMContentLoaded', () => {
   const cartCountBubble = document.getElementById('cart-count-bubble');
 
@@ -202,38 +214,5 @@
     return cookieValue;
   }
 });
-
 </script>
-
-
-
-
-<style>
-
-.cards-container {
-  display: grid;
-  gap: 20px;
-  box-sizing: border-box;
-  justify-content: start;
-  justify-items: start;  /* Add this */
-}
-
-.card h3 {
-  font-size: 1.2rem;
-  margin: 0 0 10px 0;
-  color: inherit;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  transition: font-size 0.2s;
-}
-@media (max-width: 600px) {
-  .cards-container {
-    grid-template-columns: 1fr !important;
-    
-  }
-}
-</style>
-
 {% endblock %}

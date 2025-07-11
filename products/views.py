@@ -739,17 +739,26 @@ def category_pdf(request):
     try:
         brand_id = request.GET.get('brand')
         model_id = request.GET.get('model')
+        category_name = request.GET.get('category')
+        search = request.GET.get('search')
 
-        accessories = Accessory.objects.all()
+        accessories = Accessory.objects.filter(stock__gt=0)
 
-        # Adjust filters based on your model relationships
-        if brand_id:
-            accessories = accessories.filter(bike_models__brand_id=brand_id)
+        if category_name:
+            accessories = accessories.filter(categories__name=category_name).distinct()
+
         if model_id:
-            accessories = accessories.filter(bike_models__id=model_id)
+            accessories = accessories.filter(
+                Q(is_universal=True) | Q(bike_models__id=model_id)
+            ).distinct()
+        elif brand_id:
+            accessories = accessories.filter(bike_models__brand__id=brand_id).distinct()
+
+        if search:
+            accessories = accessories.filter(name__icontains=search)
 
         buffer = BytesIO()
-        doc = SimpleDocTemplate(buffer, pagesize=landscape(letter), rightMargin=30,leftMargin=30, topMargin=30,bottomMargin=18)
+        doc = SimpleDocTemplate(buffer, pagesize=landscape(letter), rightMargin=30, leftMargin=30, topMargin=30, bottomMargin=18)
         elements = []
         styles = getSampleStyleSheet()
 
@@ -757,13 +766,10 @@ def category_pdf(request):
         elements.append(title)
         elements.append(Spacer(1, 12))
 
-        # Table header
         data = [["Image", "Name", "Offer Price (₹)", "MRP (₹)", "Description"]]
 
         for accessory in accessories:
-            # Handle image
             if accessory.image and accessory.image.path and os.path.exists(accessory.image.path):
-                # Resize image width to 50, keep aspect ratio roughly
                 img = Image(accessory.image.path, width=50, height=50)
             else:
                 img = Paragraph("No Image", styles['Normal'])
@@ -779,7 +785,7 @@ def category_pdf(request):
                 Paragraph(accessory.description or "", styles['Normal']),
             ])
 
-        table = Table(data, colWidths=[60, 120, 80, 80, 120, 200], repeatRows=1)
+        table = Table(data, colWidths=[60, 120, 80, 80, 200], repeatRows=1)
         table.setStyle(TableStyle([
             ('BACKGROUND', (0,0), (-1,0), colors.darkblue),
             ('TEXTCOLOR',(0,0),(-1,0),colors.whitesmoke),
@@ -805,6 +811,7 @@ def category_pdf(request):
         print("PDF Generation Error:", e)
         traceback.print_exc()
         return HttpResponse("Server error during PDF generation. Check logs.", status=500)
+
 @login_required
 def shipping_form(request):
     if request.method == 'POST':

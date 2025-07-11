@@ -284,10 +284,10 @@ body {
   }
 
   .filter select {
-    width: 35ch;
+    width: 30ch;
     /* ~15 characters wide */
-    min-width: 35ch;
-    max-width: 35ch;
+    min-width: 30ch;
+    max-width: 30ch;
     box-sizing: border-box;
   }
 

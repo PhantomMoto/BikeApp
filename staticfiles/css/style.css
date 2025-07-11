@@ -290,13 +290,6 @@ body {
     line-height: 2;
   }
 
-  .filter select {
-    width: 30ch;
-    /* ~15 characters wide */
-    min-width: 30ch;
-    max-width: 30ch;
-    box-sizing: border-box;
-  }
 
   .filter-group {
     display: flex;

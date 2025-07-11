@@ -4,6 +4,8 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- Load this once in your <head> if not already -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Permanent+Marker&display=swap" rel="stylesheet">
     <title>{% block title %}Phantom Moto{% endblock %}</title>
@@ -208,23 +210,20 @@
             <a href="/my-orders" class="hover:text-red-600">Track Order</a>
             
 <!-- Social Icons Container -->
+
 <div class="social-icons">
-
-
-  <a href="https://www.instagram.com/phantom_moto?igsh=M253Y3dpdThiejlm&utm_source=qr" target="_blank" rel="noopener" aria-label="Instagram" class="social-icon instagram">
-    <svg viewBox="0 0 24 24" fill="none"  >
-      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-    </svg>
+  <a href="https://www.instagram.com/_phantom_moto_?igsh=MWgzcW9rMzZsbXV0aw==" target="_blank" aria-label="Instagram">
+    <i class="fab fa-instagram"></i>
   </a>
-
-  <a href="https://youtube.com/@ronitsingh2829?si=imEmfMTrD38lMFQd" target="_blank" rel="noopener" aria-label="YouTube" class="social-icon youtube">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" >
-      <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.95C18.88 4 12 4 12 4s-6.88 0-8.59.47a2.78 2.78 0 0 0-1.95 1.95A29 29 0 0 0 1 12a29 29 0 0 0 .47 5.58 2.78 2.78 0 0 0 1.95 1.95C5.12 20 12 20 12 20s6.88 0 8.59-.47a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"></path>
-      <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"></polygon>
-    </svg>
+  <a href="https://youtube.com/@ronitsingh2829?si=imEmfMTrD38lMFQd" target="_blank" aria-label="YouTube">
+    <i class="fab fa-youtube"></i>
   </a>
+  <a href="https://whatsapp.com/channel/0029Va5Lkzc3mFYDsn19nP01" target="_blank" aria-label="WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+  <hr>
 </div>
+
 
 
 
@@ -286,9 +285,11 @@
         padding: 6px 0;
       }
       .social-icons {
-  display: flex;
-  gap: 12px; /* Adjust spacing between icons to your vibe */
-  align-items: center;
+  font-size: 20px;
+  margin-left: 5px; /* Pehle 24px tha, ab double — 48px */
+  color: #222;
+  gap : 10px;
+  transition: color 0.3s;
 }
 
       .mobile-bottom-nav .nav-icon {
@@ -311,10 +312,9 @@
       
 .social-icons {
   display: flex;
-  gap: 25px;
   justify-content: center;
   align-items: center;
-  margin: 20px 0;
+  margin : 0 8px;
 }
 
 .social-icon {

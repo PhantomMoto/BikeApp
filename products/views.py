@@ -84,15 +84,15 @@ def search_suggestions(request):
     query = request.GET.get('q', '').strip()
     results = []
     if query:
-        # Accessories (products)
+        # Accessories: name starts with query initials (case-insensitive)
         accessories = Accessory.objects.filter(
-            Q(name__icontains=query) | Q(description__icontains=query)
+            Q(name__istartswith=query) 
         ).values('name', 'is_universal', 'id')[:5]
+
         for acc in accessories:
             if acc.get('is_universal'):
                 label = 'All Bikes'
             else:
-                # Get up to 3 bike model names for this accessory
                 from .models import Accessory as AccModel
                 try:
                     acc_obj = AccModel.objects.get(id=acc['id'])
@@ -111,8 +111,9 @@ def search_suggestions(request):
                 'id': acc['id'],
                 'kind': 'product',
             })
-        # Categories
-        categories = Category.objects.filter(name__icontains=query).values('name', 'id')[:3]
+
+        # Categories: name starts with query initials
+        categories = Category.objects.filter(name__istartswith=query).values('name', 'id')[:3]
         for cat in categories:
             results.append({
                 'name': cat['name'],
@@ -120,9 +121,10 @@ def search_suggestions(request):
                 'id': cat['id'],
                 'kind': 'category',
             })
-        # Blogs
+
+        # Blogs: title starts with query initials
         from .models import Blog, YouTubeVideo
-        blogs = Blog.objects.filter(title__icontains=query).values('title', 'slug')[:3]
+        blogs = Blog.objects.filter(title__istartswith=query).values('title', 'slug')[:3]
         for blog in blogs:
             results.append({
                 'name': blog['title'],
@@ -130,8 +132,9 @@ def search_suggestions(request):
                 'id': blog['slug'],
                 'kind': 'blog',
             })
-        # YouTube Videos
-        videos = YouTubeVideo.objects.filter(title__icontains=query).values('title', 'id')[:3]
+
+        # YouTube Videos: title starts with query initials
+        videos = YouTubeVideo.objects.filter(title__istartswith=query).values('title', 'id')[:3]
         for video in videos:
             results.append({
                 'name': video['title'],
@@ -139,7 +142,9 @@ def search_suggestions(request):
                 'id': video['id'],
                 'kind': 'video',
             })
+
     return JsonResponse({'results': results})
+
 
 
 from django.contrib.auth.forms import UserCreationForm

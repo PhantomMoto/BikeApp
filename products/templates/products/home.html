@@ -1,9 +1,6 @@
 {% extends 'products/base.html' %}
-{% block title %}
-  Phantom Moto - Welcome
-{% endblock %}
 
-
+{% block title %}Phantom Moto - Welcome{% endblock %}
 
 {% block meta_keywords %}
 bike accessories, exhausts, handlebars, PhantomMoto, motorcycle parts, bike upgrades, performance accessories
@@ -14,371 +11,84 @@ Home Page
 PhantomMoto is India’s premier destination for top-quality bike accessories, built for true riding enthusiasts. From stylish exhausts to performance-driven add-ons, our collection enhances your ride in both looks and power. Discover what your machine truly deserves — only at PhantomMoto.
 {% endblock %}
 
-{% block og_title %}
-  Phantom Moto - Welcome
-{% endblock %}
+{% block og_title %}Phantom Moto - Welcome{% endblock %}
 
 {% block og_description %}
-  Welcome to Phantom Moto, your ultimate destination for premium bike accessories. Explore our curated selection designed to enhance your ride's performance and style. Join the PhantomMoto community today!
+Welcome to Phantom Moto, your ultimate destination for premium bike accessories. Explore our curated selection designed to enhance your ride's performance and style. Join the PhantomMoto community today!
 {% endblock %}
 
 {% block content %}
-<section class="home-main">
-<h2 id="Shop-By-Category">Select your Model</h2>
 
-<form method="get" action="/products/" class="filter">
-  <div class="filter-group">
-    <label for="brand">Bike Brand:</label>
-    <select name="brand" id="brand-select">
-      <option value="">All</option>
+<section class="home-main" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding: 20px;">
+  <h2 style="font-size:1.6rem; font-weight:800; margin-bottom: 15px; text-align: center;">SELECT YOUR VEHICLE</h2>
+  <form method="get" action="/products/" class="filter" style="width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 10px;">
+    <select name="brand" id="brand-select" style="padding: 10px; width: 100%; border: 1px solid #ccc; border-radius: 6px;">
+      <option value="">Select Bike Brand</option>
       {% for brand in brands %}
         <option value="{{ brand.id }}">{{ brand.name }}</option>
       {% endfor %}
     </select>
-  </div>
-
-  <div class="filter-group">
-    <label for="model">Bike Model:</label>
-    <select name="model" id="model-select">
-      <option value="">All</option>
+    <select name="model" id="model-select" style="padding: 10px; width: 100%; border: 1px solid #ccc; border-radius: 6px;">
+      <option value="">Select Bike Model</option>
       {% for model in models %}
-        <option value="{{ model.id }}"> {{ model.name }}</option>
+        <option value="{{ model.id }}">{{ model.name }}</option>
       {% endfor %}
     </select>
-  </div>
-
-  <button type="submit">Search</button>
-</form>
+    <button type="submit" style="padding: 10px; background-color: #27ae60; color: #fff; border: none; border-radius: 6px; font-weight: 600;">Search</button>
+  </form>
 </section>
-<section class="feat-pro">
-  <h2 id="Shop-By-Category" style="font-size: 1.9rem;">Featured Products</h2>
-  <div class="cards-container">
+
+<section class="feat-pro" style="padding: 30px 0;">
+  <h2 style="font-size: 1.8rem; margin: 0 auto 20px auto; text-align: center;">Featured Products</h2>
+  <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; width: 100%; max-width: 1200px; margin: 0 auto;">
     {% for accessory in featured_products %}
-      <div class="card" onclick="window.location.href='{% url 'products:product_detail' accessory.slug %}'" style="cursor:pointer;">
-        <h3>{{ accessory.name }}</h3>
+      <div style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); padding: 15px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; cursor: pointer;" onclick="window.location.href='{% url 'products:product_detail' accessory.slug %}'">
+        <h3 style="font-size: 1.1rem; margin: 0 0 10px 0; color: #333; text-align: center;">{{ accessory.name }}</h3>
         {% if accessory.image %}
-          <img src="{{ accessory.image.url }}" alt="{{ accessory.name }}">
+          <img src="{{ accessory.image.url }}" alt="{{ accessory.name }}" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 10px;">
         {% endif %}
-        <p><strong>₹{{ accessory.offer_price }}</strong> <span style="text-decoration:line-through;color:#888;font-size:0.95em;">₹{{ accessory.mrp }}</span></p>
-        {% if accessory.discount_percent %}<p style="color:#27ae60;font-weight:600;">{{ accessory.discount_percent }}% OFF</p>{% endif %}
-        <p>{{ accessory.description }}</p>
-        <p>Category: {% for cat in accessory.categories.all %}{{ cat.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
-        {% if accessory.colors.all %}
-        
-        {% endif %}
-        <form action="{% url 'products:cart_add' accessory.id %}" method="post" style="margin-top:10px;" onclick="event.stopPropagation();">
+        <p style="text-align: center;"><strong>₹{{ accessory.offer_price }}</strong> <span style="text-decoration:line-through; color:#888; font-size:0.95em;">₹{{ accessory.mrp }}</span></p>
+        {% if accessory.discount_percent %}<p style="color:#27ae60; font-weight:600; text-align: center;">{{ accessory.discount_percent }}% OFF</p>{% endif %}
+        <p style="text-align: center;">{{ accessory.description }}</p>
+        <form action="{% url 'products:cart_add' accessory.id %}" method="post" style="margin-top:10px; text-align:center;" onclick="event.stopPropagation();">
           {% csrf_token %}
-          <div class="cart-control" data-accessory-id="{{ accessory.id }}">
-            <input type="hidden" name="color" value="">
-            <button class="btn-add-cart">Add to Cart</button>
-          </div>
+          <button style="background-color: #27ae60; color: #fff; border: none; padding: 10px; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;">Add to Cart</button>
         </form>
       </div>
     {% empty %}
-      <p>No featured products yet.</p>
+      <p style="text-align:center;">No featured products yet.</p>
     {% endfor %}
   </div>
 </section>
-<section class="home-cat">
-<h2 id="Shop-By-Category">Shop by Category</h2> <br>
-<div class="category-buttons">
-  {% for cat in categories %}
-    <a href="/products/?category={{ cat.name }}" class="category-btn" style="background: url('{% if cat.image %}{{ cat.image.url }}{% endif %}');">
-      <span class="category-label">{{ cat.name }}</span>
-    </a>
-  
-  {% endfor %}
 
-  <div style="height: 35vh;"></div>
-</div>
-
+<section class="home-cat" style="padding: 30px 0;">
+  <h2 style="font-size: 1.8rem; margin: 0 auto 20px auto; text-align: center;">Shop by Category</h2>
+  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; max-width: 800px; margin: 0 auto;">
+    {% for cat in categories %}
+      <a href="/products/?category={{ cat.name }}" style="background: url('{% if cat.image %}{{ cat.image.url }}{% endif %}'); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: flex-end; border-radius: 12px; height: 140px; text-decoration: none; overflow: hidden; position: relative;">
+        <span style="background: rgba(255,255,255,0.85); width: 100%; text-align: center; padding: 6px 0; font-weight: 700; text-transform: capitalize; font-size: 0.9rem; color: #222;">{{ cat.name }}</span>
+      </a>
+    {% endfor %}
+  </div>
 </section>
-<script>
-document.getElementById('brand-select').addEventListener('change', function() {
-  const brandId = this.value;
-  const modelSelect = document.getElementById('model-select');
 
-  modelSelect.innerHTML = '<option value="">All</option>';
-
-  if(brandId) {
-    fetch(/ajax/get-models/?brand_id=${brandId})
-      .then(res => res.json())
-      .then(data => {
-        data.forEach(model => {
-          const option = document.createElement('option');
-          option.value = model.id;
-          option.textContent = model.name;
-          modelSelect.appendChild(option);
-        });
-      });
-  }
-});
-document.querySelectorAll('.download-category-btn').forEach(btn => {
-  btn.addEventListener('click', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    const cat = this.dataset.category;
-    window.location.href = `/products/category-pdf/?category=${encodeURIComponent(cat)}`;
-  });
-});
-</script>
-<style> {% load static %}
-.home-main{
-    width: 100vw;
-    height: 90vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 0 20px;
-  box-sizing: border-box;
-  background-image: url('/static/bg.jpg');
-}
-
-
-
-  .category-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.category-btn {
-  flex: 0 1 calc(30% - 2px);
-  max-width: calc(30% - 2px);
-  height: 180px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 18px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-  position: relative;
-  text-decoration: none;
-  overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.category-btn[style] {
-  background-size: cover !important;
-  background-position: center !important;
-}
-
-.category-btn:hover {
-  transform: scale(1.04);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
-}
-
-.category-label {
-  display: block;
-  width: 100%;
-  text-align: center;
-  padding: 10px 0;
-  color: #222;
-  font-weight: 700;
-  text-transform: capitalize;
-  margin-top: 47%;
-  
-}
-
-.cards-container {
-  display: grid;
-  gap: 20px;
-  box-sizing: border-box;
-}
-
-.cards-container.feat-cards-2col {
-  display: grid;
-  gap: 20px;
-  box-sizing: border-box;
-}
-
-.card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-  transition: transform 0.2s;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-}
-
-.card img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
-  margin-bottom: 10px;
-}
-
-.card h3 {
-  font-size: 1.2rem;
-  margin: 0 0 10px 0;
-  color: #333;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  transition: font-size 0.2s;
-}
-.card h3.dynamic-font {
-  white-space: normal;
-  font-size: 1.2rem;
-  word-break: break-word;
-}
-
-.card p {
-  margin: 5px 0;
-  color: #555;
-}
-
-.card strong {
-  color: #e74c3c;
-  font-size: 1.1rem;
-}
-
-.btn-add-cart {
-  background-color: #27ae60;
-  color: #fff;
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.btn-add-cart:hover {
-  background-color: #219150;
-}
-
-@media (max-width: 900px) {
-  .category-btn {
-    flex: 0 1 calc(33% - 10px);
-    max-width: calc(33% - 10px);
-    height: 140px;
-  }
-  .category-label {
-    font-size: 1.1rem;
-    padding: 8px 12px;
-  }
-  .cards-container.feat-cards-2col {
-    grid-template-columns: 1fr;
+<style>
+@media (min-width: 768px) {
+  .home-cat div {
+    grid-template-columns: repeat(3, 1fr) !important;
   }
 }
-
-/* Mobile: switch to grid with 2 columns */
-@media (max-width: 600px) {
-  .category-buttons {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px; /* minimal space between boxes */
-    width: 100%;
-    
+@media (max-width: 480px) {
+  .home-cat div {
+    grid-template-columns: repeat(2, 1fr) !important;
   }
-  .category-btn {
-    flex: unset; /* remove flex */
-    max-width: 100%;
-    width: 45vw;
-    height: 120px;
-    border-radius: 12px;
+  .home-cat a {
+    height: 120px !important;
   }
-  .category-label {
-    border-radius: 20px;
-    margin-top: 60%;
-    font-size: 0.7rem;
-  }
-  .cards-container {
-    grid-template-columns: 1fr !important;
+  .filter select{
+    width:35ch;
   }
 }
-
 </style>
-<script>
-// Set background images via JS for inline style compatibility
-const catBtns = document.querySelectorAll('.category-btn');
-const categories = {{ categories|safe }};
-catBtns.forEach((btn, idx) => {
-  if (categories[idx] && categories[idx].image) {
-    btn.style.backgroundImage = `url('${categories[idx].image}')`;
-  } else {
-    btn.style.backgroundImage = '';
-  }
-});
 
-document.addEventListener('DOMContentLoaded', function () {
-  // Color select logic for featured products
-  document.querySelectorAll('.color-select').forEach(function(select) {
-    select.addEventListener('change', function() {
-      const card = select.closest('.card');
-      if (card) {
-        const input = card.querySelector('input[name="color"]');
-        if (input) input.value = select.value;
-      }
-    });
-  });
-  // Cart logic for featured products (same as product_list)
-  document.querySelectorAll('.feat-pro .btn-add-cart').forEach(button => {
-    button.addEventListener('click', function(e) {
-      e.preventDefault();
-      const card = this.closest('.card');
-      const accessoryId = this.closest('.cart-control').dataset.accessoryId; // always numeric
-      const color = card.querySelector('input[name="color"]') ? card.querySelector('input[name="color"]').value : '';
-      if (card.querySelector('.color-select') && !color) {
-        alert('Please select a color before adding to cart.');
-        return;
-      }
-      fetch(`/ajax/cart/add/${accessoryId}/`, {
-        method: 'POST',
-        headers: {
-          'X-CSRFToken': getCookie('csrftoken'),
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ color: color })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          const cartCountBubble = document.getElementById('cart-count-bubble');
-          if (cartCountBubble) {
-            cartCountBubble.textContent = data.total_qty;
-            cartCountBubble.style.display = 'inline-block';
-          }
-        }
-      });
-    });
-  });
-  // Dynamic font size for product names
-  document.querySelectorAll('.card h3').forEach(function(h3) {
-    const card = h3.closest('.card');
-    if (h3.scrollWidth > card.offsetWidth - 20) {
-      h3.classList.add('dynamic-font');
-      let fontSize = 1.2;
-      while (h3.scrollWidth > card.offsetWidth - 20 && fontSize > 0.8) {
-        fontSize -= 0.05;
-        h3.style.fontSize = fontSize + 'rem';
-      }
-    }
-  });
-  function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-      const cookies = document.cookie.split(';');
-      for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
-        }
-      }
-    }
-    return cookieValue;
-  }
-});
-</script>
 {% endblock %}

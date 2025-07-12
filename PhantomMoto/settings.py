@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-*p3gkb&fy!1k(51q+hvnl%t#o=5pvf2z9keqnjg(x4jh0qcg3y'
 # DEBUG = os.environ.get('DEBUG')
-DEBUG = False  # Set to False in production
+DEBUG = True # to False in production
 
 ALLOWED_HOSTS = ['phantommoto.in', '148.72.246.167','www.phantommoto.in', '127.0.0.1', 'localhost']
 # ALLOWED_HOSTS = ['*']  # For development, use '*' to allow all hosts. Change in production.

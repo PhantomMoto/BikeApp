@@ -302,6 +302,15 @@ def cart_update(request, accessory_id):
         request.session['cart'] = cart
     return redirect('products:cart')
 
+from django.http import JsonResponse
+from .models import BikeModel  # Update with your actual model class name
+
+def get_models(request, brand_id):
+    models = BikeModel.objects.filter(brand_id=brand_id).values('id', 'name')
+    return JsonResponse({'models': list(models)})
+
+
+
 
 
 from django.views.decorators.http import require_POST

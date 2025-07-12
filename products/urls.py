@@ -57,6 +57,7 @@ urlpatterns = [
     path('order_summary/', views.order_summary, name='order_summary'),
     path('my-orders/', views.my_orders, name='my_orders'),
     path('track-order/<str:order_id>/', views.track_order, name='track_order'),
+    path('get-models/<int:brand_id>/', views.get_models, name='get_models'),
 
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

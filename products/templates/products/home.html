@@ -24,7 +24,7 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
   <form method="get" action="/products/" class="filter" style="width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 10px;">
     <select name="brand" id="brand-select" style="padding: 10px; width: 100%; border: 1px solid #ccc; border-radius: 6px;">
       <option value="">Select Bike Brand</option>
-      {% for brand in brands %}
+      {% for brand in brands %}s
         <option value="{{ brand.id }}">{{ brand.name }}</option>
       {% endfor %}
     </select>
@@ -91,5 +91,37 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
   }
 }
 </style>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const brandSelect = document.getElementById('brand-select');
+  const modelSelect = document.getElementById('model-select');
+
+  brandSelect.addEventListener('change', function() {
+    const brandId = this.value;
+
+    if (!brandId) {
+      modelSelect.innerHTML = '<option value="">Select Bike Model</option>';
+      modelSelect.disabled = true;
+      return;
+    }
+
+    fetch(`/get-models/${brandId}/`)
+      .then(response => response.json())
+      .then(data => {
+        let options = '<option value="">Select Bike Model</option>';
+        data.models.forEach(model => {
+          options += `<option value="${model.id}">${model.name}</option>`;
+        });
+        modelSelect.innerHTML = options;
+        modelSelect.disabled = false;
+      })
+      .catch(error => {
+        console.error('Error fetching models:', error);
+        modelSelect.innerHTML = '<option value="">Select Bike Model</option>';
+        modelSelect.disabled = true;
+      });
+  });
+});
+</script>
 
 {% endblock %}

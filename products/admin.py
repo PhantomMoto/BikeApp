@@ -17,7 +17,7 @@ class AccessoryAdmin(admin.ModelAdmin):
         (None, {
             'fields': (
                 'image', 'name', 'colors',
-                'shipment_width', 'shipment_height', 'shipment_weight','shipment_length',  # <-- Added here
+                'shipment_width', 'shipment_height', 'shipment_weight','shipment_length',
                 'mrp', 'offer_price', 'discount_percent',
                 'stock',  'categories',
                 'bike_models', 'is_universal',
@@ -27,11 +27,17 @@ class AccessoryAdmin(admin.ModelAdmin):
     )
     prepopulated_fields = {"slug": ("name",)}
 
-    def preview_img(self, obj):
-        if obj.image:
-            return mark_safe(f'<img src="{obj.image.url}" style="width:80px; height:auto; border-radius:4px;" />')
-        return "No Image"
-    preview_img.short_description = "Image Preview"
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        # Agar koi category select nahi ki gayi
+        if not obj.categories.exists():
+            try:
+                default_category = Category.objects.get(name="default")
+                obj.categories.add(default_category)
+            except Category.DoesNotExist:
+                pass  # Default category bana nahi rakhi toh skip
+    
+    
 
 
 ### Featured Product Admin ###

@@ -34,13 +34,13 @@ Your selected accessories are just a click away. Review your cart, make changes,
     <tbody>
       {% for item in cart_items %}
       <tr>
-        <td>
+        <td data-label="Product">
           {{ item.accessory.name }}
           {% if item.accessory.image %}
             <img src="{{ item.accessory.image.url }}" alt="{{ item.accessory.name }}" style="max-width:60px;display:block;" />
           {% endif %}
         </td>
-        <td>
+        <td data-label="Qty">
           <form action="{% url 'products:cart_update' item.accessory.id %}" method="post" class="cart-qty-form">
             {% csrf_token %}
             <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="cart-qty-input">
@@ -57,7 +57,7 @@ Your selected accessories are just a click away. Review your cart, make changes,
             <button type="submit" class="cart-btn cart-btn-update">Update</button>
           </form>
         </td>
-        <td>
+        <td data-label="Color">
           {% if item.color %}
             {% for color_obj in item.accessory.colors.all %}
               {% if color_obj.name == item.color %}
@@ -69,12 +69,12 @@ Your selected accessories are just a click away. Review your cart, make changes,
             <span style="color:#888;">-</span>
           {% endif %}
         </td>
-        <td>
+        <td data-label="Price">
           <span style="color:#27ae60;font-weight:600;">₹{{ item.accessory.offer_price }}</span>
           
         </td>
-        <td>₹{{ item.subtotal }}</td>
-        <td>
+        <td data-label="Subtotal">₹{{ item.subtotal }}</td>
+        <td data-label="Actions">
           <form action="{% url 'products:cart_remove' item.accessory.id %}" method="post" class="cart-remove-form">
             {% csrf_token %}
             <button type="submit" class="cart-btn cart-btn-remove">Remove</button>
@@ -106,6 +106,42 @@ Your selected accessories are just a click away. Review your cart, make changes,
 {% endblock %}
 {% block extra_style %}
 <style>
+
+
+  @media (max-width: 700px) {
+  .cart-container {
+    padding: 1rem;
+  }
+  .cart-table {
+    display: block;
+  }
+  .cart-table thead {
+    display: none;
+  }
+  .cart-table tbody {
+    display: block;
+  }
+  .cart-table tbody tr {
+    display: block;
+    background: #fff;
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    padding: 1rem;
+  }
+  .cart-table tbody tr td {
+    display: block;
+    padding: 8px 0;
+    text-align: left;
+  }
+  .cart-table tbody tr td:before {
+    content: attr(data-label);
+    display: block;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 3px;
+  }
+}
 body {
   background-size: cover;
   background-repeat: no-repeat;

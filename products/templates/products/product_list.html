@@ -54,7 +54,7 @@
       <div class="card" style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); padding: 15px; cursor: pointer; transition: transform 0.2s;" >
         <h3 style="font-size: 1.1rem; margin: 0 0 10px 0; text-align: center;text-wrap:auto;">{{ accessory.name }}</h3>
         {% if accessory.image %}
-          <img src="{{ accessory.image.url }}" alt="{{ accessory.name }}" onclick="window.location.href='{% url 'products:product_detail' accessory.slug %}'" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 10px;">
+          <img src="{{ accessory.image.url }}" alt="{{ accessory.name }}" onclick="window.location.href='{% url 'products:product_detail' accessory.slug %}'" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.1);">
         {% endif %}
         <p style="text-align: center;"><strong>₹{{ accessory.offer_price }}</strong> {% if accessory.mrp and accessory.mrp > accessory.offer_price %}<span style="text-decoration:line-through; color:#888;">₹{{ accessory.mrp }}</span>{% endif %}</p>
         <p style="text-align: center;">{{ accessory.description|truncatechars:40 }}</p>
@@ -63,7 +63,7 @@
           {% csrf_token %}
           <div class="cart-control" data-accessory-id="{{ accessory.id }}">
             <input type="hidden" name="color" value="">
-            <button type="button" class="btn-add-cart" style="background-color: #27ae60; color: #fff; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">Add to Cart</button>
+            <button type="button" class="btn-add-cart" style="background-color: #27ae60; color: #fff; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;font-size: 1.1rem;">Add to Cart</button>
           </div>
         </form>
       </div>

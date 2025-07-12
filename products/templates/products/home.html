@@ -65,7 +65,8 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
   <h2 style="font-size: 1.8rem; margin: 0 auto 20px auto; text-align: center;">Shop by Category</h2>
   <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; max-width: 800px; margin: 0 auto;">
     {% for cat in categories %}
-      <a href="/products/?category={{ cat.name }}" style="background: url('{% if cat.image %}{{ cat.image.url }}{% endif %}'); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: flex-end; border-radius: 12px; height: 140px; text-decoration: none; overflow: hidden; position: relative;">
+      <a href="/products/?category={{ cat.name }}" style="background: url('{% if cat.image %}{{ cat.image.url }}{% endif %}'); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: flex-end; border-radius: 12px; height: 140px; text-decoration: none; overflow: hidden; position: relative;box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+      cursor: pointer; transition: transform 0.2s;">
         <span style="background: rgba(255,255,255,0.85); width: 100%; text-align: center; padding: 6px 0; font-weight: 700; text-transform: capitalize; font-size: 0.9rem; color: #222;">{{ cat.name }}</span>
       </a>
     {% endfor %}

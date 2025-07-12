@@ -86,7 +86,7 @@ def search_suggestions(request):
     if query:
         # Accessories: name starts with query initials (case-insensitive)
         accessories = Accessory.objects.filter(
-            Q(name__istartswith=query) 
+            Q(name__icontains=query) 
         ).values('name', 'is_universal', 'id')[:5]
 
         for acc in accessories:

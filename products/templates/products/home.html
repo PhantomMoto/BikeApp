@@ -42,8 +42,9 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
   <h2 style="font-size: 1.8rem; margin: 0 auto 20px auto; text-align: center;">Featured Products</h2>
   <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; width: 100%; max-width: 1200px; margin: 0 auto;">
     {% for accessory in featured_products %}
-      <div style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); padding: 15px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; cursor: pointer;" onclick="window.location.href='{% url 'products:product_detail' accessory.slug %}'">
-        <h3 style="font-size: 1.1rem; margin: 0 0 10px 0; color: #333; text-align: center;">{{ accessory.name }}</h3>
+      <div style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1);    margin: 36px 20px;
+    padding: 10px 15px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; cursor: pointer;" onclick="window.location.href='{% url 'products:product_detail' accessory.slug %}'">
+        <h3 style="font-size: 1.1rem; margin: 0 0 10px 0; color: #333; text-align: center;text-wrap:auto;">{{ accessory.name }}</h3>
         {% if accessory.image %}
           <img src="{{ accessory.image.url }}" alt="{{ accessory.name }}" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 10px;">
         {% endif %}

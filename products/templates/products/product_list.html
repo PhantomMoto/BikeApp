@@ -74,21 +74,7 @@
 </section>
 
 <style>
-@media (max-width: 600px) {
-  .cards-container {
-    grid-template-columns: 1fr !important; /* Phone: 1 per row */
-  }
-}
-@media (min-width: 601px) and (max-width: 991px) {
-  .cards-container {
-    grid-template-columns: repeat(2, 1fr) !important; /* Tablet: 2 per row */
-  }
-}
-@media (min-width: 992px) {
-  .cards-container {
-    grid-template-columns: repeat(3, 1fr) !important; /* PC: 3 per row */
-  }
-}
+
 
 
 </style>
@@ -215,6 +201,39 @@
     }
     return cookieValue;
   }
+});
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  const brandSelect = document.getElementById('brand-select');
+  const modelSelect = document.getElementById('model-select');
+
+  brandSelect.addEventListener('change', function() {
+    const brandId = this.value;
+
+    if (!brandId) {
+      modelSelect.innerHTML = '<option value="">Select Bike Model</option>';
+      modelSelect.disabled = true;
+      return;
+    }
+
+    fetch(`/get-models/${brandId}/`)
+      .then(response => response.json())
+      .then(data => {
+        let options = '<option value="">Select Bike Model</option>';
+        data.models.forEach(model => {
+          options += `<option value="${model.id}">${model.name}</option>`;
+        });
+        modelSelect.innerHTML = options;
+        modelSelect.disabled = false;
+      })
+      .catch(error => {
+        console.error('Error fetching models:', error);
+        modelSelect.innerHTML = '<option value="">Select Bike Model</option>';
+        modelSelect.disabled = true;
+      });
+  });
 });
 </script>
 {% endblock %}

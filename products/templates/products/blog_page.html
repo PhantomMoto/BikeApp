@@ -218,7 +218,7 @@ function scrollRow(id, dir) {
   const row = document.getElementById(id);
   const card = row.querySelector('.blog-card, .video-card');
   if (!card) return;
-  const scrollAmount = card.offsetWidth + 20;
+  const scrollAmount = card.offsetWidth + 10;
   row.scrollBy({ left: dir * scrollAmount * 2, behavior: 'smooth' });
 }
 

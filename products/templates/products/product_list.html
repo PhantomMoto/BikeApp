@@ -6,14 +6,14 @@
 <section class="filter-section" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding: 20px;">
   <form method="get" class="filter" style="width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 10px;">
     <select name="brand" id="brand-select" style="padding: 10px; width: 100%; border: 1px solid #ccc; border-radius: 6px;">
-      <option value="">All Brands</option>
+      <option value="">Select Brand</option>
       {% for brand in brands %}
         <option value="{{ brand.id }}" {% if request.GET.brand == brand.id|stringformat:"s" %}selected{% endif %}>{{ brand.name }}</option>
       {% endfor %}
     </select>
 
     <select name="model" id="model-select" style="padding: 10px; width: 100%; border: 1px solid #ccc; border-radius: 6px;">
-      <option value="">All Models</option>
+      <option value="">Select Model</option>
       {% for model in models %}
         {% if not request.GET.brand or model.brand.id|stringformat:"s" == request.GET.brand %}
           <option value="{{ model.id }}" {% if request.GET.model == model.id|stringformat:"s" %}selected{% endif %}>{{ model.name }}</option>

@@ -8,6 +8,11 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 from .models import Accessory
 
+from django import forms
+from django.contrib import admin
+from django.utils.safestring import mark_safe
+from .models import Accessory, Blog, Category, YouTubeVideo, BikeBrand, BikeModel, FeaturedProduct, Color
+
 class AccessoryAdminForm(forms.ModelForm):
     class Meta:
         model = Accessory
@@ -17,11 +22,19 @@ class AccessoryAdminForm(forms.ModelForm):
         cleaned_data = super().clean()
         is_universal = cleaned_data.get('is_universal')
         bike_models = cleaned_data.get('bike_models')
+        colors = cleaned_data.get('colors')
 
+        # Bike models compulsory agar universal nahi hai
         if not is_universal and (not bike_models or bike_models.count() == 0):
             raise forms.ValidationError("Agar 'Is Universal' select nahi hai, toh kam se kam ek bike model select karna zaroori hai.")
         
+        # Colors compulsory agar universal nahi hai
+        if not is_universal and (not colors or colors.count() == 0):
+            raise forms.ValidationError("Agar 'Is Universal' select nahi hai, toh kam se kam ek color select karna zaroori hai.")
+
         return cleaned_data
+
+
 @admin.register(Accessory)
 class AccessoryAdmin(admin.ModelAdmin):
     form = AccessoryAdminForm
@@ -35,7 +48,7 @@ class AccessoryAdmin(admin.ModelAdmin):
                 'image', 'name', 'colors',
                 'shipment_width', 'shipment_height', 'shipment_weight', 'shipment_length',
                 'mrp', 'offer_price', 'discount_percent',
-                'stock',  'categories',
+                'stock', 'categories',
                 'bike_models', 'is_universal',
                 'description', 'large_description', 'slug', 'is_COD'
             ),
@@ -51,6 +64,15 @@ class AccessoryAdmin(admin.ModelAdmin):
                 obj.categories.add(default_category)
             except Category.DoesNotExist:
                 pass
+
+    def preview_img(self, obj):
+        if obj.image:
+            return mark_safe(f'<img src="{obj.image.url}" style="width:80px; height:auto; border-radius:4px;" />')
+        return "No Image"
+    preview_img.short_description = "Image Preview"
+
+# Baaki admin classes wahi jaise pehle the...
+
 
     
 

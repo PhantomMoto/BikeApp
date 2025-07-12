@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from .models import Accessory, Blog, Category, YouTubeVideo, BikeBrand, BikeModel, FeaturedProduct, Color
@@ -7,21 +8,36 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 from .models import Accessory
 
+class AccessoryAdminForm(forms.ModelForm):
+    class Meta:
+        model = Accessory
+        fields = '__all__'
+
+    def clean(self):
+        cleaned_data = super().clean()
+        is_universal = cleaned_data.get('is_universal')
+        bike_models = cleaned_data.get('bike_models')
+
+        if not is_universal and (not bike_models or bike_models.count() == 0):
+            raise forms.ValidationError("Agar 'Is Universal' select nahi hai, toh kam se kam ek bike model select karna zaroori hai.")
+        
+        return cleaned_data
 @admin.register(Accessory)
 class AccessoryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'mrp', 'offer_price', 'discount_percent', 'stock', 'is_universal', 'preview_img','is_COD']
+    form = AccessoryAdminForm
+    list_display = ['name', 'mrp', 'offer_price', 'discount_percent', 'stock', 'is_universal', 'preview_img', 'is_COD']
     search_fields = ['name', "is_COD"]
-    list_filter = ['is_universal', 'bike_models', 'categories',"is_COD"]
+    list_filter = ['is_universal', 'bike_models', 'categories', "is_COD"]
     filter_horizontal = ['categories', 'bike_models', 'colors']
     fieldsets = (
         (None, {
             'fields': (
                 'image', 'name', 'colors',
-                'shipment_width', 'shipment_height', 'shipment_weight','shipment_length',
+                'shipment_width', 'shipment_height', 'shipment_weight', 'shipment_length',
                 'mrp', 'offer_price', 'discount_percent',
                 'stock',  'categories',
                 'bike_models', 'is_universal',
-                'description', 'large_description', 'slug','is_COD'
+                'description', 'large_description', 'slug', 'is_COD'
             ),
         }),
     )
@@ -29,14 +45,13 @@ class AccessoryAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
-        # Agar koi category select nahi ki gayi
         if not obj.categories.exists():
             try:
                 default_category = Category.objects.get(name="default")
                 obj.categories.add(default_category)
             except Category.DoesNotExist:
-                pass  # Default category bana nahi rakhi toh skip
-    
+                pass
+
     
 
 
@@ -115,6 +130,12 @@ from .models import Order
 # Register the Order model with the admin site
 from django.contrib import admin
 from .models import Order
+
+
+from django import forms
+from .models import Accessory
+
+
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):

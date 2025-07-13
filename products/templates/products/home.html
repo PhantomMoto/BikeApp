@@ -32,8 +32,8 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
   </div>
 
 <section class="home-main" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-  <h2 style="font-size:1.6rem; font-weight:800; margin-bottom: 15px; text-align: center;">SELECT YOUR VEHICLE</h2>
   <form method="get" action="/products/" class="filter" style="width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 10px;    margin-top: 50vh;
+  <h2 style="font-size:1.6rem; font-weight:800; margin-bottom: 15px; text-align: center;">SELECT YOUR VEHICLE</h2>
     margin-right: 10vw">
     <select name="brand" id="brand-select" style="padding: 10px; width: 100%; border: 1px solid #ccc; border-radius: 6px;">
       <option value="">Select Bike Brand</option>
@@ -78,7 +78,7 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
 
 <section class="home-cat" style="padding: 30px 0;">
   <h2 style="font-size:1.6rem; font-weight:800; margin-bottom: 15px; text-align: center;">SHOP BY CATEGORY</h2>
-  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; width: 100%; margin: 0 auto;padding:0 5vw;">
+  <div style="display: grid; gap: 15px; width: 100%; margin: 0 auto;padding:0 5vw;" >
     {% for cat in categories %}
       <a href="/products/?category={{ cat.name }}" style="background: url('{% if cat.image %}{{ cat.image.url }}{% endif %}'); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: flex-end; border-radius: 12px; height: 140px; text-decoration: none; overflow: hidden; position: relative; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25); margin: 1px 9px; cursor: pointer; transition: transform 0.2s;">
         <span style="background: rgba(255,255,255,0.85); width: 100%; text-align: center; padding: 6px 0; font-weight: 700; text-transform: capitalize; font-size: 0.9rem; color: #222;">{{ cat.name }}</span>
@@ -136,11 +136,21 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
     .slideshow-mobile {
       display: block;
     }
+
+    .home-cat div{
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .home-main{
+      height : auto;
+    }
   }
 
   @media (min-width: 768px){
     .home-main{
       height : 100vh;
+    }
+    .home-cat div{
+      grid-template-columns: repeat(2, 1fr);
     }
   }
 </style>

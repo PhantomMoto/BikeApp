@@ -32,12 +32,6 @@
     }
   }
 
-  @media (min-width: 1200px) {
-    .images-section {
-      flex-direction: column;
-    }
-  }
-
   .thumbnails {
     display: flex;
     flex-direction: row;
@@ -202,7 +196,7 @@
     <p class="price-offer">₹{{ accessory.offer_price }}</p>
     
     {% if accessory.discount_percent %}
-    <div class="discount-badge">-{{ accessory.discount_percent }}% OFF</div>
+    <div class="discount-badge">{{ accessory.discount_percent }}% OFF</div>
     {% endif %}
 
     <div class="buttons">

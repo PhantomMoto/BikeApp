@@ -22,8 +22,14 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
 <div id="slideshow-desktop" class="slideshow-desktop">
   {% for slide in slideshow_images %}
     <div class="slide" style="background-image: url('{{ slide.image.url }}');position:absolute;top"></div>
-  {% endfor %}
-</div>
+    {% endfor %}
+  </div>
+  <!-- 📱 Mobile rectangle slideshow on top -->
+  <div id="slideshow-mobile" class="slideshow-mobile">
+    {% for slide in slideshow_images %}
+      <div class="slide-mobile" style="background-image: url('{{ slide.image.url }}');"></div>
+    {% endfor %}
+  </div>
 
 <section class="home-main" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
   <h2 style="font-size:1.6rem; font-weight:800; margin-bottom: 15px; text-align: center;">SELECT YOUR VEHICLE</h2>
@@ -69,16 +75,10 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
 </section>
 
 
-<!-- 📱 Mobile rectangle slideshow on top -->
-<div id="slideshow-mobile" class="slideshow-mobile">
-  {% for slide in slideshow_images %}
-    <div class="slide-mobile" style="background-image: url('{{ slide.image.url }}');"></div>
-  {% endfor %}
-</div>
 
 <section class="home-cat" style="padding: 30px 0;">
   <h2 style="font-size:1.6rem; font-weight:800; margin-bottom: 15px; text-align: center;">SHOP BY CATEGORY</h2>
-  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; margin: 0 auto;">
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; width: 100%; margin: 0 auto;padding:0 5vw;">
     {% for cat in categories %}
       <a href="/products/?category={{ cat.name }}" style="background: url('{% if cat.image %}{{ cat.image.url }}{% endif %}'); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: flex-end; border-radius: 12px; height: 140px; text-decoration: none; overflow: hidden; position: relative; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25); margin: 1px 9px; cursor: pointer; transition: transform 0.2s;">
         <span style="background: rgba(255,255,255,0.85); width: 100%; text-align: center; padding: 6px 0; font-weight: 700; text-transform: capitalize; font-size: 0.9rem; color: #222;">{{ cat.name }}</span>
@@ -141,7 +141,7 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
   @media (min-width: 768px){
     .home-main{
       height : 100vh;
-    }00
+    }
   }
 </style>
 

@@ -19,7 +19,7 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
 
 {% block content %}
 <!-- 💥 Desktop slideshow after content -->
-<div id="slideshow-desktop" class="slideshow-desktop">
+<div id="slideshow-desktop" class="slideshow-desktop" >
   {% for slide in slideshow_images %}
     <div class="slide" style="background-image: url('{{ slide.image.url }}');position:absolute;top"></div>
     {% endfor %}
@@ -32,8 +32,7 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
   </div>
 
 <section class="home-main" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-  <form method="get" action="/products/" class="filter" style="width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 10px;    margin-top: 50vh;
-  margin-right: 10vw">
+  <form method="get" action="/products/" class="filter" style="width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 10px; ">
   <h2 style="font-size:1.6rem; font-weight:800; margin-bottom: 15px; text-align: center;">SELECT YOUR VEHICLE</h2>
     <select name="brand" id="brand-select" style="padding: 10px; width: 100%; border: 1px solid #ccc; border-radius: 6px;">
       <option value="">Select Bike Brand</option>
@@ -92,6 +91,7 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
     width: 100%;
     height: 100vh;
     position: absolute;
+    top:10vh;
     overflow: hidden;
     z-index: -1;
   }
@@ -136,6 +136,7 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
     .slideshow-mobile {
       display: block;
     }
+    
   }
 
     @media (max-width: 767px) {
@@ -146,15 +147,19 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
     .home-cat div{
         grid-template-columns: repeat(2, 1fr);
     }
-}
-@media (min-width: 768px){
+  }
+  @media (min-width: 768px){
     .home-main {
-        height: 100vh;
+      height: 100vh;
     }
     .home-cat div{
-        grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, 1fr);
     }
-
+    .home-main form {
+         margin-top: 50vh;
+  margin-right: 10vw
+    }
+    
   }
 </style>
 

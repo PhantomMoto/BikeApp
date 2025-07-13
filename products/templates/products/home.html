@@ -27,7 +27,8 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
 
 <section class="home-main" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
   <h2 style="font-size:1.6rem; font-weight:800; margin-bottom: 15px; text-align: center;">SELECT YOUR VEHICLE</h2>
-  <form method="get" action="/products/" class="filter" style="width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 10px;">
+  <form method="get" action="/products/" class="filter" style="width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 10px;    margin-top: 50vh;
+    margin-right: 10vw">
     <select name="brand" id="brand-select" style="padding: 10px; width: 100%; border: 1px solid #ccc; border-radius: 6px;">
       <option value="">Select Bike Brand</option>
       {% for brand in brands %}
@@ -46,7 +47,7 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
 
 <section class="feat-pro" style="padding: 30px 0;">
   <h2 style="font-size:1.6rem; font-weight:800; margin-bottom: 15px; text-align: center;">FEATURED PRODUCTS</h2>
-  <div style="display: grid; gap: 20px; width: 100%; max-width: 1200px; margin: 0 auto;" class="pdr">
+  <div style="display: flex; gap: 20px; width: 100%; max-width: 680px; margin: 0 auto;" class="pdr">
     {% for accessory in featured_products %}
       <div style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); margin: 20px 10px; padding: 10px 15px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; cursor: pointer;" onclick="window.location.href='{% url 'products:product_detail' accessory.slug %}'">
         <h3 style="font-size: 1.1rem; margin: 0 0 10px 0; color: #333; text-align: center;">{{ accessory.name }}</h3>
@@ -110,7 +111,7 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
   .slideshow-mobile {
     display: none;
     width: 100%;
-    height: 200px;
+    height: 247px;
     position: relative;
     overflow: hidden;
     margin-bottom: 20px;
@@ -135,6 +136,12 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
     .slideshow-mobile {
       display: block;
     }
+  }
+
+  @media (min-width: 768px){
+    .home-main{
+      height : 100vh;
+    }00
   }
 </style>
 

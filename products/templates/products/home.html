@@ -35,13 +35,13 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
   <form method="get" action="/products/" class="filter" style="width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 10px; ">
   <h2 style="font-size:1.6rem; font-weight:800; margin-bottom: 15px; text-align: center;">SELECT YOUR VEHICLE</h2>
     <select name="brand" id="brand-select" style="padding: 10px; width: 100%; border: 1px solid #ccc; border-radius: 6px;">
-      <option value="">Select Bike Brand</option>
+      <option value="" name='brand'>Select Bike Brand</option>
       {% for brand in brands %}
         <option value="{{ brand.id }}">{{ brand.name }}</option>
       {% endfor %}
     </select>
     <select name="model" id="model-select" style="padding: 10px; width: 100%; border: 1px solid #ccc; border-radius: 6px;">
-      <option value="">Select Bike Model</option>
+      <option value="" name='model'>Select Bike Model</option>
       {% for model in models %}
         <option value="{{ model.id }}">{{ model.name }}</option>
       {% endfor %}
@@ -114,7 +114,6 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
     height: 247px;
     position: relative;
     overflow: hidden;
-    margin-bottom: 20px;
   }
   .slideshow-mobile .slide-mobile {
     position: absolute;
@@ -153,7 +152,7 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
       height: 100vh;
     }
     .home-cat div{
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(4, 1fr);
     }
     .home-main form {
          margin-top: 50vh;
@@ -164,6 +163,38 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
 </style>
 
 <script>
+
+document.addEventListener("DOMContentLoaded", function () {
+  const brandSelect = document.getElementById("brand-select");
+  const modelSelect = document.getElementById("model-select");
+
+  brandSelect.addEventListener("change", function () {
+    const brandId = this.value;
+    modelSelect.innerHTML = "<option>Loading models...</option>";
+
+    if (brandId) {
+      fetch(`/get-models-by-brand/${brandId}/`)
+        .then(response => response.json())
+        .then(data => {
+          modelSelect.innerHTML = '<option value="">Select Bike Model</option>';
+          data.models.forEach(model => {
+            const option = document.createElement("option");
+            option.value = model.id;
+            option.textContent = model.name;
+            modelSelect.appendChild(option);
+          });
+        })
+        .catch(error => {
+          console.error("Error fetching models:", error);
+          modelSelect.innerHTML = "<option>Error loading models</option>";
+        });
+    } else {
+      modelSelect.innerHTML = '<option value="">Select Bike Model</option>';
+    }
+  });
+});
+
+
   document.addEventListener('DOMContentLoaded', () => {
     function runSlideshow(selector, slideClass) {
       const slides = document.querySelectorAll(selector + ' .' + slideClass);

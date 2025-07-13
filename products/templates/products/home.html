@@ -173,7 +173,7 @@ document.addEventListener("DOMContentLoaded", function () {
     modelSelect.innerHTML = "<option>Loading models...</option>";
 
     if (brandId) {
-      fetch(`/get-models-by-brand/${brandId}/`)
+      fetch(`/get-models/${brandId}/`)
         .then(response => response.json())
         .then(data => {
           modelSelect.innerHTML = '<option value="">Select Bike Model</option>';

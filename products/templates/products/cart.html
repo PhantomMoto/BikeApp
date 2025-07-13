@@ -1,13 +1,13 @@
 {% extends 'products/base.html' %}
 
-{% block title %}Your Cart{% endblock %}
+{% block title %}Your Cart{%endblock%}
 
 {% block content %}
 {% load static %}
 
 {% if cart_items %}
 <div class="cart-wrapper">
-  <h2>Your Shopping Cart</h2>
+  <h2>Your Cart</h2>
   <div class="cart-list">
     {% for item in cart_items %}
     <div class="cart-item">
@@ -18,20 +18,24 @@
         <h3>{{ item.accessory.name }}</h3>
         <p class="price">₹{{ item.accessory.offer_price }}</p>
         <form action="{% url 'products:cart_update' item.accessory.id %}" method="post" class="update-form">
-          {% csrf_token %}
-          <input type="number" name="quantity" value="{{ item.quantity }}" min="1">
-          {% if item.accessory.colors.all %}
-          <select name="color">
-            <option value="">Color</option>
-            {% for color in item.accessory.colors.all %}
-            <option value="{{ color.name }}" {% if color.name == item.color %}selected{% endif %}>{{ color.name }}</option>
-            {% endfor %}
-          </select>
-          {% elif item.color %}
-          <input type="hidden" name="color" value="{{ item.color }}">
-          {% endif %}
-          <button type="submit" class="btn update">Update</button>
-        </form>
+  {% csrf_token %}
+  <label for="qty-{{ item.accessory.id }}">Quantity</label>
+  <input type="number" id="qty-{{ item.accessory.id }}" name="quantity" value="{{ item.quantity }}" min="1" step="1">
+
+  {% if item.accessory.colors.all %}
+    <label for="color-{{ item.accessory.id }}">Color</label>
+    <select id="color-{{ item.accessory.id }}" name="color">
+      <option value="">Select</option>
+      {% for color in item.accessory.colors.all %}
+        <option value="{{ color.name }}" {% if color.name == item.color %}selected{% endif %}>{{ color.name }}</option>
+      {% endfor %}
+    </select>
+  {% elif item.color %}
+    <input type="hidden" name="color" value="{{ item.color }}">
+  {% endif %}
+
+  <button type="submit" class="btn update">Update</button>
+</form>
         <form action="{% url 'products:cart_remove' item.accessory.id %}" method="post">
           {% csrf_token %}
           <button type="submit" class="btn remove">Remove</button>
@@ -54,31 +58,30 @@
 <p class="empty-cart">Your cart is empty. 😢</p>
 <a href="/products/" class="btn continue">Go Shopping</a>
 {% endif %}
-{% endblock %}
 
-{% block extra_style %}
 <style>
 body {
-  background-color: #f2f4f7;
+  background: linear-gradient(135deg, #f0f2f5, #d9e2ec);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .cart-wrapper {
   max-width: 1000px;
   margin: 3rem auto;
-  padding: 20px;
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  padding: 25px;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.1);
 }
 
 .cart-wrapper h2 {
   text-align: center;
   margin-bottom: 30px;
-  font-size: 2rem;
-  color: #333;
+  font-size: 2.2rem;
+  color: #222;
 }
 
 .cart-list {
@@ -89,35 +92,36 @@ body {
 
 .cart-item {
   display: grid;
-  grid-template-columns: 100px 1fr 120px;
+  grid-template-columns: 100px 1fr 140px;
   gap: 20px;
   align-items: center;
-  padding: 15px 20px;
-  background: #f9f9f9;
-  border-radius: 12px;
-  transition: transform 0.2s;
+  padding: 18px 22px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid #e0e0e0;
+  border-radius: 16px;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .cart-item:hover {
-  transform: scale(1.02);
+  transform: scale(1.01);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
 
 .cart-image img {
-  width: 100px;
-  height: 100px;
+  width: 90px;
+  height: 90px;
   object-fit: cover;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  border-radius: 12px;
 }
 
 .cart-details h3 {
   margin: 0;
   font-size: 1.2rem;
-  color: #222;
+  color: #333;
 }
 
 .cart-details p.price {
-  margin: 5px 0 10px;
+  margin: 6px 0 12px;
   font-size: 1.1rem;
   font-weight: 600;
   color: #27ae60;
@@ -125,45 +129,54 @@ body {
 
 .cart-details form {
   display: flex;
-  gap: 10px;
+  gap: 12px; /* Increased gap between inputs & buttons */
   flex-wrap: wrap;
 }
 
 .cart-details input[type="number"],
 .cart-details select {
-  padding: 6px 10px;
+  padding: 8px 14px;
   border: 1.5px solid #ccc;
   border-radius: 6px;
-  font-size: 0.95rem;
-  width: 70px;
+  font-size: 1rem;
+  width: 100px;  /* Wider inputs */
+  transition: border-color 0.3s;
+}
+
+.cart-details input:focus,
+.cart-details select:focus {
+  border-color: #27ae60;
+  outline: none;
 }
 
 .cart-details .btn {
-  padding: 6px 14px;
+  padding: 8px 18px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
-  transition: background-color 0.3s, transform 0.2s;
+  transition: background 0.3s, transform 0.2s;
+  flex-shrink: 0;
+  margin : 10px;
 }
 
 .cart-details .btn.update {
-  background-color: #2980b9;
+  background: linear-gradient(135deg, #2980b9, #3498db);
   color: #fff;
 }
 
 .cart-details .btn.update:hover {
-  background-color: #1c5980;
+  background: linear-gradient(135deg, #1c5980, #2471a3);
   transform: translateY(-2px);
 }
 
 .cart-details .btn.remove {
-  background-color: #e74c3c;
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
   color: #fff;
 }
 
 .cart-details .btn.remove:hover {
-  background-color: #a82824;
+  background: linear-gradient(135deg, #a82824, #922b21);
   transform: translateY(-2px);
 }
 
@@ -175,17 +188,18 @@ body {
 
 .cart-summary {
   text-align: center;
-  margin-top: 30px;
+  margin-top: 40px;
 }
 
 .cart-summary h3 {
-  font-size: 1.5rem;
-  margin-bottom: 20px;
+  font-size: 1.6rem;
+  margin-bottom: 25px;
+  color: #222;
 }
 
 .cart-summary .btn {
-  margin: 5px;
-  padding: 10px 28px;
+  margin: 8px;
+  padding: 12px 32px;
   border: none;
   border-radius: 30px;
   font-size: 1.05rem;
@@ -193,32 +207,32 @@ body {
   color: #fff;
   text-decoration: none;
   display: inline-block;
-  transition: background-color 0.3s, transform 0.2s;
+  transition: background 0.3s, transform 0.2s;
 }
 
 .cart-summary .btn.continue {
-  background-color: orange;
+  background: linear-gradient(135deg, #ff9900, #ff6600);
 }
 
 .cart-summary .btn.continue:hover {
-  background-color: #d26900;
+  background: linear-gradient(135deg, #d26900, #cc5200);
   transform: translateY(-2px);
 }
 
 .cart-summary .btn.checkout {
-  background-color: #27ae60;
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
 }
 
 .cart-summary .btn.checkout:hover {
-  background-color: #1e8449;
+  background: linear-gradient(135deg, #1e8449, #27ae60);
   transform: translateY(-2px);
 }
 
 .empty-cart {
   text-align: center;
   margin: 5rem 0;
-  font-size: 1.5rem;
-  color: #888;
+  font-size: 1.6rem;
+  color: #666;
 }
 
 @media (max-width: 768px) {

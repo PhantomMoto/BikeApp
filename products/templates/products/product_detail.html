@@ -1,214 +1,238 @@
 {% extends 'products/base.html' %}
-{% block title %}{{ accessory.name }} - Phantom Moto{% endblock %}
-{% block meta_description %}{{ accessory.large_description|truncatewords:30 }}{% endblock %}
-{% block og_title %}{{ accessory.name }} - Phantom Moto{% endblock %}
-{% block og_description %}{{ accessory.large_description|truncatewords:30 }}{% endblock %}
+{% load static %}
+
+{% block title %}{{ accessory.name }}{% endblock %}
+
 {% block content %}
-<div class="product-detail-container">
-  <div class="product-detail-header">
-    <div style="display:flex;justify-content:space-between;align-items:center; gap: 1rem;">
-      <h1 style="margin-bottom:0;">{{ accessory.name }}</h1>
-      <button id="share-btn" title="Share this product" style="background:none;border:none;cursor:pointer;font-size:1.7rem;margin-left:10px;">
-        <span style="vertical-align:middle;">🔗</span>
-      </button>
-    </div>
-    {% if accessory.image %}
-    <div class="pdi">
-
-      <img src="{{ accessory.image.url }}" alt="{{ accessory.name }}" class="product-detail-img" />
-    </div>
-    {% endif %}
-    <p class="product-detail-price">
-      <strong>₹{{ accessory.offer_price }}</strong>
-      {% if accessory.mrp and accessory.mrp > accessory.offer_price %}
-        <span style="text-decoration:line-through;color:#888;font-size:0.95em; margin-left: 0.8rem;">₹{{ accessory.mrp }}</span>
-      {% endif %}
-      {% if accessory.discount_percent %}
-        <span style="color:#27ae60;font-weight:600; margin-left: 0.8rem;">{{ accessory.discount_percent }}% OFF</span>
-      {% endif %}
-    </p>
-    <p class="product-detail-shortdesc">{{ accessory.description }}</p>
-  </div>
-  <div class="product-detail-body">
-    <h2 class="pd">Product Details</h3>
-    <div class="product-detail-longdesc">{{ accessory.large_description|linebreaks }}</div>
-    <p><strong>Category:</strong> {% for cat in accessory.categories.all %}{{ cat.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
-    <p><strong>Available Colors:</strong> {% for color in accessory.colors.all %}<span class="color-circle" style="background:{{ color.hex_code }};" title="{{ color.name }}"></span> {{ color.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
-    <form action="{% url 'products:cart_add' accessory.id %}" method="post" style="margin-top:20px;">
-      {% csrf_token %}
-      <div class="cart-control" data-accessory-id="{{ accessory.id }}">
-        <input type="hidden" name="color" value="">
-        <div class="btnwrapper">
-
-          <button class="btn-add-cart">Add to Cart</button>
-        </div>
-      </div>
-    </form>
-  </div>
-</div>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  // Add to Cart button logic
-  const addCartBtn = document.querySelector('.btn-add-cart');
-  if (addCartBtn) {
-    addCartBtn.addEventListener('click', function (e) {
-      e.preventDefault();
-      const container = this.closest('.cart-control');
-      const accessoryId = container.dataset.accessoryId;
-      const card = this.closest('.product-detail-container');
-      const colorInput = card.querySelector('input[name="color"]');
-      const color = colorInput ? colorInput.value : '';
-
-      // If color select is required, handle it
-      if (card.querySelector('.color-select') && !color) {
-        alert('Please select a color before adding to cart.');
-        return;
-      }
-
-      fetch(`/ajax/cart/add/${accessoryId}/`, {
-        method: 'POST',
-        headers: {
-          'X-CSRFToken': '{{ csrf_token }}',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ color: color })
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            // Update bubble
-            const cartCountBubble = document.getElementById('cart-count-bubble');
-            if (cartCountBubble) {
-              cartCountBubble.textContent = data.total_qty;
-              cartCountBubble.style.display = 'inline-block';
-            }
-            // Redirect after update (final boss move)
-            window.location.href = '/cart/';
-          }
-        })
-        .catch(err => {
-          console.error('Failed to add to cart:', err);
-          alert('Something went wrong. Please try again!');
-        });
-    });
-  }
-
-  // Share button logic
-  const shareBtn = document.getElementById('share-btn');
-  if (shareBtn) {
-    shareBtn.addEventListener('click', function () {
-      const url = window.location.href;
-      const title = document.title;
-      if (navigator.share) {
-        navigator.share({ title: title, url: url });
-      } else {
-        navigator.clipboard.writeText(url);
-        alert('Product link copied to clipboard!');
-      }
-    });
-  }
-});
-</script>
 <style>
-  .btnwrapper {
-    display: flex;
-    justify-content: center;
-    margin-top: 2rem;
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
   }
-  .pd{
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: #333;
-    
-  text-decoration: underline;
-  }
-.product-detail-container {
-  max-width: 800px;
-  margin: 4rem auto 5rem;
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 4px 20px rgb(0 0 0 / 0.12);
-  overflow: hidden;
-  padding-bottom: 3rem;
-  padding-left: 3rem;
-  padding-right: 3rem;
-}
-.product-detail-header {
-  padding: 3rem 0 2rem;
-  border-bottom: 1px solid #eee;
-  text-align: center;
-}
-.product-detail-header h1 {
-  font-weight: 900;
-  font-size: 2.4rem;
-  letter-spacing: 0.03em;
-}
-.pdi{
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
-}
-.product-detail-img {
-  max-width: 380px;
-  width: 100%;
-  border-radius: 16px;
-  display: block;
-  box-shadow: 0 6px 15px rgb(0 0 0 / 0.1);
-}
-.product-detail-price {
-  font-size: 1.6rem;
-  margin: 1rem 0 1.2rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-.product-detail-price span {
-  margin-left: 1rem;
-}
-.product-detail-shortdesc {
-  color: #555;
-  font-size: 1.25rem;
-  line-height: 1.5;
-}
-.product-detail-body {
-  padding: 3rem 0 4rem;
-  font-size: 1.15rem;
-  line-height: 1.6;
-  color: #333;
-}
-.product-detail-longdesc {
-  font-size: 1.12rem;
-  margin-bottom: 2.2rem;
-  color: #444;
-}
-.color-circle {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 1.5px solid #ccc;
-  vertical-align: middle;
-  margin-right: 6px;
-  box-shadow: 0 0 4px rgb(0 0 0 / 0.08);
-}
-.btn-add-cart {
-  background-color: #27ae60;
-  color: #fff;
-  border: none;
-  padding: 14px 22px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1.2rem;
-  font-weight: 600;
-  transition: background-color 0.3s ease;
-  display: inline-block;
-  margin-top: 1rem;
-  min-width: 160px;
-  letter-spacing: 0.02em;
-}
-.btn-add-cart:hover {
-  background-color: #219150;
-}
+  @media (min-width: 992px) {
+    .container {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .images-section {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 20px;
+  }
+
+  @media (min-width: 768px) {
+    .images-section {
+      flex-direction: row;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .images-section {
+      flex-direction: column;
+    }
+  }
+
+  .thumbnails {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    overflow-x: auto;
+    max-height: 120px;
+  }
+
+  @media (min-width: 768px) {
+    .thumbnails {
+      flex-direction: column;
+      overflow-y: auto;
+      max-height: 500px;
+    }
+  }
+
+  .thumbnails img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: border 0.3s;
+  }
+
+  .thumbnails img:hover {
+    border-color: #000;
+  }
+
+  .main-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+  }
+
+  .info h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+  }
+
+  .info p {
+    margin-bottom: 15px;
+    color: #555;
+  }
+
+  .price-old {
+    text-decoration: line-through;
+    color: #888;
+  }
+
+  .price-offer {
+    font-size: 24px;
+    color: green;
+    font-weight: bold;
+  }
+
+  .discount-badge {
+    background: red;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+
+  .buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  @media (min-width: 576px) {
+    .buttons {
+      flex-direction: row;
+    }
+  }
+
+  .buttons button {
+    padding: 12px 20px;
+    border: 2px solid #000;
+    background: #000;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.3s;
+    flex: 1;
+  }
+
+  .buttons button.outline {
+    background: #fff;
+    color: #000;
+  }
+
+  .buttons button:hover {
+    background: #333;
+    color: #fff;
+  }
+
+  .buttons button.outline:hover {
+    background: #000;
+    color: #fff;
+  }
+
+  .colors span {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border: 1px solid #999;
+    border-radius: 50%;
+    margin-right: 8px;
+  }
+
+  .cod {
+    font-size: 14px;
+    color: #777;
+    margin-top: 10px;
+  }
 </style>
+
+<div class="container">
+
+  <!-- Left: Images -->
+  <div class="images-section">
+
+    <!-- Thumbnails -->
+    <div class="thumbnails">
+      <img src="{{ accessory.image.url }}" onclick="changeImage('{{ accessory.image.url }}')">
+      {% if accessory.subimage1 %}
+      <img src="{{ accessory.subimage1.url }}" onclick="changeImage('{{ accessory.subimage1.url }}')">
+      {% endif %}
+      {% if accessory.subimage2 %}
+      <img src="{{ accessory.subimage2.url }}" onclick="changeImage('{{ accessory.subimage2.url }}')">
+      {% endif %}
+      {% if accessory.subimage3 %}
+      <img src="{{ accessory.subimage3.url }}" onclick="changeImage('{{ accessory.subimage3.url }}')">
+      {% endif %}
+      {% if accessory.subimage4 %}
+      <img src="{{ accessory.subimage4.url }}" onclick="changeImage('{{ accessory.subimage4.url }}')">
+      {% endif %}
+      {% if accessory.subimage5 %}
+      <img src="{{ accessory.subimage5.url }}" onclick="changeImage('{{ accessory.subimage5.url }}')">
+      {% endif %}
+    </div>
+
+    <!-- Big image -->
+    <div class="main-image">
+      <img id="main-image" src="{{ accessory.image.url }}" alt="{{ accessory.name }}">
+    </div>
+  </div>
+
+  <!-- Right: Info -->
+  <div class="info">
+    <h1>{{ accessory.name }}</h1>
+    <p>{{ accessory.large_description|safe }}</p>
+    
+    {% if accessory.mrp %}
+    <p class="price-old">₹{{ accessory.mrp }}</p>
+    {% endif %}
+    <p class="price-offer">₹{{ accessory.offer_price }}</p>
+    
+    {% if accessory.discount_percent %}
+    <div class="discount-badge">-{{ accessory.discount_percent }}% OFF</div>
+    {% endif %}
+
+    <div class="buttons">
+      <button>Add to Cart</button>
+      <button class="outline">Buy Now</button>
+    </div>
+
+    <div class="colors" style="margin-top:20px;">
+      <h3>Available Colors:</h3>
+      {% for color in accessory.colors.all %}
+        <span style="background-color: {{ color.hex_code }}"></span>
+      {% empty %}
+        <span style="color: #888;">No colors available</span>
+      {% endfor %}
+    </div>
+
+    <div class="cod">
+      {% if accessory.is_COD %}
+        Cash on Delivery available.
+      {% else %}
+        Cash on Delivery not available.
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function changeImage(url) {
+    document.getElementById('main-image').src = url;
+  }
+</script>
 {% endblock %}

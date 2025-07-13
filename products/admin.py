@@ -34,6 +34,7 @@ class AccessoryAdmin(admin.ModelAdmin):
         (None, {
             'fields': (
                 'image', 'name', 'colors',
+                'subimage1', 'subimage2', 'subimage3', 'subimage4', 'subimage5',  # ← add ye line
                 'shipment_width', 'shipment_height', 'shipment_weight', 'shipment_length',
                 'mrp', 'offer_price', 'discount_percent',
                 'stock', 'categories',

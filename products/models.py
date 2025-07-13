@@ -38,6 +38,17 @@ class Color(models.Model):
 class Accessory(models.Model):
     name = models.CharField(max_length=150)
     image = models.ImageField(upload_to='accessory_images/', blank=True, null=True)
+    
+    
+    subimage1 = models.ImageField(upload_to='accessory_images/subimages/', blank=True, null=True)
+    subimage2 = models.ImageField(upload_to='accessory_images/subimages/', blank=True, null=True)
+    subimage3 = models.ImageField(upload_to='accessory_images/subimages/', blank=True, null=True)
+    subimage4 = models.ImageField(upload_to='accessory_images/subimages/', blank=True, null=True)
+    subimage5 = models.ImageField(upload_to='accessory_images/subimages/', blank=True, null=True)
+
+    
+    
+    
     colors = models.ManyToManyField(Color, related_name='accessories', blank=True)
     shipment_width = models.FloatField(default=0.0)    # cm ya inch, jo bhi unit
     shipment_height = models.FloatField(default=0.0)    

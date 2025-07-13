@@ -19,11 +19,10 @@
         <p class="price">₹{{ item.accessory.offer_price }}</p>
         <form action="{% url 'products:cart_update' item.accessory.id %}" method="post" class="update-form">
   {% csrf_token %}
-  <label for="qty-{{ item.accessory.id }}">Quantity</label>
+  <label for="qty-{{ item.accessory.id }}" style='font-size:1rem;'>Quantity</label>
   <input type="number" id="qty-{{ item.accessory.id }}" name="quantity" value="{{ item.quantity }}" min="1" step="1">
 
   {% if item.accessory.colors.all %}
-    <label for="color-{{ item.accessory.id }}">Color</label>
     <select id="color-{{ item.accessory.id }}" name="color">
       <option value="">Select</option>
       {% for color in item.accessory.colors.all %}
@@ -129,9 +128,10 @@ body {
 
 .cart-details form {
   display: flex;
-  gap: 12px; /* Increased gap between inputs & buttons */
   flex-wrap: wrap;
+  gap: 12px;
 }
+
 
 .cart-details input[type="number"],
 .cart-details select {
@@ -243,6 +243,33 @@ body {
   .subtotal {
     text-align: left;
     margin-top: 10px;
+  }
+}
+
+
+@media (min-width: 768px) {
+  .cart-details form {
+    flex-wrap: nowrap; /* Desktop pe ek line me sab */
+    align-items: flex-end;
+  }
+  .cart-details label {
+    margin-top: 0;
+  }
+}
+
+
+.cart-details label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #555;
+  margin-top: 4px;
+}
+
+@media (min-width: 768px) {
+  .cart-details label {
+    display: inline-block;
+    margin-right: 6px;
   }
 }
 </style>

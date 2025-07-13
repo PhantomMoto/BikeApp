@@ -1,11 +1,12 @@
 from django.shortcuts import render
-from .models import Accessory, BikeModel, Category, BikeBrand, FeaturedProduct
+from .models import Accessory, BikeModel, Category, BikeBrand, FeaturedProduct,SlideshowImage
 
 def home(request):
     categories = Category.objects.all()
     brands = BikeBrand.objects.all()
     models = BikeModel.objects.all()
     featured = FeaturedProduct.objects.order_by('featured_at')
+    slideshow_images = SlideshowImage.objects.all()
     # For new FeaturedProduct model, use accessories.all()
     featured_products = []
     for f in featured:
@@ -15,6 +16,7 @@ def home(request):
         'brands': brands,
         'models': models,
         'featured_products': featured_products,
+        'slideshow_images': slideshow_images,
     })
 
 

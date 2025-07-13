@@ -11,7 +11,17 @@ from .models import Accessory
 from django import forms
 from django.contrib import admin
 from django.utils.safestring import mark_safe
-from .models import Accessory, Blog, Category, YouTubeVideo, BikeBrand, BikeModel, FeaturedProduct, Color
+from .models import Accessory, Blog, Category, YouTubeVideo, BikeBrand, BikeModel, FeaturedProduct, Color,SlideshowImage
+
+# products/admin.py
+
+from django.contrib import admin
+from .models import SlideshowImage
+
+@admin.register(SlideshowImage)
+class SlideshowImageAdmin(admin.ModelAdmin):
+    list_display = ('order', 'caption')
+    ordering = ('order',)
 
 
 class AccessoryAdminForm(forms.ModelForm):

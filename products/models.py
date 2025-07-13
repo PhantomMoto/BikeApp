@@ -83,6 +83,19 @@ class Accessory(models.Model):
         return f"{name} ({self.offer_price})" if self.offer_price else name
        
 
+class SlideshowImage(models.Model):
+    image = models.ImageField(upload_to='slideshow/')
+    caption = models.CharField(max_length=255, blank=True, null=True)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return f"Slide {self.order} - {self.caption or 'No Caption'}"
+
+
+
 
 class Blog(models.Model):
     title = models.CharField(max_length=200)

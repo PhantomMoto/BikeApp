@@ -18,13 +18,19 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
 {% endblock %}
 
 {% block content %}
+<!-- 💥 Desktop slideshow after content -->
+<div id="slideshow-desktop" class="slideshow-desktop">
+  {% for slide in slideshow_images %}
+    <div class="slide" style="background-image: url('{{ slide.image.url }}');position:absolute;top"></div>
+  {% endfor %}
+</div>
 
-<section class="home-main" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding: 20px;">
+<section class="home-main" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
   <h2 style="font-size:1.6rem; font-weight:800; margin-bottom: 15px; text-align: center;">SELECT YOUR VEHICLE</h2>
   <form method="get" action="/products/" class="filter" style="width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 10px;">
     <select name="brand" id="brand-select" style="padding: 10px; width: 100%; border: 1px solid #ccc; border-radius: 6px;">
       <option value="">Select Bike Brand</option>
-      {% for brand in brands %}s
+      {% for brand in brands %}
         <option value="{{ brand.id }}">{{ brand.name }}</option>
       {% endfor %}
     </select>
@@ -40,11 +46,10 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
 
 <section class="feat-pro" style="padding: 30px 0;">
   <h2 style="font-size:1.6rem; font-weight:800; margin-bottom: 15px; text-align: center;">FEATURED PRODUCTS</h2>
-  <div style="display: grid; gap: 20px; width: 100%; max-width: 1200px; margin: 0 auto;" class='pdr'>
+  <div style="display: grid; gap: 20px; width: 100%; max-width: 1200px; margin: 0 auto;" class="pdr">
     {% for accessory in featured_products %}
-      <div style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1);    margin: 20px 10px;
-    padding: 10px 15px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; cursor: pointer;" onclick="window.location.href='{% url 'products:product_detail' accessory.slug %}'">
-        <h3 style="font-size: 1.1rem; margin: 0 0 10px 0; color: #333; text-align: center;text-wrap:auto;">{{ accessory.name }}</h3>
+      <div style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); margin: 20px 10px; padding: 10px 15px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; cursor: pointer;" onclick="window.location.href='{% url 'products:product_detail' accessory.slug %}'">
+        <h3 style="font-size: 1.1rem; margin: 0 0 10px 0; color: #333; text-align: center;">{{ accessory.name }}</h3>
         {% if accessory.image %}
           <img src="{{ accessory.image.url }}" alt="{{ accessory.name }}" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 10px;">
         {% endif %}
@@ -58,16 +63,23 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
       </div>
     {% empty %}
       <p style="text-align:center;">No featured products yet.</p>
-    {% endfor %}                                             
+    {% endfor %}
   </div>
 </section>
 
+
+<!-- 📱 Mobile rectangle slideshow on top -->
+<div id="slideshow-mobile" class="slideshow-mobile">
+  {% for slide in slideshow_images %}
+    <div class="slide-mobile" style="background-image: url('{{ slide.image.url }}');"></div>
+  {% endfor %}
+</div>
+
 <section class="home-cat" style="padding: 30px 0;">
   <h2 style="font-size:1.6rem; font-weight:800; margin-bottom: 15px; text-align: center;">SHOP BY CATEGORY</h2>
-  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; max-width: 800px; margin: 0 auto;">
+  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; margin: 0 auto;">
     {% for cat in categories %}
-      <a href="/products/?category={{ cat.name }}" style="background: url('{% if cat.image %}{{ cat.image.url }}{% endif %}'); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: flex-end; border-radius: 12px; height: 140px; text-decoration: none; overflow: hidden; position: relative;box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);margin:1px 9px;
-      cursor: pointer; transition: transform 0.2s;">
+      <a href="/products/?category={{ cat.name }}" style="background: url('{% if cat.image %}{{ cat.image.url }}{% endif %}'); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: flex-end; border-radius: 12px; height: 140px; text-decoration: none; overflow: hidden; position: relative; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25); margin: 1px 9px; cursor: pointer; transition: transform 0.2s;">
         <span style="background: rgba(255,255,255,0.85); width: 100%; text-align: center; padding: 6px 0; font-weight: 700; text-transform: capitalize; font-size: 0.9rem; color: #222;">{{ cat.name }}</span>
       </a>
     {% endfor %}
@@ -75,67 +87,74 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
 </section>
 
 <style>
-@media (min-width: 768px) {
-  .home-cat div {
-    grid-template-columns: repeat(3, 1fr) !important;
+  .slideshow-desktop {
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    overflow: hidden;
+    z-index: -1;
   }
-  .pdr{
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-
+  .slideshow-desktop .slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+  }
+  .slideshow-desktop .slide.active {
+    opacity: 1;
   }
 
-}
-@media (max-width: 480px) {
-  .home-cat div {
-    grid-template-columns: repeat(2, 1fr) !important;
+  .slideshow-mobile {
+    display: none;
+    width: 100%;
+    height: 200px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 20px;
   }
-  .home-cat a {
-    height: 120px !important;
+  .slideshow-mobile .slide-mobile {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
   }
-  .filter select{
-    width:35ch;
+  .slideshow-mobile .slide-mobile.active {
+    opacity: 1;
   }
 
-
-  .pdr{
-    grid-template-columns: 1fr 1fr;
-  }
-}
-</style>
-<script>
-
-modelSelect = document.getElementById('model-select');
-modelSelect.disabled = true;
-document.addEventListener("DOMContentLoaded", function() {
-  const brandSelect = document.getElementById('brand-select');
-  const modelSelect = document.getElementById('model-select');
-
-  brandSelect.addEventListener('change', function() {
-    const brandId = this.value;
-
-    if (!brandId) {
-      modelSelect.innerHTML = '<option value="">Select Bike Model</option>';
-      modelSelect.disabled = true;
-      return;
+  @media (max-width: 767px) {
+    .slideshow-desktop {
+      display: none;
     }
+    .slideshow-mobile {
+      display: block;
+    }
+  }
+</style>
 
-    fetch(`/get-models/${brandId}/`)
-      .then(response => response.json())
-      .then(data => {
-        let options = '<option value="">Select Bike Model</option>';
-        data.models.forEach(model => {
-          options += `<option value="${model.id}">${model.name}</option>`;
-        });
-        modelSelect.innerHTML = options;
-        modelSelect.disabled = false;
-      })
-      .catch(error => {
-        console.error('Error fetching models:', error);
-        modelSelect.innerHTML = '<option value="">Select Bike Model</option>';
-        modelSelect.disabled = true;
-      });
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    function runSlideshow(selector, slideClass) {
+      const slides = document.querySelectorAll(selector + ' .' + slideClass);
+      let current = 0;
+      if (slides.length) {
+        slides[current].classList.add('active');
+        setInterval(() => {
+          slides[current].classList.remove('active');
+          current = (current + 1) % slides.length;
+          slides[current].classList.add('active');
+        }, 4000);
+      }
+    }
+    runSlideshow('.slideshow-desktop', 'slide');
+    runSlideshow('.slideshow-mobile', 'slide-mobile');
   });
-});
 </script>
 
 {% endblock %}

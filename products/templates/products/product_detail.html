@@ -248,9 +248,9 @@
   .then(data => {
     if (data.success) {
       alert('Item added to cart! 🚀');
-      window.location.href = '/cart/'; // Redirect to cart page
+      window.location.href = '/products/'; // Redirect to cart page
     } else {
-      alert('Kuch gadbad hai bhai 😥');
+      alert('error occured , sorry');
     }
   })
   .catch(err => {

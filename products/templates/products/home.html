@@ -51,7 +51,7 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
 </section>
 
 <section class="feat-pro" style="padding: 30px 0;">
-  <h2 style="font-size:1.6rem; font-weight:800; margin-bottom: 15px; text-align: center;">FEATURED PRODUCTS</h2>
+  <h2 style="font-size:1.6rem; font-weight:800;text-align: center;margin-top:10vh;">FEATURED PRODUCTS</h2>
   <div style="display: flex; gap: 20px; width: 100%; max-width: 680px; margin: 0 auto;" class="pdr">
     {% for accessory in featured_products %}
       <div style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); margin: 20px 10px; padding: 10px 15px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; cursor: pointer;" onclick="window.location.href='{% url 'products:product_detail' accessory.slug %}'">

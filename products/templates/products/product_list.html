@@ -296,7 +296,7 @@ document.addEventListener("DOMContentLoaded", function() {
     prevBtn.disabled = page === 1;
     nextBtn.disabled = page === totalPages;
     window.scrollTo({
-    top: 5,
+    top: window.innerHeight * 0.25,
     behavior: 'smooth'
   });
   }

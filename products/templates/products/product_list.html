@@ -49,7 +49,7 @@
 
 <section class="accessories-section" style="padding: 20px;">
   <h2 style="font-size: 1.8rem; margin: 0 auto 20px auto; text-align: center;">Accessories</h2>
-  <div class="cards-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; max-width: 1200px; margin: 0 auto;">
+  <div class="cards-container" style="display: grid;grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));justify-content: center;">
     {% for accessory in accessories %}
       <div class="card accessory-card" style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); padding: 15px; cursor: pointer; transition: transform 0.2s;" >
         <h3 style="font-size: 1.1rem; margin: 0 0 10px 0; text-align: center;text-wrap:auto;">{{ accessory.name }}</h3>
@@ -106,6 +106,10 @@
   font-weight: 600;
   font-size: 1.1rem;
 }
+.accessory-card {
+  width: 100%;
+}
+
 </style>
 <script> 
   document.addEventListener('DOMContentLoaded', () => {
@@ -270,7 +274,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 document.addEventListener("DOMContentLoaded", function() {
   const cards = Array.from(document.querySelectorAll(".accessory-card"));
-  const perPage = 10;
+  const perPage = 12;
   let currentPage = 1;
   const totalPages = Math.ceil(cards.length / perPage);
 
@@ -291,6 +295,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
     prevBtn.disabled = page === 1;
     nextBtn.disabled = page === totalPages;
+    window.scrollTo({
+    top: 5,
+    behavior: 'smooth'
+  });
   }
 
   prevBtn.addEventListener("click", () => {

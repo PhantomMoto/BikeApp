@@ -200,8 +200,8 @@
     {% endif %}
 
     <div class="buttons">
-      <button>Add to Cart</button>
-      <button class="outline">Buy Now</button>
+       <button type="button" onclick="addToCart()">Add to Cart</button>
+  <button type="button" class="outline" onclick="buyNow()">Buy Now</button>
     </div>
 
     <div class="colors" style="margin-top:20px;">
@@ -228,5 +228,77 @@
   function changeImage(url) {
     document.getElementById('main-image').src = url;
   }
+
+
+
+
+ function addToCart() {
+  const accessoryId = {{ accessory.id }};
+  const color = ''; // Optional: agar color select kar rahe ho toh yaha set karo
+
+  fetch(`/ajax/cart/add/${accessoryId}/`, {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': getCookie('csrftoken'),
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ color: color })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert('Item added to cart! 🚀');
+      window.location.href = '/cart/'; // Redirect to cart page
+    } else {
+      alert('Kuch gadbad hai bhai 😥');
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    alert('Network error 💔');
+  });
+}
+
+function buyNow() {
+  const accessoryId = {{ accessory.id }};
+  const color = '';
+
+  fetch(`/ajax/cart/add/${accessoryId}/`, {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': getCookie('csrftoken'),
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ color: color })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      window.location.href = '/cart/'; // Open cart directly
+    } else {
+      alert('Failed to add for buy now 😥');
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    alert('Network error 💔');
+  });
+}
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+      cookie = cookie.trim();
+      if (cookie.startsWith(name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
 </script>
 {% endblock %}

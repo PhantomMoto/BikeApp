@@ -161,6 +161,7 @@
       const card = container.closest('.card');
       const colorInput = card.querySelector('input[name="color"]');
       const color = colorInput ? colorInput.value : '';
+      
 
       fetch(`/ajax/cart/add/${accessoryId}/`, {
         method: 'POST',
@@ -177,6 +178,8 @@
           renderQuantityControls(container, data.quantity || 1);
         }
       });
+
+      window.location.href = '/cart/'
     }
 
     if (target.classList.contains('qty-plus')) {

@@ -38,22 +38,22 @@ def product_list(request):
     accessories = Accessory.objects.filter(stock__gt=0)
     
     if category_name:
-        accessories = accessories.filter(categories__name=category_name).distinct()
+        accessories = accessories.filter(categories__name=category_name,stock__gt=0).distinct()
     
     if model_id:
         accessories = accessories.filter(
-            Q(is_universal=True) | Q(bike_models__id=model_id)
+            Q(is_universal=True) | Q(bike_models__id=model_id,stock__gt=0)
         ).distinct()
     
     elif brand_id:
-        accessories = accessories.filter(bike_models__brand__id=brand_id).distinct()
+        accessories = accessories.filter(bike_models__brand__id=brand_id,stock__gt=0).distinct()
     
     if search:
-        accessories = accessories.filter(name__icontains=search)
+        accessories = accessories.filter(name__icontains=search,stock__gt=0)
 
     brands = BikeBrand.objects.all()
     models = BikeModel.objects.all()
-    accessories = accessories.order_by('id')
+    accessories = accessories.order_by('-id')
     return render(request, 'products/product_list.html', {
         'accessories': accessories,
         'brands': brands,

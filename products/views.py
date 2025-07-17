@@ -5,7 +5,7 @@ def home(request):
     categories = Category.objects.all()
     brands = BikeBrand.objects.all()
     models = BikeModel.objects.all()
-    featured = FeaturedProduct.objects.order_by('featured_at')
+    featured = FeaturedProduct.objects.order_by('-featured_at')
     slideshow_images = SlideshowImage.objects.all()
     # For new FeaturedProduct model, use accessories.all()
     featured_products = []
@@ -53,7 +53,7 @@ def product_list(request):
 
     brands = BikeBrand.objects.all()
     models = BikeModel.objects.all()
-
+    accessories = accessories.order_by('-id')
     return render(request, 'products/product_list.html', {
         'accessories': accessories,
         'brands': brands,

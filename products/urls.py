@@ -59,6 +59,7 @@ urlpatterns = [
     path('track-order/<str:order_id>/', views.track_order, name='track_order'),
     path('get-models/<int:brand_id>/', views.get_models, name='get_models'),
     path('terms-and-conditions/', views.terms, name='terms'),
+    path('about/', views.about, name='about'),
     
 
     

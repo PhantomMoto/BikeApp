@@ -1,0 +1,107 @@
+{% extends 'products/base.html' %}
+
+{% block title %}Our Story - Phantom Moto{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    background: repeating-linear-gradient(
+      45deg,
+      #fff8dc,
+      #fff8dc 10px,
+      #ffe082 10px,
+      #ffe082 20px
+    );
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #222;
+  }
+
+  .story-wrapper {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .story-wrapper h1 {
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #111;
+  }
+
+  .story-wrapper p {
+    font-size: 16px;
+    line-height: 1.8;
+    margin-bottom: 20px;
+  }
+
+  .story-footer {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 40px;
+    font-size: 18px;
+  }
+
+  .contact-info {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 15px;
+    font-style: italic;
+    color: #555;
+  }
+
+  @media (max-width: 600px) {
+    .story-wrapper {
+      padding: 20px;
+    }
+
+    .story-wrapper h1 {
+      font-size: 28px;
+    }
+
+    .story-wrapper p {
+      font-size: 15px;
+    }
+  }
+</style>
+
+<div class="story-wrapper">
+  <h1>Our Story</h1>
+
+  <div class="contact-info">
+    PHANTOM MOTO | _PHANTOM_MOTO_ | 83559 44801  
+    <br>
+    Click on below icons to reach us
+  </div>
+
+  <p>
+    So, the story begins in the year <strong>2018</strong>, when our club <strong>"Apache Phantom Mumbai"</strong> was established. Since then, our love for motorcycles kept rising, and we rode to many beautiful places across India.
+  </p>
+
+  <p>
+    In the middle of this riding journey, we felt the need for a dedicated motorcycle accessories store which would not only serve the needs of bikers in our riding community, but also provide genuine guidance and support to get their modifications done smoothly.
+  </p>
+
+  <p>
+    This is how <strong>Phantom Moto</strong> came into existence in <strong>2021</strong>. Riders from all over Mumbai’s biking community joined us in the grand opening. Their love and support helped us reach here, and with your continued support, we know we'll reach greater heights.
+  </p>
+
+  <p>
+    Riding is our heartbeat — so we started organizing <strong>monthly rides</strong> for our customers and their friends. Whether you ride an Apache, Bullet, KTM, or Activa — you're always welcome. These rides are sponsored by us and are managed by our ride team including marshals, leads, and tailing support to ensure safety and fun.
+  </p>
+
+  <p>
+    So far, we’ve served over <strong>10,000+ happy riders</strong>. And we’re proud to share this journey with you. Thanks to all our customers who connected with us on WhatsApp and referred their friends — you’ve helped Phantom Moto grow, and we’re grateful.
+  </p>
+
+  <p class="story-footer">
+    THANK YOU! WISH YOU SAFE RIDES <br>
+    KEEP SUPPORTING & SHARING ❤️🏍️
+  </p>
+</div>
+{% endblock %}

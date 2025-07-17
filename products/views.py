@@ -1088,3 +1088,5 @@ def get_delhivery_shipping_cost(origin_pin=401107, dest_pin=401107, weight_grams
 
 def terms(request):
     return render(request, 'products/terms.html')
+def about(request):
+    return render(request, 'products/about.html')

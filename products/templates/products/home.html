@@ -54,7 +54,8 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
 
 <section class="feat-pro" style="padding: 30px 0;">
   <h2 style="font-size:1.6rem; font-weight:800;text-align: center;margin-top:10vh;">FEATURED PRODUCTS</h2>
-  <div style="display: flex; gap: 20px; width: 100%; max-width: 680px; margin: 0 auto;" class="pdr">
+  <div class="pdr scroll-snap-x auto-scroll-container" style="display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 20px; scroll-behavior: smooth; padding-bottom: 10px;">
+
     {% for accessory in featured_products %}
       <div style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); margin: 20px 10px; padding: 10px 15px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; cursor: pointer;" onclick="window.location.href='{% url 'products:product_detail' accessory.slug %}'">
         <h3 style="font-size: 1.1rem; margin: 0 0 10px 0; color: #333; text-align: center;">{{ accessory.name }}</h3>
@@ -171,6 +172,21 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
     }
     
   }
+
+
+  .scroll-snap-x {
+  scroll-snap-type: x mandatory;
+}
+.snap-start {
+  scroll-snap-align: start;
+}
+.auto-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+.auto-scroll-container {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 </style>
 
 <script>
@@ -222,6 +238,24 @@ document.addEventListener("DOMContentLoaded", function () {
     runSlideshow('.slideshow-desktop', 'slide');
     runSlideshow('.slideshow-mobile', 'slide-mobile');
   });
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+  const container = document.querySelector('.auto-scroll-container');
+  let scrollAmount = 0;
+
+  setInterval(() => {
+    if (container) {
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      scrollAmount += 280;  // pixel amount to scroll
+      if (scrollAmount > maxScroll) scrollAmount = 0;
+      container.scrollTo({
+        left: scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  }, 4000); // every 4 seconds
+});
 </script>
 
 {% endblock %}

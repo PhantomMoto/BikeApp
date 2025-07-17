@@ -1,0 +1,85 @@
+{% extends 'products/base.html' %}
+
+{% block title %}Terms & Conditions - Phantom Moto{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    background: repeating-linear-gradient(
+      45deg,
+      #fff8e1,
+      #fff8e1 10px,
+      #ffecb3 10px,
+      #ffecb3 20px
+    );
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #222;
+  }
+
+  .terms-wrapper {
+    max-width: 900px;
+    background: rgba(255, 255, 255, 0.95);
+    margin: 50px auto;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .terms-wrapper h1 {
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #111;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .terms-wrapper ol {
+    padding-left: 20px;
+    margin-top: 20px;
+  }
+
+  .terms-wrapper li {
+    margin-bottom: 16px;
+    line-height: 1.7;
+    font-size: 16px;
+  }
+
+  @media (max-width: 600px) {
+    .terms-wrapper {
+      padding: 20px;
+    }
+
+    .terms-wrapper h1 {
+      font-size: 28px;
+    }
+
+    .terms-wrapper li {
+      font-size: 15px;
+    }
+  }
+</style>
+
+<div class="terms-wrapper">
+  <h1>Terms & Conditions</h1>
+
+  <p>By ordering from Phantom Moto, you accept these terms:</p>
+
+  <ol>
+    <li>All product images represent the items accurately, but lighting and angles may cause minor variations.</li>
+    <li>In case of delivery failure due to wrong address/details, customer will bear the re-delivery charges.</li>
+    <li>Orders once placed are non-returnable. Genuine issues will be reviewed case-by-case.</li>
+    <li>Payments once made are non-refundable under normal circumstances.</li>
+    <li>Orders cannot be cancelled after they are dispatched.</li>
+    <li>Only manufacturing defects, damage, or fitting issues are eligible for return—with unboxing video proof.</li>
+    <li>We share product photos/videos before packing and dispatch.</li>
+    <li>We are not liable for damage occurring during transit.</li>
+    <li>Loss or damage during return shipment is not our responsibility.</li>
+    <li>Delivery charges vary based on the product and address.</li>
+    <li>All warranty claims must be directed to the product’s manufacturer; we do not process warranties.</li>
+    <li>Legal matters will be under the jurisdiction of Mumbai city district, Maharashtra, India.</li>
+    <li>We do not offer purchases on credit.</li>
+    <li>Terms & conditions may be updated anytime without prior notice.</li>
+  </ol>
+</div>
+{% endblock %}

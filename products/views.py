@@ -80,7 +80,6 @@ def get_models_by_brand(request):
 
 from django.http import JsonResponse
 from .models import Accessory
-
 def search_suggestions(request):
     from django.db.models import Q
     query = request.GET.get('q', '').strip()
@@ -1085,3 +1084,7 @@ def get_delhivery_shipping_cost(origin_pin=401107, dest_pin=401107, weight_grams
         return data.get('total_amount', 0)
     else:
         return 0
+
+
+def terms(request):
+    return render(request, 'products/terms.html')

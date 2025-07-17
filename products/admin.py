@@ -16,12 +16,15 @@ from .models import Accessory, Blog, Category, YouTubeVideo, BikeBrand, BikeMode
 # products/admin.py
 
 from django.contrib import admin
-from .models import SlideshowImage
+from .models import Message
 
 @admin.register(SlideshowImage)
 class SlideshowImageAdmin(admin.ModelAdmin):
     list_display = ('order', 'caption')
     ordering = ('order',)
+@admin.register(Message)
+class SlideshowImageAdmin(admin.ModelAdmin):
+    list_display = ('name', 'message')
 
 from django.contrib import admin
 from .models import CustomerFeedback

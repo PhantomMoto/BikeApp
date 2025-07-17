@@ -1085,10 +1085,12 @@ def get_delhivery_shipping_cost(origin_pin=401107, dest_pin=401107, weight_grams
     else:
         return 0
 
-
+from django.shortcuts import render
+from .models import CustomerFeedback
 def terms(request):
     return render(request, 'products/terms.html')
 def about(request):
     return render(request, 'products/about.html')
 def feedback(request):
-    return render(request, 'products/feedback.html')
+    feedbacks = CustomerFeedback.objects.order_by('-uploaded_at')
+    return render(request, 'products/feedback.html',{'feedbacks':feedbacks})

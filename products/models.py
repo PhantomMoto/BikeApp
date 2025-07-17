@@ -95,6 +95,14 @@ class SlideshowImage(models.Model):
         return f"Slide {self.order} - {self.caption or 'No Caption'}"
 
 
+from django.db import models
+
+class CustomerFeedback(models.Model):
+    image = models.ImageField(upload_to='feedback_images/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Feedback {self.id}"
 
 
 class Blog(models.Model):

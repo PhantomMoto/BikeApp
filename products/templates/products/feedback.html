@@ -64,11 +64,9 @@
   <h1>Customer Feedbacks</h1>
 
   <div class="feedback-grid"> {%load static%}
-    <img src="{% static 'products/reviews/review1.jpg' %}" alt="Customer Review 1">
-    <img src="{% static 'products/reviews/review2.jpg' %}" alt="Customer Review 2">
-    <img src="{% static 'products/reviews/review3.jpg' %}" alt="Customer Review 3">
-    <img src="{% static 'products/reviews/review4.jpg' %}" alt="Customer Review 4">
-    <!-- Add more images as needed -->
+    {% for feedback in feedbacks %}
+      <img src="{{ feedback.image.url }}" alt="Customer Review {{ feedback.id }}">
+    {% endfor %}
   </div>
 </div>
 {% endblock %}

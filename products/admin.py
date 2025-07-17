@@ -23,6 +23,13 @@ class SlideshowImageAdmin(admin.ModelAdmin):
     list_display = ('order', 'caption')
     ordering = ('order',)
 
+from django.contrib import admin
+from .models import CustomerFeedback
+
+@admin.register(CustomerFeedback)
+class CustomerFeedbackAdmin(admin.ModelAdmin):
+    list_display = ['id', 'uploaded_at']
+
 
 class AccessoryAdminForm(forms.ModelForm):
     class Meta:

@@ -188,7 +188,9 @@
   <!-- Right: Info -->
   <div class="info">
     <h1>{{ accessory.name }}</h1>
-    <p>{{ accessory.large_description|safe }}</p>
+    <!-- product_detail.html -->
+<p>{{ product.large_description|linebreaksbr }}</p>
+
     
     {% if accessory.mrp %}
     <p class="price-old">₹{{ accessory.mrp }}</p>

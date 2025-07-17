@@ -52,7 +52,7 @@
   <div class="cards-container" style="display: grid;grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));justify-content: center;">
     {% for accessory in accessories %}
       <div class="card accessory-card" style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); padding: 15px; cursor: pointer; transition: transform 0.2s;" >
-        <h3 style="font-size: 1.1rem; margin: 0 0 10px 0; text-align: center;text-wrap:auto;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis;height: 4.5em;                font-size: 1.1rem;             line-height: 1.5em;text-align: center;font-weight: 600;">{{ accessory.name }}</h3>
+        <h3 style="font-size: 1.1rem; margin: 0 0 10px 0; text-align: center;text-wrap:auto;">{{ accessory.name }}</h3>
         {% if accessory.image %}
           <img
   src="{{ accessory.image.url }}"

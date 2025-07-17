@@ -189,7 +189,7 @@
   <div class="info">
     <h1>{{ accessory.name }}</h1>
     <!-- product_detail.html -->
-<p>{{ product.large_description|linebreaksbr }}</p>
+    <p>{{ product.large_description|linebreaksbr|safe }}</p>
 
     
     {% if accessory.mrp %}

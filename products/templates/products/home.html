@@ -54,25 +54,26 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
 
 <section class="feat-pro" style="padding: 30px 0;">
   <h2 style="font-size:1.6rem; font-weight:800;text-align: center;margin-top:10vh;">FEATURED PRODUCTS</h2>
-  <div class="pdr scroll-snap-x auto-scroll-container" style="display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 20px; scroll-behavior: smooth; padding-bottom: 10px;">
+  <div class="auto-scroll-container scroll-snap-x" 
+     style="display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; gap: 20px; padding: 20px; width: 100%;">
 
-    {% for accessory in featured_products %}
-      <div style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); margin: 20px 10px; padding: 10px 15px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; cursor: pointer;" onclick="window.location.href='{% url 'products:product_detail' accessory.slug %}'">
-        <h3 style="font-size: 1.1rem; margin: 0 0 10px 0; color: #333; text-align: center;">{{ accessory.name }}</h3>
-        {% if accessory.image %}
-          <img src="{{ accessory.image.url }}" alt="{{ accessory.name }}" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 10px;">
-        {% endif %}
-        <p style="text-align: center;"><strong>₹{{ accessory.offer_price }}</strong> <span style="text-decoration:line-through; color:#888; font-size:0.95em;">₹{{ accessory.mrp }}</span></p>
-        {% if accessory.discount_percent %}<p style="color:#27ae60; font-weight:600; text-align: center;">{{ accessory.discount_percent }}% OFF</p>{% endif %}
-        <p style="text-align: center;">{{ accessory.description }}</p>
-        <form action="{% url 'products:cart_add' accessory.id %}" method="post" style="margin-top:10px; text-align:center;" onclick="event.stopPropagation();">
-          {% csrf_token %}
-          <button style="background-color: #27ae60; color: #fff; border: none; padding: 10px; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;">Add to Cart</button>
-        </form>
-      </div>
-    {% empty %}
-      <p style="text-align:center;">No featured products yet.</p>
-    {% endfor %}
+   {% for accessory in featured_products %}
+  <div class="snap-start feat-card" style="flex: 0 0 auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); padding: 10px 15px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;" onclick="window.location.href='{% url 'products:product_detail' accessory.slug %}'">
+    <h3 style="font-size: 1.1rem; margin: 0 0 10px 0; color: #333; text-align: center;">{{ accessory.name }}</h3>
+    {% if accessory.image %}
+      <img src="{{ accessory.image.url }}" alt="{{ accessory.name }}" style="max-width: 100%; height: auto; border-radius: 8px; margin-bottom: 10px;">
+    {% endif %}
+    <p style="text-align: center;"><strong>₹{{ accessory.offer_price }}</strong> <span style="text-decoration:line-through; color:#888; font-size:0.95em;">₹{{ accessory.mrp }}</span></p>
+    {% if accessory.discount_percent %}
+      <p style="color:#27ae60; font-weight:600; text-align: center;">{{ accessory.discount_percent }}% OFF</p>
+    {% endif %}
+    <p style="text-align: center;">{{ accessory.description }}</p>
+    <form action="{% url 'products:cart_add' accessory.id %}" method="post" style="margin-top:10px; text-align:center;" onclick="event.stopPropagation();">
+      {% csrf_token %}
+      <button style="background-color: #27ae60; color: #fff; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">Add to Cart</button>
+    </form>
+  </div>
+{% endfor %}
   </div>
 </section>
 
@@ -118,6 +119,19 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
 
 .slideshow-desktop .slide.active {
   opacity: 1;
+}
+
+
+.feat-card {
+  min-width: 25%;
+  max-width: 25%;
+}
+
+@media (max-width: 767px) {
+  .feat-card {
+    min-width: 50%;
+    max-width: 50%;
+  }
 }
 
   .slideshow-mobile {

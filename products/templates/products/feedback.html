@@ -1,0 +1,74 @@
+{% extends 'products/base.html' %}
+
+{% block title %}Customer Feedbacks - Phantom Moto{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    background: repeating-linear-gradient(
+      45deg,
+      #fffde7,
+      #fffde7 10px,
+      #fff59d 10px,
+      #fff59d 20px
+    );
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .feedbacks-wrapper {
+    max-width: 1000px;
+    margin: 50px auto;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+
+  .feedbacks-wrapper h1 {
+    text-align: center;
+    font-size: 36px;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    color: #222;
+  }
+
+  .feedback-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .feedback-grid img {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+  }
+
+  .feedback-grid img:hover {
+    transform: scale(1.03);
+  }
+
+  @media (max-width: 600px) {
+    .feedbacks-wrapper {
+      padding: 20px;
+    }
+
+    .feedbacks-wrapper h1 {
+      font-size: 28px;
+    }
+  }
+</style>
+
+<div class="feedbacks-wrapper">
+  <h1>Customer Feedbacks</h1>
+
+  <div class="feedback-grid">
+    <img src="{% static 'products/reviews/review1.jpg' %}" alt="Customer Review 1">
+    <img src="{% static 'products/reviews/review2.jpg' %}" alt="Customer Review 2">
+    <img src="{% static 'products/reviews/review3.jpg' %}" alt="Customer Review 3">
+    <img src="{% static 'products/reviews/review4.jpg' %}" alt="Customer Review 4">
+    <!-- Add more images as needed -->
+  </div>
+</div>
+{% endblock %}

@@ -60,6 +60,7 @@ urlpatterns = [
     path('get-models/<int:brand_id>/', views.get_models, name='get_models'),
     path('terms-and-conditions/', views.terms, name='terms'),
     path('about/', views.about, name='about'),
+    path('feedback/', views.feedback, name='feedback'),
     
 
     

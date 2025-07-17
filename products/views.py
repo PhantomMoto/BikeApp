@@ -1090,3 +1090,5 @@ def terms(request):
     return render(request, 'products/terms.html')
 def about(request):
     return render(request, 'products/about.html')
+def feedback(request):
+    return render(request, 'products/feedback.html')

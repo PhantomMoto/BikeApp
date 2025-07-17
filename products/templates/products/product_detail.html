@@ -188,12 +188,14 @@
   <!-- Right: Info -->
   <div class="info">
     <h1>{{ accessory.name }}</h1>
-    <!-- product_detail.html -->
-   <ul>
+   <ul class="list-disc pl-5 space-y-1">
   {% for point in product.large_description.splitlines %}
-    <li>{{ point }}</li>
+    {% if point %}
+      <li>{{ point }}</li>
+    {% endif %}
   {% endfor %}
 </ul>
+
 
 
     

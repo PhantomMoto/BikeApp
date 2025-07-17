@@ -53,7 +53,7 @@ def product_list(request):
 
     brands = BikeBrand.objects.all()
     models = BikeModel.objects.all()
-    accessories = accessories.order_by('-id')
+    accessories = accessories.order_by('id')
     return render(request, 'products/product_list.html', {
         'accessories': accessories,
         'brands': brands,

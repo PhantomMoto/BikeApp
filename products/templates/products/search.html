@@ -15,7 +15,7 @@
             {% for accessory in products %} {# Note: Using 'products' as passed from your search_results view #}
                 <div class="card accessory-card" style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); padding: 15px; cursor: pointer; transition: transform 0.2s;">
                     <h3 style="font-size: 1.1rem; margin: 0 0 10px 0; text-align: center; text-wrap: auto;">{{ accessory.name }}</h3>
-                    {% if accessory.main_image %} {# Assuming 'main_image' for search results products #}
+                    {% if accessory.image %} {# Assuming 'main_image' for search results products #}
                         <img
                             src="{{ accessory.image.url }}"
                             alt="{{ accessory.name }}"
@@ -43,35 +43,9 @@
         </div>
     {% endif %}
 
-    {# Display Categories #}
-    {% if categories %}
-        <h2 style="font-size: 1.8rem; margin: 40px auto 20px auto; text-align: center;">Categories</h2>
-        <ul class="list-disc list-inside mb-8" style="max-width: 600px; margin: 0 auto;">
-            {% for category in categories %}
-                <li style="margin-bottom: 10px;"><a href="/products/?category={{ category.name|urlencode }}" class="text-blue-600 hover:underline text-lg">{{ category.name }}</a></li>
-            {% endfor %}
-        </ul>
-    {% endif %}
 
-    {# Display Blogs (if you decide to add them back to the context) #}
-    {% if blogs %}
-        <h2 style="font-size: 1.8rem; margin: 40px auto 20px auto; text-align: center;">Blogs</h2>
-        <ul class="list-disc list-inside mb-8" style="max-width: 600px; margin: 0 auto;">
-            {% for blog in blogs %}
-                <li style="margin-bottom: 10px;"><a href="/blog/{{ blog.slug }}/" class="text-blue-600 hover:underline text-lg">{{ blog.title }}</a></li>
-            {% endfor %}
-        </ul>
-    {% endif %}
 
-    {# Display Videos (if you decide to add them back to the context) #}
-    {% if videos %}
-        <h2 style="font-size: 1.8rem; margin: 40px auto 20px auto; text-align: center;">Videos</h2>
-        <ul class="list-disc list-inside mb-8" style="max-width: 600px; margin: 0 auto;">
-            {% for video in videos %}
-                <li style="margin-bottom: 10px;"><a href="/blog/#video-{{ video.id }}" class="text-blue-600 hover:underline text-lg">{{ video.title }}</a></li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+
 
     {% if not products and not categories and not blogs and not videos %}
         <p style="text-align:center; font-size: 1.2rem; color: #555;">No results found for "{{ query }}". Please try a different search term.</p>

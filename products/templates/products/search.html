@@ -30,7 +30,7 @@
                         {% csrf_token %}
                         <div class="cart-control" data-accessory-id="{{ accessory.id }}">
                             <input type="hidden" name="color" value="">
-                            <button type="button" class="btn-add-cart" style="background-color: #27ae60; color: #fff; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;font-size: 1.1rem;">Add to Cart</button>
+                            <button type="button" class="btn-add-carta" style="background-color: #27ae60; color: #fff; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;font-size: 1.1rem;">Add to Cart</button>
                         </div>
                     </form>
                 </div>
@@ -83,7 +83,7 @@
     width: 100%; /* Ensure cards fill their grid column */
 }
 
-.btn-add-cart{
+.btn-add-carta{
 background-color: #27ae60;
 color: #fff; border: none; 
 padding: 8px 12px; 
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderAddButton(container) {
-        container.innerHTML = `<button type="button" class="btn-add-cart">Add to Cart</button>`;
+        container.innerHTML = `<button type="button" class="btn-add-carta">Add to Cart</button>`;
     }
 
     // Load existing items on page load

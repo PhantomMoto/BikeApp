@@ -712,9 +712,10 @@ document.getElementById('search-machine')?.addEventListener('keypress', function
 // The search button is for when they want to see *all* results.
 
 // ... rest of your existing JavaScript ...
-
+const input = document.getElementById('search-input');
+const Minput = document.getElementById('search-machine');
 desktopBtn?.addEventListener('click', () => executeSearch(input.value));
-mobileBtn?.addEventListener('click', () => executeSearch(mobileInput.value));
+mobileBtn?.addEventListener('click', () => executeSearch(MInput.value));
     </script>
 
     <footer class="main-footer">

@@ -171,8 +171,8 @@
               
               
               <!-- After the mobile input field -->
-              <button id="search-btn-mobile" class="absolute right-1.5 top-1.5 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-full text-sm">
-                <i class="fas fa-search"></i>
+              <button id="search-btn-desktop" class="search-btn">
+  <i class="fas fa-search"></i>
 </button>
 
             </div>
@@ -201,8 +201,8 @@
         <div class="md:hidden mt-4 mb-2">
           <div class="w-full relative">
             <input type="text" name="search" id="search-machine" placeholder="Search for products..." autocomplete="off" style="color: white; border-color: white;" class="w-full border rounded-full py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-red-400" />
-                         <button id="search-btn-mobile" class="absolute right-1.5 top-1.5 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-full text-sm">
-                <i class="fas fa-search"></i>
+                         <button id="search-btn-desktop" class="search-btn">
+  <i class="fas fa-search"></i>
 </button>
             <div id="Msuggestions" class="absolute bg-white w-full rounded-md shadow-md z-50 hidden max-h-60 overflow-y-auto"></div>
           </div>
@@ -291,6 +291,36 @@
         align-items: center;
         z-index: 1000;
       }
+
+      /* Shared */
+.search-btn {
+  position: absolute;
+  right: 0.5rem;
+  top: 0.5rem;
+  background: #F97A00;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.search-btn:hover {
+  background: #e68a00;
+}
+
+/* Hidden by default, will show conditionally via JS or media queries */
+#search-btn-desktop { display: none; }
+#search-btn-mobile { display: none; }
+
+/* On desktop show desktop, mobile show mobile */
+@media(min-width: 768px) {
+  #search-btn-desktop { display: block; }
+}
+@media(max-width: 767px) {
+  #search-btn-mobile { display: block; }
+}
+
       .mobile-bottom-nav .nav-item {
         flex: 1;
         text-align: center;
@@ -473,6 +503,10 @@
     </style>
     <!-- Font Awesome already included in <head> -->
     <script>
+
+
+
+
       document.addEventListener('DOMContentLoaded', () => {
         const menuBtn = document.getElementById('menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
@@ -628,6 +662,59 @@
           });
         }
       });
+      const desktopBtn = document.getElementById('search-btn-desktop');
+const mobileBtn = document.getElementById('search-btn-mobile');
+
+// ... existing JavaScript ...
+
+// Function to execute the search
+function executeSearch(query) {
+    if (query.length > 0) {
+        window.location.href = `/search/?q=${encodeURIComponent(query)}`;
+    }
+}
+
+// Desktop search button
+const desktopSearchBtn = document.querySelector('#search-input + .search-btn'); // Selects the button next to search-input
+if (desktopSearchBtn) {
+    desktopSearchBtn.addEventListener('click', () => {
+        const input = document.getElementById('search-input');
+        executeSearch(input.value);
+    });
+}
+
+// Mobile search button
+const mobileSearchBtn = document.querySelector('#search-machine + .search-btn'); // Selects the button next to search-machine
+if (mobileSearchBtn) {
+    mobileSearchBtn.addEventListener('click', () => {
+        const mobileInput = document.getElementById('search-machine');
+        executeSearch(mobileInput.value);
+    });
+}
+
+// Also, you might want to trigger the search on Enter key press
+document.getElementById('search-input')?.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        executeSearch(this.value);
+    }
+});
+
+document.getElementById('search-machine')?.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        executeSearch(this.value);
+    }
+});
+
+
+// Existing suggestion click logic should remain as is, for direct navigation
+// if a specific suggestion is chosen.
+// For example, if a user clicks a product suggestion, it still goes to the product page.
+// The search button is for when they want to see *all* results.
+
+// ... rest of your existing JavaScript ...
+
+desktopBtn?.addEventListener('click', () => executeSearch(input.value));
+mobileBtn?.addEventListener('click', () => executeSearch(mobileInput.value));
     </script>
 
     <footer class="main-footer">

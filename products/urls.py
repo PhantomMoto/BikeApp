@@ -61,6 +61,7 @@ urlpatterns = [
     path('terms-and-conditions/', views.terms, name='terms'),
     path('about/', views.about, name='about'),
     path('feedback/', views.feedback, name='feedback'),
+    path('search/', views.search_results, name='search_results'),
     
 
     

@@ -77,6 +77,50 @@ def get_models_by_brand(request):
     models = BikeModel.objects.filter(brand_id=brand_id).values('id', 'name')
     return JsonResponse(list(models), safe=False)
 
+# In your products/views.py or a new search/views.py
+
+from django.shortcuts import render
+from django.db.models import Q
+from .models import Accessory, Category, Blog, YouTubeVideo # Make sure these are imported
+
+def search_results(request):
+    query = request.GET.get('q', '').strip()
+    
+    products = []
+    categories = []
+    blogs = []
+    videos = []
+
+    if query:
+        # Get all matching products
+        products = Accessory.objects.filter(
+            Q(name__icontains=query) | 
+            Q(description__icontains=query) # Consider adding description to search
+        ).distinct() # Use distinct if products might appear multiple times from Q objects
+
+        # Get all matching categories
+        categories = Category.objects.filter(name__icontains=query).distinct()
+
+        # Get all matching blogs
+        blogs = Blog.objects.filter(
+            Q(title__icontains=query) | 
+            Q(content__icontains=query) # Consider adding content to search
+        ).distinct()
+
+        # Get all matching YouTube videos
+        videos = YouTubeVideo.objects.filter(
+            Q(title__icontains=query) | 
+            Q(description__icontains=query) # Consider adding description to search
+        ).distinct()
+
+    context = {
+        'query': query,
+        'products': products,
+        'categories': categories,
+        'blogs': blogs,
+        'videos': videos,
+    }
+    return render(request, 'products/search.html', context)
 
 from django.http import JsonResponse
 from .models import Accessory

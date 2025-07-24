@@ -184,6 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             })
             .catch(error => console.error("Network error adding to cart:", error));
+            window.location.href = '/cart/'
         }
 
         if (target.classList.contains('qty-plus')) {

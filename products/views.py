@@ -101,24 +101,14 @@ def search_results(request):
         # Get all matching categories
         categories = Category.objects.filter(name__icontains=query).distinct()
 
-        # Get all matching blogs
-        blogs = Blog.objects.filter(
-            Q(title__icontains=query) | 
-            Q(content__icontains=query) # Consider adding content to search
-        ).distinct()
+     
 
-        # Get all matching YouTube videos
-        videos = YouTubeVideo.objects.filter(
-            Q(title__icontains=query) | 
-            Q(description__icontains=query) # Consider adding description to search
-        ).distinct()
+    
 
     context = {
         'query': query,
         'products': products,
         'categories': categories,
-        'blogs': blogs,
-        'videos': videos,
     }
     return render(request, 'products/search.html', context)
 

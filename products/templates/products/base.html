@@ -168,9 +168,13 @@
             <div class="w-full max-w-xl relative">
               <input type="text" name="search" id="search-input" placeholder="Search for products..." style="color: white;" autocomplete="off" class="w-full border border-white rounded-full py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-red-400" />
               <div id="suggestions" class="absolute bg-white w-full rounded-md shadow-md z-50 hidden max-h-60 overflow-y-auto"></div>
-              <div class="absolute top-2.5 left-3 text-gray-500">
+              
+              
+              <!-- After the mobile input field -->
+              <button id="search-btn-mobile" class="absolute right-1.5 top-1.5 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-full text-sm">
                 <i class="fas fa-search"></i>
-              </div>
+</button>
+
             </div>
           </div>
           <div class="flex items-center gap-6 text-gray-800 text-xl icon-box">
@@ -197,9 +201,9 @@
         <div class="md:hidden mt-4 mb-2">
           <div class="w-full relative">
             <input type="text" name="search" id="search-machine" placeholder="Search for products..." autocomplete="off" style="color: white; border-color: white;" class="w-full border rounded-full py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-red-400" />
-            <div class="absolute top-2.5 left-3 text-white">
-              <i class="fas fa-search"></i>
-            </div>
+                         <button id="search-btn-mobile" class="absolute right-1.5 top-1.5 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-full text-sm">
+                <i class="fas fa-search"></i>
+</button>
             <div id="Msuggestions" class="absolute bg-white w-full rounded-md shadow-md z-50 hidden max-h-60 overflow-y-auto"></div>
           </div>
         </div>

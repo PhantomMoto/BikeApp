@@ -1,69 +1,414 @@
-{% extends 'products/base.html' %} {# Assuming you have a base.html #}
+{% extends 'products/base.html' %} {# Assuming 'products/base.html' is your main base template #}
+{% block content %}
+
 {% load static %}
 
-{% block title %}Search Results for "{{ query }}"{% endblock %}
+<section class="filter-section" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding: 20px;">
+    {# The search results page primarily displays results from a search query, #}
+    {# so the brand/model filter might be less relevant here, #}
+    {# or you might want to adapt it to filter within search results. #}
+    {# For now, I'm keeping the original filter structure as requested. #}
+    {# If you only want to show search results, you can remove this form. #}
+    <form method="get" class="filter" style="width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 10px;">
+        <input type="hidden" name="q" value="{{ query }}"> {# Keep the original search query in the form #}
+        
+        <select name="brand" id="brand-select" style="padding: 10px; width: 100%; border: 1px solid #ccc; border-radius: 6px;">
+            <option value="">Select Brand</option>
+            {% for brand in brands %}
+                <option value="{{ brand.id }}" {% if request.GET.brand == brand.id|stringformat:"s" %}selected{% endif %}>{{ brand.name }}</option>
+            {% endfor %}
+        </select>
 
-{% block content %}
-<div class="max-w-7xl mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-8">Search Results for "<span class="text-red-600">{{ query }}</span>"</h1>
-
-    {% if products or categories or blogs or videos %}
-
-        {% if products %}
-        <h2 class="text-2xl font-semibold mb-4 border-b pb-2">Products</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
-            {% for product in products %}
-            <a href="/products/{{ product.slug }}/" class="block border rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden">
-                {% if product.main_image %}
-                <img src="{{ product.main_image.url }}" alt="{{ product.name }}" class="w-full h-48 object-cover">
-                {% else %}
-                <div class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-500">No Image</div>
+        <select name="model" id="model-select" style="padding: 10px; width: 100%; border: 1px solid #ccc; border-radius: 6px;">
+            <option value="">Select Model</option>
+            {% for model in models %}
+                {# Display models only if no brand is selected or if they belong to the selected brand #}
+                {% if not request.GET.brand or model.brand.id|stringformat:"s" == request.GET.brand %}
+                    <option value="{{ model.id }}" {% if request.GET.model == model.id|stringformat:"s" %}selected{% endif %}>{{ model.name }}</option>
                 {% endif %}
-                <div class="p-4">
-                    <h3 class="font-semibold text-lg mb-1">{{ product.name }}</h3>
-                    <p class="text-gray-700">₹{{ product.offer_price|floatformat:2 }}</p>
-                    <p class="text-sm text-gray-500 mt-1">
-                        {% if product.is_universal %}
-                            Fits All Bikes
-                        {% else %}
-                            Fits: {% for bike in product.bike_models.all %}{{ bike.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
-                        {% endif %}
-                    </p>
+            {% endfor %}
+        </select>
+
+        <button type="submit" style="padding: 10px; background-color: #27ae60; color: #fff; border: none; border-radius: 6px; font-weight: 600;">Filter Search Results</button>
+
+        <div class="l" style="display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap;">
+            {# The PDF download links below will need to be adjusted if you want a PDF of search results #}
+            {# For now, they mirror your original products page logic which might not be ideal for search results #}
+            {% if brand_id %}
+                <a href="{% url 'products:category_pdf' %}?brand={{ brand_id }}{% if model_id %}&model={{ model_id }}{% endif %}" style="display: flex; align-items: center; gap: 5px; text-decoration: none; color: #27ae60;">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 4v12" />
+                    </svg> Download PDF
+                </a>
+            {% elif category_name %}
+                <a href="{% url 'products:category_pdf' %}?category={{ category_name }}" style="display: flex; align-items: center; gap: 5px; text-decoration: none; color: #27ae60;">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 4v12" />
+                    </svg> Download PDF
+                </a>
+            {% else %}
+                <a href="{% url 'products:category_pdf' %}" style="display: flex; align-items: center; gap: 5px; text-decoration: none; color: #27ae60;">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 4v12" />
+                    </svg> Download PDF
+                </a>
+            {% endif %}
+        </div>
+    </form>
+</section>
+
+<section class="search-results-section" style="padding: 20px;">
+    <h1 style="font-size: 2.2rem; margin: 0 auto 20px auto; text-align: center;">Search Results for "<span class="text-red-600">{{ query }}</span>"</h1>
+
+    {# Display Products #}
+    {% if products %}
+        <h2 style="font-size: 1.8rem; margin: 0 auto 20px auto; text-align: center;">Products</h2>
+        <div class="cards-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); justify-content: center; gap: 20px;">
+            {% for accessory in products %} {# Note: Using 'products' as passed from your search_results view #}
+                <div class="card accessory-card" style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); padding: 15px; cursor: pointer; transition: transform 0.2s;">
+                    <h3 style="font-size: 1.1rem; margin: 0 0 10px 0; text-align: center; text-wrap: auto;">{{ accessory.name }}</h3>
+                    {% if accessory.main_image %} {# Assuming 'main_image' for search results products #}
+                        <img
+                            src="{{ accessory.main_image.url }}"
+                            alt="{{ accessory.name }}"
+                            onclick="window.location.href='{% url 'products:product_detail' accessory.slug %}'"
+                            style="max-width: 100%; height: auto; border-radius: 8px; margin: 0 auto 10px auto; display: block; box-shadow: 0 4px 16px rgba(0,0,0,0.1);"
+                        />
+                    {% endif %}
+                    <p style="text-align: center;"><strong>₹{{ accessory.offer_price|floatformat:2 }}</strong> {% if accessory.mrp and accessory.mrp > accessory.offer_price %}<span style="text-decoration:line-through; color:#888;">₹{{ accessory.mrp|floatformat:2 }}</span>{% endif %}</p>
+                    <p style="text-align: center;">{{ accessory.description|truncatechars:40 }}</p>
+                    <p style="text-align: center;">Category: {% for cat in accessory.categories.all %}{{ cat.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+                    <form method="post" style="margin-top:10px; text-align:center;" onclick="return false;">
+                        {% csrf_token %}
+                        <div class="cart-control" data-accessory-id="{{ accessory.id }}">
+                            <input type="hidden" name="color" value="">
+                            <button type="button" class="btn-add-cart" style="background-color: #27ae60; color: #fff; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;font-size: 1.1rem;">Add to Cart</button>
+                        </div>
+                    </form>
                 </div>
-            </a>
             {% endfor %}
         </div>
-        {% endif %}
-
-        {% if categories %}
-        <h2 class="text-2xl font-semibold mb-4 border-b pb-2">Categories</h2>
-        <ul class="list-disc list-inside mb-8">
-            {% for category in categories %}
-            <li class="mb-2"><a href="/products/?category={{ category.name|urlencode }}" class="text-blue-600 hover:underline text-lg">{{ category.name }}</a></li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-
-        {% if blogs %}
-        <h2 class="text-2xl font-semibold mb-4 border-b pb-2">Blogs</h2>
-        <ul class="list-disc list-inside mb-8">
-            {% for blog in blogs %}
-            <li class="mb-2"><a href="/blog/{{ blog.slug }}/" class="text-blue-600 hover:underline text-lg">{{ blog.title }}</a></li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-
-        {% if videos %}
-        <h2 class="text-2xl font-semibold mb-4 border-b pb-2">Videos</h2>
-        <ul class="list-disc list-inside mb-8">
-            {% for video in videos %}
-            <li class="mb-2"><a href="/blog/#video-{{ video.id }}" class="text-blue-600 hover:underline text-lg">{{ video.title }}</a></li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-
-    {% else %}
-    <p class="text-gray-600 text-lg">No results found for "{{ query }}". Please try a different search term.</p>
+        <div id="pagination-controls-products" style="text-align:center; margin-top:20px;">
+            <button id="prev-page-products" style="padding:6px 12px; margin-right:5px;">Previous</button>
+            <span id="page-info-products"></span>
+            <button id="next-page-products" style="padding:6px 12px; margin-left:5px;">Next</button>
+        </div>
     {% endif %}
-</div>
+
+    {# Display Categories #}
+    {% if categories %}
+        <h2 style="font-size: 1.8rem; margin: 40px auto 20px auto; text-align: center;">Categories</h2>
+        <ul class="list-disc list-inside mb-8" style="max-width: 600px; margin: 0 auto;">
+            {% for category in categories %}
+                <li style="margin-bottom: 10px;"><a href="/products/?category={{ category.name|urlencode }}" class="text-blue-600 hover:underline text-lg">{{ category.name }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {# Display Blogs (if you decide to add them back to the context) #}
+    {% if blogs %}
+        <h2 style="font-size: 1.8rem; margin: 40px auto 20px auto; text-align: center;">Blogs</h2>
+        <ul class="list-disc list-inside mb-8" style="max-width: 600px; margin: 0 auto;">
+            {% for blog in blogs %}
+                <li style="margin-bottom: 10px;"><a href="/blog/{{ blog.slug }}/" class="text-blue-600 hover:underline text-lg">{{ blog.title }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {# Display Videos (if you decide to add them back to the context) #}
+    {% if videos %}
+        <h2 style="font-size: 1.8rem; margin: 40px auto 20px auto; text-align: center;">Videos</h2>
+        <ul class="list-disc list-inside mb-8" style="max-width: 600px; margin: 0 auto;">
+            {% for video in videos %}
+                <li style="margin-bottom: 10px;"><a href="/blog/#video-{{ video.id }}" class="text-blue-600 hover:underline text-lg">{{ video.title }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if not products and not categories and not blogs and not videos %}
+        <p style="text-align:center; font-size: 1.2rem; color: #555;">No results found for "{{ query }}". Please try a different search term.</p>
+    {% endif %}
+
+</section>
+
+<style>
+/* Styles copied directly from your provided snippet */
+.accessory-card {
+    display: block; /* Ensure cards are block elements for grid layout */
+}
+
+#pagination-controls-products button {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s;
+}
+
+#pagination-controls-products button:disabled {
+    background-color: #a5d6a7;
+    cursor: not-allowed;
+}
+
+#pagination-controls-products span {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+.accessory-card {
+    width: 100%; /* Ensure cards fill their grid column */
+}
+</style>
+
+<script>
+// Cart functionality (copied directly)
+document.addEventListener('DOMContentLoaded', () => {
+    const cartCountBubble = document.getElementById('cart-count-bubble');
+
+    function updateCartBubble(count) {
+        if (cartCountBubble) {
+            if (count > 0) {
+                cartCountBubble.textContent = count;
+                cartCountBubble.style.display = 'inline-block';
+            } else {
+                cartCountBubble.style.display = 'none';
+            }
+        }
+    }
+
+    function renderQuantityControls(container, quantity) {
+        container.innerHTML = `
+            <button type="button" class="qty-minus">-</button>
+            <span class="qty-number">${quantity}</span>
+            <button type="button" class="qty-plus">+</button>
+        `;
+    }
+
+    function renderAddButton(container) {
+        container.innerHTML = `<button type="button" class="btn-add-cart">Add to Cart</button>`;
+    }
+
+    // Load existing items on page load
+    fetch('/ajax/cart/items/')
+        .then(res => res.json())
+        .then(data => {
+            updateCartBubble(data.total_qty || 0);
+            document.querySelectorAll('.cart-control').forEach(container => {
+                const accessoryId = container.dataset.accessoryId;
+                const itemInCart = data.items.find(item => String(item.id) === String(accessoryId));
+                if (itemInCart) {
+                    renderQuantityControls(container, itemInCart.quantity);
+                } else {
+                    renderAddButton(container); // Ensure add button is rendered if not in cart
+                }
+            });
+        })
+        .catch(error => console.error("Error fetching cart items:", error));
+
+    document.body.addEventListener('click', (e) => {
+        const target = e.target;
+
+        if (target.classList.contains('btn-add-cart')) {
+            e.preventDefault();
+            const container = target.closest('.cart-control');
+            const accessoryId = container.dataset.accessoryId;
+            const card = target.closest('.card');
+            const colorInput = card ? card.querySelector('input[name="color"]') : null; // Check if card exists
+            const color = colorInput ? colorInput.value : '';
+            
+            fetch(`/ajax/cart/add/${accessoryId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ color: color })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    updateCartBubble(data.total_qty);
+                    renderQuantityControls(container, data.quantity || 1);
+                    // Do not redirect here if you want to allow continuous shopping
+                    // window.location.href = '/cart/'; 
+                } else {
+                    console.error("Failed to add to cart:", data.error);
+                    alert("Error adding item to cart: " + (data.error || "Unknown error"));
+                }
+            })
+            .catch(error => console.error("Network error adding to cart:", error));
+        }
+
+        if (target.classList.contains('qty-plus')) {
+            e.preventDefault();
+            const container = target.closest('.cart-control');
+            const accessoryId = container.dataset.accessoryId;
+            updateCartQuantity(accessoryId, 1, container);
+        }
+
+        if (target.classList.contains('qty-minus')) {
+            e.preventDefault();
+            const container = target.closest('.cart-control');
+            const accessoryId = container.dataset.accessoryId;
+            updateCartQuantity(accessoryId, -1, container);
+        }
+    });
+
+    function updateCartQuantity(accessoryId, delta, container) {
+        const card = container.closest('.card');
+        const colorInput = card ? card.querySelector('input[name="color"]') : null;
+        const color = colorInput ? colorInput.value : '';
+
+        fetch(`/ajax/cart/update/${accessoryId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ delta: delta, color: color })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                updateCartBubble(data.total_qty);
+                if (data.quantity > 0) {
+                    renderQuantityControls(container, data.quantity);
+                } else {
+                    renderAddButton(container);
+                }
+            } else {
+                 console.error("Failed to update cart quantity:", data.error);
+                 alert("Error updating cart: " + (data.error || "Unknown error"));
+            }
+        })
+        .catch(error => console.error("Network error updating cart:", error));
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                cookie = cookie.trim();
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});
+
+// Brand/Model filter logic (copied directly)
+document.addEventListener("DOMContentLoaded", function() {
+    const brandSelect = document.getElementById('brand-select');
+    const modelSelect = document.getElementById('model-select');
+
+    // Initial state check for modelSelect based on existing brand selection
+    if (!brandSelect.value) {
+        modelSelect.disabled = true;
+    } else {
+        modelSelect.disabled = false; // Enable if brand is pre-selected
+    }
+
+    brandSelect.addEventListener('change', function() {
+        const brandId = this.value;
+
+        if (!brandId) {
+            modelSelect.innerHTML = '<option value="">Select Model</option>'; // Changed text for consistency
+            modelSelect.disabled = true;
+            return;
+        }
+
+        fetch(`/get-models/${brandId}/`) // Ensure this URL exists and returns JSON
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                let options = '<option value="">Select Model</option>'; // Changed text for consistency
+                if (data.models && data.models.length > 0) {
+                    data.models.forEach(model => {
+                        options += `<option value="${model.id}">${model.name}</option>`;
+                    });
+                    modelSelect.disabled = false;
+                } else {
+                    options += '<option value="">No models found for this brand</option>';
+                    modelSelect.disabled = true;
+                }
+                modelSelect.innerHTML = options;
+            })
+            .catch(error => {
+                console.error('Error fetching models:', error);
+                modelSelect.innerHTML = '<option value="">Error loading models</option>';
+                modelSelect.disabled = true;
+            });
+    });
+});
+
+
+// Pagination logic for Products (adapted for search results)
+document.addEventListener("DOMContentLoaded", function() {
+    const cards = Array.from(document.querySelectorAll(".accessory-card")); // Select products within search results
+    const perPage = 12;
+    let currentPage = 1;
+    const totalPages = Math.ceil(cards.length / perPage);
+
+    const prevBtn = document.getElementById("prev-page-products"); // Specific ID for products pagination
+    const nextBtn = document.getElementById("next-page-products"); // Specific ID
+    const pageInfo = document.getElementById("page-info-products"); // Specific ID
+    const paginationControls = document.getElementById("pagination-controls-products"); // Specific ID
+
+    function showPage(page) {
+        const start = (page - 1) * perPage;
+        const end = start + perPage;
+
+        cards.forEach((card, index) => {
+            card.style.display = (index >= start && index < end) ? "block" : "none";
+        });
+
+        pageInfo.textContent = `< Page ${page} of ${totalPages} >`;
+
+        prevBtn.disabled = page === 1;
+        nextBtn.disabled = page === totalPages;
+        
+        // Scroll to the top of the results section, not necessarily the very top of the page
+        // You might need to adjust this depending on your desired scroll behavior.
+        const searchResultsSection = document.querySelector('.search-results-section');
+        if (searchResultsSection) {
+            searchResultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+            window.scrollTo({
+                top: window.innerHeight * 0.25,
+                behavior: 'smooth'
+            });
+        }
+    }
+
+    prevBtn.addEventListener("click", () => {
+        if (currentPage > 1) {
+            currentPage--;
+            showPage(currentPage);
+        }
+    });
+
+    nextBtn.addEventListener("click", () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            showPage(currentPage);
+        }
+    });
+
+    if (totalPages <= 1) {
+        paginationControls.style.display = "none";
+    } else {
+        showPage(currentPage);
+    }
+});
+</script>
 {% endblock %}

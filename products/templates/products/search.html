@@ -28,7 +28,7 @@
                     <p style="text-align: center;">Category: {% for cat in accessory.categories.all %}{{ cat.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
                     <form method="post" style="margin-top:10px; text-align:center;" onclick="return false;">
                         {% csrf_token %}
-                        <div class="cart-control" data-accessory-id="{{ accessory.id }}">
+                        <div class="cart-controla" data-accessory-id="{{ accessory.id }}">
                             <input type="hidden" name="color" value="">
                             <button type="button" class="btn-add-carta" style="background-color: #27ae60; color: #fff; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;font-size: 1.1rem;">Add to Cart</button>
                         </div>
@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(res => res.json())
         .then(data => {
             updateCartBubble(data.total_qty || 0);
-            document.querySelectorAll('.cart-control').forEach(container => {
+            document.querySelectorAll('.cart-controla').forEach(container => {
                 const accessoryId = container.dataset.accessoryId;
                 const itemInCart = data.items.find(item => String(item.id) === String(accessoryId));
                 if (itemInCart) {
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (target.classList.contains('btn-add-cart')) {
             e.preventDefault();
-            const container = target.closest('.cart-control');
+            const container = target.closest('.cart-controla');
             const accessoryId = container.dataset.accessoryId;
             const card = target.closest('.card');
             const colorInput = card ? card.querySelector('input[name="color"]') : null; // Check if card exists
@@ -174,14 +174,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (target.classList.contains('qty-plus')) {
             e.preventDefault();
-            const container = target.closest('.cart-control');
+            const container = target.closest('.cart-controla');
             const accessoryId = container.dataset.accessoryId;
             updateCartQuantity(accessoryId, 1, container);
         }
 
         if (target.classList.contains('qty-minus')) {
             e.preventDefault();
-            const container = target.closest('.cart-control');
+            const container = target.closest('.cart-controla');
             const accessoryId = container.dataset.accessoryId;
             updateCartQuantity(accessoryId, -1, container);
         }

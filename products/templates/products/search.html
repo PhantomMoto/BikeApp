@@ -3,59 +3,7 @@
 
 {% load static %}
 
-<section class="filter-section" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding: 20px;">
-    {# The search results page primarily displays results from a search query, #}
-    {# so the brand/model filter might be less relevant here, #}
-    {# or you might want to adapt it to filter within search results. #}
-    {# For now, I'm keeping the original filter structure as requested. #}
-    {# If you only want to show search results, you can remove this form. #}
-    <form method="get" class="filter" style="width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 10px;">
-        <input type="hidden" name="q" value="{{ query }}"> {# Keep the original search query in the form #}
-        
-        <select name="brand" id="brand-select" style="padding: 10px; width: 100%; border: 1px solid #ccc; border-radius: 6px;">
-            <option value="">Select Brand</option>
-            {% for brand in brands %}
-                <option value="{{ brand.id }}" {% if request.GET.brand == brand.id|stringformat:"s" %}selected{% endif %}>{{ brand.name }}</option>
-            {% endfor %}
-        </select>
 
-        <select name="model" id="model-select" style="padding: 10px; width: 100%; border: 1px solid #ccc; border-radius: 6px;">
-            <option value="">Select Model</option>
-            {% for model in models %}
-                {# Display models only if no brand is selected or if they belong to the selected brand #}
-                {% if not request.GET.brand or model.brand.id|stringformat:"s" == request.GET.brand %}
-                    <option value="{{ model.id }}" {% if request.GET.model == model.id|stringformat:"s" %}selected{% endif %}>{{ model.name }}</option>
-                {% endif %}
-            {% endfor %}
-        </select>
-
-        <button type="submit" style="padding: 10px; background-color: #27ae60; color: #fff; border: none; border-radius: 6px; font-weight: 600;">Filter Search Results</button>
-
-        <div class="l" style="display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap;">
-            {# The PDF download links below will need to be adjusted if you want a PDF of search results #}
-            {# For now, they mirror your original products page logic which might not be ideal for search results #}
-            {% if brand_id %}
-                <a href="{% url 'products:category_pdf' %}?brand={{ brand_id }}{% if model_id %}&model={{ model_id }}{% endif %}" style="display: flex; align-items: center; gap: 5px; text-decoration: none; color: #27ae60;">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 4v12" />
-                    </svg> Download PDF
-                </a>
-            {% elif category_name %}
-                <a href="{% url 'products:category_pdf' %}?category={{ category_name }}" style="display: flex; align-items: center; gap: 5px; text-decoration: none; color: #27ae60;">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 4v12" />
-                    </svg> Download PDF
-                </a>
-            {% else %}
-                <a href="{% url 'products:category_pdf' %}" style="display: flex; align-items: center; gap: 5px; text-decoration: none; color: #27ae60;">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 4v12" />
-                    </svg> Download PDF
-                </a>
-            {% endif %}
-        </div>
-    </form>
-</section>
 
 <section class="search-results-section" style="padding: 20px;">
     <h1 style="font-size: 2.2rem; margin: 0 auto 20px auto; text-align: center;">Search Results for "<span class="text-red-600">{{ query }}</span>"</h1>
@@ -69,7 +17,7 @@
                     <h3 style="font-size: 1.1rem; margin: 0 0 10px 0; text-align: center; text-wrap: auto;">{{ accessory.name }}</h3>
                     {% if accessory.main_image %} {# Assuming 'main_image' for search results products #}
                         <img
-                            src="{{ accessory.main_image.url }}"
+                            src="{{ accessory.image.url }}"
                             alt="{{ accessory.name }}"
                             onclick="window.location.href='{% url 'products:product_detail' accessory.slug %}'"
                             style="max-width: 100%; height: auto; border-radius: 8px; margin: 0 auto 10px auto; display: block; box-shadow: 0 4px 16px rgba(0,0,0,0.1);"

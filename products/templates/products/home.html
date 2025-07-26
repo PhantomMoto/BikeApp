@@ -251,7 +251,7 @@ document.addEventListener("DOMContentLoaded", function () {
           slides[current].classList.remove('active');
           current = (current + 1) % slides.length;
           slides[current].classList.add('active');
-        }, 4000);
+        }, 2000);
       }
     }
     runSlideshow('.slideshow-desktop', 'slide');
@@ -266,7 +266,7 @@ document.addEventListener("DOMContentLoaded", function () {
   setInterval(() => {
     if (container) {
       const maxScroll = container.scrollWidth - container.clientWidth;
-      scrollAmount += 280;  // pixel amount to scroll
+      scrollAmount += 400;  // pixel amount to scroll
       if (scrollAmount > maxScroll) scrollAmount = 0;
       container.scrollTo({
         left: scrollAmount,

@@ -813,10 +813,12 @@ import os
 from io import BytesIO
 def category_pdf(request):
     try:
-        brand_id = request.GET.get('brand')
-        model_id = request.GET.get('model')
-        category_name = request.GET.get('category')
-        query = request.GET.get('q', '').strip()
+        try:
+            brand_id = request.GET.get('brand')
+            model_id = request.GET.get('model')
+            category_name = request.GET.get('category')
+        except:
+            query = request.GET.get('q', '').strip()
 
         accessories = Accessory.objects.filter(stock__gt=0)
 

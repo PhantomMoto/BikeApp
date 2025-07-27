@@ -813,6 +813,10 @@ import os
 from io import BytesIO
 def category_pdf(request):
     try:
+        query = ''
+        brand_id = None
+        model_id = None
+        category_name = None
         try:
             brand_id = request.GET.get('brand')
             model_id = request.GET.get('model')
@@ -833,7 +837,7 @@ def category_pdf(request):
             accessories = accessories.filter(categories__name__iexact=category_name)
 
         # If no brand/model/category is found, try filtering via search query
-        if query and not (brand_id or model_id or category_name):
+        if query != '' or query!=None and not (brand_id or model_id or category_name):
             accessories = accessories.filter(
                 Q(name__icontains=query) |
                 Q(description__icontains=query)

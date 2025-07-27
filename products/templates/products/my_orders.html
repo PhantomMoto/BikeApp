@@ -3,12 +3,12 @@
 <h2>My Orders</h2>
 <ul>
   {% for order in orders %}
-    <li>
+    <li class="a">
       <strong>{{ order.order_id }}</strong> ₹{{ order.amount }} 
       <a href="{% url 'products:track_order' order.order_id %}">Track</a>
     </li>
   {% empty %}
-    <li>No orders found. Time to shop 🤟</li>
+    <li class="a">No orders found. Time to shop 🤟</li>
   {% endfor %}
 </ul>
 <style>
@@ -26,7 +26,7 @@ ul {
   margin: 0 auto;
 }
 
-li {
+.a li {
   background: #fff;
   padding: 1rem 1.5rem;
   margin-bottom: 1rem;
@@ -48,7 +48,7 @@ li strong {
   color: #333;
 }
 
-li a {
+.a li a {
   align-self: flex-start;
   text-decoration: none;
   background: #000;

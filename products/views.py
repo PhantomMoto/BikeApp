@@ -818,7 +818,7 @@ def category_pdf(request):
         model_id = request.GET.get('model')
         category_name = request.GET.get('category')
     
-        query = request.params.get('q', '').strip()
+        query = request.GET.get('q', '').strip()
 
         accessories = Accessory.objects.filter(stock__gt=0)
 

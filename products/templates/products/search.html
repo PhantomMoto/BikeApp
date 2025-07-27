@@ -8,6 +8,17 @@
 <section class="search-results-section" style="padding: 20px;">
     <h1 style="font-size: 2.2rem; margin: 0 auto 20px auto; text-align: center;">Search Results for "<span class="text-red-600">{{ query }}</span>"</h1>
 
+
+        {% if download_pdf_url %}
+<div class="l" style="display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap;">
+    <a href="{{ download_pdf_url }}" style="display: flex; align-items: center; gap: 5px; text-decoration: none; color: #27ae60;">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 4v12" />
+        </svg> Download PDF
+    </a>
+</div>
+{% endif %}
+
     {# Display Products #}
     {% if products %}
         <h2 style="font-size: 1.8rem; margin: 0 auto 20px auto; text-align: center;">Products</h2>

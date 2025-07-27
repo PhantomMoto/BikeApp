@@ -83,34 +83,57 @@ from django.shortcuts import render
 from django.db.models import Q
 from .models import Accessory, Category, Blog, YouTubeVideo # Make sure these are imported
 
+from django.shortcuts import render
+from .models import Accessory, Category
+from django.db.models import Q
+
 def search_results(request):
     query = request.GET.get('q', '').strip()
-    
+
     products = []
     categories = []
-    blogs = []
-    videos = []
+    blogs = []  # If you're using these later
+    videos = []  # If using
+
+    download_pdf_url = "/products/category_pdf/"  # default
+    brand_id = None
+    model_id = None
+    category_name = None
 
     if query:
-        # Get all matching products
         products = Accessory.objects.filter(
-            Q(name__icontains=query) | 
-            Q(description__icontains=query) # Consider adding description to search
-        ).distinct() # Use distinct if products might appear multiple times from Q objects
+            Q(name__icontains=query) |
+            Q(description__icontains=query)
+        ).distinct()
 
-        # Get all matching categories
         categories = Category.objects.filter(name__icontains=query).distinct()
 
-     
-
-    
+        # Try to detect brand/model from first product
+        if products.exists():
+            first = products.first()
+            # Get first related model
+            model = first.bike_models.first()
+            if model:
+                model_id = model.id
+                brand_id = model.brand.id
+                download_pdf_url = f"/category-pdf/?brand={brand_id}&model={model_id}"
+            elif first.is_universal:
+                category = first.categories.first()
+                if category:
+                    category_name = category.name
+                    download_pdf_url = f"/category-pdf/?category={category_name}"
+        elif categories.exists():
+            category_name = categories.first().name
+            download_pdf_url = f"/category-pdf/?category={category_name}"
 
     context = {
         'query': query,
         'products': products,
         'categories': categories,
+        'download_pdf_url': download_pdf_url,
     }
     return render(request, 'products/search.html', context)
+
 
 from django.http import JsonResponse
 from .models import Accessory

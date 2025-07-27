@@ -871,7 +871,7 @@ from django.db.models import Q
 import os
 from .models import Accessory  # make sure this is imported
 
-def category_pdf(request, query):
+def search_pdf(request, query):
     try:
         query = query.strip()
         accessories = Accessory.objects.filter(stock__gt=0).filter(

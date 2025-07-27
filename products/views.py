@@ -811,22 +811,31 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 import os
 from io import BytesIO
-
 def category_pdf(request):
     try:
         brand_id = request.GET.get('brand')
         model_id = request.GET.get('model')
         category_name = request.GET.get('category')
+        query = request.GET.get('q', '').strip()
 
         accessories = Accessory.objects.filter(stock__gt=0)
 
+        # Apply filters based on brand/model/category
         if brand_id:
             accessories = accessories.filter(bike_models__brand__id=brand_id)
-        
+
         if model_id:
             accessories = accessories.filter(bike_models__id=model_id)
+
         if category_name:
             accessories = accessories.filter(categories__name__iexact=category_name)
+
+        # If no brand/model/category is found, try filtering via search query
+        if query and not (brand_id or model_id or category_name):
+            accessories = accessories.filter(
+                Q(name__icontains=query) |
+                Q(description__icontains=query)
+            )
 
         accessories = accessories.distinct()
 

@@ -793,74 +793,65 @@ import os
 from io import BytesIO
 from reportlab.lib.pagesizes import landscape, letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib.colors import black, darkblue, whitesmoke, lightgrey
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.colors import black, HexColor, white
 from reportlab.lib.units import inch
-from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
+from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.utils import ImageReader
 from django.http import HttpResponse
-from .models import Accessory # Assuming Accessory model is in the same app
+
+# --- IMPORTANT: Ensure these imports are correct for your project ---
+# Based on your last correction, assuming these models are in .models
+from .models import Accessory, BikeBrand, BikeModel # Corrected Brand to BikeBrand
+# ------------------------------------------------------------------
 
 # Helper function to create an accessory "card"
-def create_accessory_card(accessory, styles):
+def create_aesthetic_accessory_card(accessory, styles):
     card_elements = []
 
     # Accessory Image
-    img_path = None
+    img = None
     if accessory.image and hasattr(accessory.image, 'path') and os.path.exists(accessory.image.path):
-        img_path = accessory.image.path
-
-    if img_path:
-        # Use ImageReader for better handling and error prevention
         try:
-            img = Image(ImageReader(img_path), width=70, height=70)
+            # Use a slightly larger image for visual impact, adjust as needed
+            img = Image(ImageReader(accessory.image.path), width=2.5 * inch, height=2.5 * inch)
+            img.hAlign = 'CENTER'
             card_elements.append(img)
-            card_elements.append(Spacer(1, 6))
+            card_elements.append(Spacer(1, 10)) # More space below image
         except Exception as e:
-            # Fallback if image loading fails (e.g., corrupt image)
-            card_elements.append(Paragraph("Image Error", styles['Normal']))
-            card_elements.append(Spacer(1, 6))
+            # Fallback for image loading errors
+            card_elements.append(Paragraph("<font color='#CC0000'><i>Image Error</i></font>", styles['ErrorText']))
+            card_elements.append(Spacer(1, 10))
     else:
-        card_elements.append(Paragraph("No Image Available", styles['Small']))
-        card_elements.append(Spacer(1, 6))
+        # Fallback if no image available
+        card_elements.append(Paragraph("<i>No Image</i>", styles['NoImageText']))
+        card_elements.append(Spacer(1, 10))
 
     # Accessory Name
-    card_elements.append(Paragraph(f"<b>{accessory.name}</b>", styles['h4']))
-    card_elements.append(Spacer(1, 4))
+    card_elements.append(Paragraph(f"{accessory.name}", styles['CardName'])) # No bold tag in paragraph, use style's bold
+    card_elements.append(Spacer(1, 6))
 
-    # Prices
-    offer_price = f"<b>Offer:</b> ₹{accessory.offer_price}" if accessory.offer_price else "-"
-    mrp = f"MRP: ₹{accessory.mrp}" if accessory.mrp else "-"
-    
-    price_text = []
+    # Offer Price (only offer price, no MRP)
     if accessory.offer_price:
-        price_text.append(Paragraph(offer_price, styles['Normal']))
-    if accessory.mrp:
-        price_text.append(Paragraph(f"<strike>{mrp}</strike>", styles['Small'])) # Strikethrough for MRP
+        card_elements.append(Paragraph(f"₹{accessory.offer_price}", styles['CardPrice']))
+    else:
+        card_elements.append(Paragraph("Price N/A", styles['Small'])) # Fallback for no price
 
-    # Use a small table for price alignment if needed, or just flow it
-    if price_text:
-        card_elements.append(Table([[price_text[0], price_text[1]]], colWidths=[None, None], hAlign='LEFT')) # Simplified for demonstration
-    
-    card_elements.append(Spacer(1, 4))
-
-    # Description (Truncated if too long)
-    description = accessory.description or ""
-    if len(description) > 100: # Limit description length for card view
-        description = description[:97] + "..."
-    card_elements.append(Paragraph(description, styles['Small']))
-
-    # To create a "card" effect, we can put these elements into a nested table with a background
-    card_table = Table([card_elements], colWidths=[2.5 * inch]) # Adjust width as needed
+    # The outer table for the card itself
+    # Card dimensions are critical for the "card on desk" look
+    # colWidths[0] should be slightly larger than image width + internal padding
+    card_table = Table([card_elements], colWidths=[3.5 * inch]) # Increased card width for better feel
     card_table.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,-1), lightgrey), # Light background for the card
+        ('BACKGROUND', (0,0), (-1,-1), white), # Clean white background for the card
         ('ALIGN', (0,0), (-1,-1), 'CENTER'),
         ('VALIGN', (0,0), (-1,-1), 'TOP'),
-        ('LEFTPADDING', (0,0), (-1,-1), 6),
-        ('RIGHTPADDING', (0,0), (-1,-1), 6),
-        ('TOPPADDING', (0,0), (-1,-1), 6),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 6),
-        ('ROUNDEDCORNERS', (0,0), (-1,-1), 5), # Optional: rounded corners for card look
+        ('LEFTPADDING', (0,0), (-1,-1), 15), # Generous internal padding
+        ('RIGHTPADDING', (0,0), (-1,-1), 15),
+        ('TOPPADDING', (0,0), (-1,-1), 15),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 15),
+        ('ROUNDEDCORNERS', (0,0), (-1,-1), 12), # More rounded for a softer card feel
+        ('BOX', (0,0), (-1,-1), 0.5, HexColor('#E0E0E0')), # Very subtle, light border
+        ('SHADOW', (0,0), (-1,-1), (4, -4), 8, HexColor('#A0A0A0')), # Prominent shadow for depth
     ]))
     return card_table
 
@@ -883,52 +874,85 @@ def category_pdf(request):
         accessories = accessories.distinct()
 
         buffer = BytesIO()
-        doc = SimpleDocTemplate(buffer, pagesize=landscape(letter), rightMargin=30, leftMargin=30, topMargin=30, bottomMargin=18)
+        # Generous margins for a clean, spacious look
+        doc = SimpleDocTemplate(buffer, pagesize=landscape(letter),
+                                rightMargin=40, leftMargin=40,
+                                topMargin=40, bottomMargin=40)
         elements = []
         styles = getSampleStyleSheet()
 
-        # Custom styles for better card appearance
-        styles.add(ParagraphStyle(name='h4', parent=styles['h2'], fontSize=12, leading=14, alignment=TA_CENTER))
-        styles.add(ParagraphStyle(name='NormalCentered', parent=styles['Normal'], alignment=TA_CENTER))
-        styles.add(ParagraphStyle(name='Small', parent=styles['Normal'], fontSize=8, leading=10, alignment=TA_CENTER))
+        # Custom Aesthetic Styles
+        styles.add(ParagraphStyle(name='TitleMinimal', parent=styles['Title'],
+                                  fontSize=24, leading=28, alignment=TA_CENTER,
+                                  textColor=HexColor('#333333'), # Dark grey for a soft title
+                                  fontName='Helvetica-Bold'))
 
-        title = Paragraph("Filtered Accessories Report", styles['Title'])
+        styles.add(ParagraphStyle(name='CardName', parent=styles['h2'],
+                                  fontSize=14, leading=16, alignment=TA_CENTER,
+                                  textColor=HexColor('#444444'), # Slightly lighter text for name
+                                  fontName='Helvetica-Bold')) # Make name bold via fontName
+        
+        styles.add(ParagraphStyle(name='CardPrice', parent=styles['h1'], # Make price prominent
+                                  fontSize=18, leading=20, alignment=TA_CENTER,
+                                  textColor=HexColor('#007BFF'), # A clean blue for price
+                                  fontName='Helvetica-Bold'))
+
+        styles.add(ParagraphStyle(name='NoImageText', parent=styles['Normal'],
+                                  fontSize=10, alignment=TA_CENTER,
+                                  textColor=HexColor('#888888'))) # Muted grey for "No Image"
+        
+        styles.add(ParagraphStyle(name='ErrorText', parent=styles['Normal'],
+                                  fontSize=10, alignment=TA_CENTER,
+                                  textColor=HexColor('#CC0000'))) # Red for errors
+
+        styles.add(ParagraphStyle(name='Small', parent=styles['Normal'],
+                                  fontSize=9, leading=11, alignment=TA_CENTER,
+                                  textColor=black))
+
+
+        # Report Title
+        title = Paragraph("Featured Accessories", styles['TitleMinimal']) # Simplified title
         elements.append(title)
-        elements.append(Spacer(1, 24))
+        elements.append(Spacer(1, 30)) # More space after title
 
-        # --- Grid Layout Setup ---
-        num_columns = 3 # Number of cards per row
+        # --- Grid Layout Setup (No Filter Info Displayed) ---
+        num_columns = 3 # Adjusted to 3 to accommodate larger cards on landscape letter
         table_data = []
         row = []
         for i, accessory in enumerate(accessories):
-            card = create_accessory_card(accessory, styles)
+            # Use the new aesthetic card creation function
+            card = create_aesthetic_accessory_card(accessory, styles)
             row.append(card)
             if (i + 1) % num_columns == 0:
                 table_data.append(row)
                 row = []
-        if row: # Add any remaining cards
-            # Fill the last row with empty cells if it's not full
+        
+        # Add any remaining cards and fill the last row
+        if row:
             while len(row) < num_columns:
                 row.append(Spacer(1, 1)) # Empty spacer for alignment
             table_data.append(row)
 
         if not table_data:
-            elements.append(Paragraph("No accessories found matching your criteria.", styles['NormalCentered']))
+            elements.append(Paragraph("No accessories found matching your criteria.", styles['Small']))
         else:
-            # Calculate column widths to distribute evenly
-            page_width = landscape(letter)[0] - doc.leftMargin - doc.rightMargin
-            col_width = page_width / num_columns
+            # Calculate column widths to distribute evenly across the page
+            page_available_width = landscape(letter)[0] - (doc.leftMargin + doc.rightMargin)
+            # Total spacing between cards: (num_columns - 1) * (left_padding + right_padding from main TableStyle)
+            total_card_spacing = (num_columns - 1) * (15 + 15) # Assuming 15 for left/right padding of main table cells
+            col_width = (page_available_width - total_card_spacing) / num_columns
+
 
             table = Table(table_data, colWidths=[col_width] * num_columns)
             table.setStyle(TableStyle([
                 ('ALIGN', (0,0), (-1,-1), 'CENTER'),
                 ('VALIGN', (0,0), (-1,-1), 'TOP'),
-                ('LEFTPADDING', (0,0), (-1,-1), 6), # Padding between cards
-                ('RIGHTPADDING', (0,0), (-1,-1), 6),
-                ('TOPPADDING', (0,0), (-1,-1), 6),
-                ('BOTTOMPADDING', (0,0), (-1,-1), 6),
-                ('GRID', (0,0), (-1,-1), 0.01, colors.white), # Effectively no grid, just for spacing
-                ('BACKGROUND', (0,0), (-1,-1), colors.white), # Ensure no background on main table cells
+                ('LEFTPADDING', (0,0), (-1,-1), 15), # Generous horizontal spacing between cards
+                ('RIGHTPADDING', (0,0), (-1,-1), 15),
+                ('TOPPADDING', (0,0), (-1,-1), 15),  # Generous vertical spacing between card rows
+                ('BOTTOMPADDING', (0,0), (-1,-1), 15),
+                ('GRID', (0,0), (-1,-1), 0.01, white), # Invisible grid
+                ('BACKGROUND', (0,0), (-1,-1), white), # Main table background is white
             ]))
             elements.append(table)
 
@@ -938,7 +962,7 @@ def category_pdf(request):
         buffer.close()
 
         response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="filtered_accessories.pdf"'
+        response['Content-Disposition'] = 'attachment; filename="featured_accessories.pdf"' # Changed filename
         response.write(pdf)
         return response
 
@@ -946,7 +970,215 @@ def category_pdf(request):
         import traceback
         print("PDF Generation Error:", e)
         traceback.print_exc()
-        return HttpResponse("Server error during PDF generation. Check logs.", status=500)
+        return HttpResponse("Server error during PDF generation. Please contact support if this persists.", status=500)
+
+import os
+from io import BytesIO
+from reportlab.lib.pagesizes import landscape, letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.colors import black, darkblue, whitesmoke, lightgrey, HexColor, grey
+from reportlab.lib.units import inch
+from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
+from reportlab.lib.utils import ImageReader
+from django.http import HttpResponse
+
+# --- IMPORTANT: Ensure these imports are correct for your project ---
+from .models import Accessory, BikeBrand, BikeModel
+# ------------------------------------------------------------------
+
+# Helper function to create an accessory "card"
+import os
+import logging # Import logging
+from io import BytesIO
+from reportlab.lib.pagesizes import landscape, letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.colors import black, HexColor, white, red # Added red for explicit error text
+from reportlab.lib.units import inch
+from reportlab.lib.enums import TA_CENTER
+from reportlab.lib.utils import ImageReader
+from django.http import HttpResponse
+from django.conf import settings # Import settings to access MEDIA_ROOT, BASE_DIR
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
+
+# --- IMPORTANT: Ensure these imports are correct for your project ---
+# Based on your explicit instruction, using BikeBrand now.
+# Replace '.models' with your actual app name if different (e.g., 'your_app_name.models')
+from .models import Accessory, BikeBrand, BikeModel
+# ------------------------------------------------------------------
+
+# Helper function to create an accessory "card"
+def create_aesthetic_accessory_card(accessory, styles):
+    card_elements = []
+
+    # Accessory Image
+    img = None
+    if accessory.image: # Check if an image is associated at all
+        image_path = accessory.image.path # Get the absolute file system path
+        logger.info(f"Attempting to load image for '{accessory.name}' from path: {image_path}") # Log the path
+
+        if os.path.exists(image_path):
+            logger.info(f"Image file EXISTS at: {image_path}")
+            try:
+                # Use a slightly larger image for visual impact, adjust as needed
+                # Consider adding an aspect ratio preservation if your images are not square
+                img = Image(ImageReader(image_path), width=2.5 * inch, height=2.5 * inch)
+                img.hAlign = 'CENTER'
+                card_elements.append(img)
+                card_elements.append(Spacer(1, 10)) # More space below image
+            except Exception as e:
+                logger.error(f"Error loading image from {image_path} for '{accessory.name}': {e}", exc_info=True) # Log the error details
+                card_elements.append(Paragraph(f"<font color='red'><i>Image Load Error</i><br/><small>{e}</small></font>", styles['ErrorText']))
+                card_elements.append(Spacer(1, 10))
+        else:
+            logger.warning(f"Image file DOES NOT EXIST at: {image_path} for '{accessory.name}'. Check MEDIA_ROOT and file existence.") # Log non-existence
+            card_elements.append(Paragraph("<i>Image File Missing</i>", styles['NoImageText']))
+            card_elements.append(Spacer(1, 10))
+    else:
+        logger.info(f"Accessory '{accessory.name}' has no image associated (accessory.image is None).")
+        card_elements.append(Paragraph("<i>No Image</i>", styles['NoImageText']))
+        card_elements.append(Spacer(1, 10))
+
+    # Accessory Name
+    card_elements.append(Paragraph(f"{accessory.name}", styles['CardName']))
+    card_elements.append(Spacer(1, 6))
+
+    # Offer Price (only offer price, no MRP or description)
+    if accessory.offer_price is not None: # Check for None explicitly
+        card_elements.append(Paragraph(f"₹{accessory.offer_price}", styles['CardPrice']))
+    else:
+        card_elements.append(Paragraph("Price N/A", styles['Small'])) # Fallback for no price
+
+    # The outer table for the card itself
+    card_table = Table([card_elements], colWidths=[3.5 * inch]) # Increased card width for better feel
+    card_table.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,-1), white), # Clean white background for the card
+        ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+        ('VALIGN', (0,0), (-1,-1), 'TOP'),
+        ('LEFTPADDING', (0,0), (-1,-1), 15), # Generous internal padding
+        ('RIGHTPADDING', (0,0), (-1,-1), 15),
+        ('TOPPADDING', (0,0), (-1,-1), 15),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 15),
+        ('ROUNDEDCORNERS', (0,0), (-1,-1), 12), # More rounded for a softer card feel
+        ('BOX', (0,0), (-1,-1), 0.5, HexColor('#E0E0E0')), # Very subtle, light border
+        ('SHADOW', (0,0), (-1,-1), (4, -4), 8, HexColor('#A0A0A0')), # Prominent shadow for depth
+    ]))
+    return card_table
+
+def category_pdf(request):
+    try:
+        brand_id = request.GET.get('brand')
+        model_id = request.GET.get('model')
+        category_name = request.GET.get('category')
+
+        accessories = Accessory.objects.filter(stock__gt=0)
+
+        if brand_id:
+            accessories = accessories.filter(bike_models__brand__id=brand_id)
+        
+        if model_id:
+            accessories = accessories.filter(bike_models__id=model_id)
+        if category_name:
+            accessories = accessories.filter(categories__name__iexact=category_name)
+
+        accessories = accessories.distinct()
+
+        buffer = BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=landscape(letter),
+                                rightMargin=40, leftMargin=40,
+                                topMargin=40, bottomMargin=40)
+        elements = []
+        styles = getSampleStyleSheet()
+
+        # Custom Aesthetic Styles
+        styles.add(ParagraphStyle(name='TitleMinimal', parent=styles['Title'],
+                                  fontSize=24, leading=28, alignment=TA_CENTER,
+                                  textColor=HexColor('#333333'),
+                                  fontName='Helvetica-Bold'))
+
+        styles.add(ParagraphStyle(name='CardName', parent=styles['h2'],
+                                  fontSize=14, leading=16, alignment=TA_CENTER,
+                                  textColor=HexColor('#444444'),
+                                  fontName='Helvetica-Bold'))
+        
+        styles.add(ParagraphStyle(name='CardPrice', parent=styles['h1'],
+                                  fontSize=18, leading=20, alignment=TA_CENTER,
+                                  textColor=HexColor('#007BFF'),
+                                  fontName='Helvetica-Bold'))
+
+        styles.add(ParagraphStyle(name='NoImageText', parent=styles['Normal'],
+                                  fontSize=10, alignment=TA_CENTER,
+                                  textColor=HexColor('#888888')))
+        
+        styles.add(ParagraphStyle(name='ErrorText', parent=styles['Normal'],
+                                  fontSize=10, alignment=TA_CENTER,
+                                  textColor=red)) # Use imported red color directly
+
+        styles.add(ParagraphStyle(name='Small', parent=styles['Normal'],
+                                  fontSize=9, leading=11, alignment=TA_CENTER,
+                                  textColor=black))
+
+
+        # Report Title
+        title = Paragraph("Featured Accessories", styles['TitleMinimal'])
+        elements.append(title)
+        elements.append(Spacer(1, 30))
+
+        # --- Grid Layout Setup (No Filter Info Displayed) ---
+        num_columns = 3
+        table_data = []
+        row = []
+        for i, accessory in enumerate(accessories):
+            card = create_aesthetic_accessory_card(accessory, styles)
+            row.append(card)
+            if (i + 1) % num_columns == 0:
+                table_data.append(row)
+                row = []
+        
+        # Add any remaining cards and fill the last row
+        if row:
+            while len(row) < num_columns:
+                row.append(Spacer(1, 1))
+            table_data.append(row)
+
+        if not table_data:
+            elements.append(Paragraph("No accessories found matching your criteria.", styles['Small']))
+        else:
+            page_available_width = landscape(letter)[0] - (doc.leftMargin + doc.rightMargin)
+            total_card_spacing = (num_columns - 1) * (15 + 15) # Spacing between cards
+            col_width = (page_available_width - total_card_spacing) / num_columns
+
+
+            table = Table(table_data, colWidths=[col_width] * num_columns)
+            table.setStyle(TableStyle([
+                ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+                ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                ('LEFTPADDING', (0,0), (-1,-1), 15), # Horizontal spacing between cards
+                ('RIGHTPADDING', (0,0), (-1,-1), 15),
+                ('TOPPADDING', (0,0), (-1,-1), 15),  # Vertical spacing between card rows
+                ('BOTTOMPADDING', (0,0), (-1,-1), 15),
+                ('GRID', (0,0), (-1,-1), 0.01, white), # Invisible grid
+                ('BACKGROUND', (0,0), (-1,-1), white), # Main table background is white
+            ]))
+            elements.append(table)
+
+        doc.build(elements)
+
+        pdf = buffer.getvalue()
+        buffer.close()
+
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="featured_accessories.pdf"'
+        response.write(pdf)
+        return response
+
+    except Exception as e:
+        import traceback
+        logger.exception("PDF Generation Error:") # Use logger.exception for full traceback in logs
+        return HttpResponse("Server error during PDF generation. Please contact support if this persists.", status=500)
     
 from django.http import HttpResponse
 from io import BytesIO

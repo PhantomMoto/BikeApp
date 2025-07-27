@@ -861,21 +861,30 @@ def category_pdf(request):
         print("PDF Generation Error:", e)
         traceback.print_exc()
         return HttpResponse("Server error during PDF generation. Check logs.", status=500)
-def search_pdf(request, query):
-    
-        
-        if query:
-            accessories = accessories.filter(bike_models__brand__id=query)
-        
-        
-        accessories = accessories.distinct()
+from django.http import HttpResponse
+from io import BytesIO
+from reportlab.lib.pagesizes import landscape, letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from django.db.models import Q
+import os
+from .models import Accessory  # make sure this is imported
+
+def category_pdf(request, query):
+    try:
+        query = query.strip()
+        accessories = Accessory.objects.filter(stock__gt=0).filter(
+            Q(name__icontains=query) |
+            Q(description__icontains=query)
+        ).distinct()
 
         buffer = BytesIO()
         doc = SimpleDocTemplate(buffer, pagesize=landscape(letter), rightMargin=30, leftMargin=30, topMargin=30, bottomMargin=18)
         elements = []
         styles = getSampleStyleSheet()
 
-        title = Paragraph("Filtered Accessories Report", styles['Title'])
+        title = Paragraph(f"Accessories Matching '{query}'", styles['Title'])
         elements.append(title)
         elements.append(Spacer(1, 12))
 
@@ -915,15 +924,16 @@ def search_pdf(request, query):
         buffer.close()
 
         response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="filtered_accessories.pdf"'
+        response['Content-Disposition'] = f'attachment; filename="accessories_{query}.pdf"'
         response.write(pdf)
         return response
 
     except Exception as e:
         import traceback
-        print("PDF Generation Error:", e)
+        print("Search PDF Error:", e)
         traceback.print_exc()
-        return HttpResponse("Server error during PDF generation. Check logs.", status=500)
+        return HttpResponse("PDF generation failed.", status=500)
+
 
 
 

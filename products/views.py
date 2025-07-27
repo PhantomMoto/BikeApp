@@ -871,8 +871,9 @@ from django.db.models import Q
 import os
 from .models import Accessory  # make sure this is imported
 
-def search_pdf(request, query):
+def search_pdf(request):
     try:
+        query = request.GET.get('query', '')
         accessories = Accessory.objects.filter(stock__gt=0).filter(
             Q(name__icontains=query) |
             Q(description__icontains=query)

@@ -861,6 +861,75 @@ def category_pdf(request):
         print("PDF Generation Error:", e)
         traceback.print_exc()
         return HttpResponse("Server error during PDF generation. Check logs.", status=500)
+def search_pdf(query,request):
+    try:
+        brand_id = request.GET.get('brand')
+        model_id = request.GET.get('model')
+        category_name = request.GET.get('category')
+
+        accessories = Accessory.objects.filter(stock__gt=0)
+
+        
+        if query:
+            accessories = accessories.filter(bike_models__brand__id=brand_id)
+        
+        
+        accessories = accessories.distinct()
+
+        buffer = BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=landscape(letter), rightMargin=30, leftMargin=30, topMargin=30, bottomMargin=18)
+        elements = []
+        styles = getSampleStyleSheet()
+
+        title = Paragraph("Filtered Accessories Report", styles['Title'])
+        elements.append(title)
+        elements.append(Spacer(1, 12))
+
+        data = [["Image", "Name", "Offer Price (₹)", "MRP (₹)", "Description"]]
+
+        for accessory in accessories:
+            if accessory.image and accessory.image.path and os.path.exists(accessory.image.path):
+                img = Image(accessory.image.path, width=50, height=50)
+            else:
+                img = Paragraph("No Image", styles['Normal'])
+
+            offer_price = f"₹{accessory.offer_price}" if accessory.offer_price else "-"
+            mrp = f"₹{accessory.mrp}" if accessory.mrp else "-"
+
+            data.append([
+                img,
+                Paragraph(accessory.name, styles['Normal']),
+                offer_price,
+                mrp,
+                Paragraph(accessory.description or "", styles['Normal']),
+            ])
+
+        table = Table(data, colWidths=[60, 120, 80, 80, 120])
+        table.setStyle(TableStyle([
+            ('BACKGROUND', (0,0), (-1,0), colors.darkblue),
+            ('TEXTCOLOR',(0,0),(-1,0),colors.whitesmoke),
+            ('ALIGN',(2,1),(3,-1),'RIGHT'),
+            ('VALIGN',(0,0),(-1,-1),'TOP'),
+            ('INNERGRID', (0,0), (-1,-1), 0.25, colors.gray),
+            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
+        ]))
+
+        elements.append(table)
+        doc.build(elements)
+
+        pdf = buffer.getvalue()
+        buffer.close()
+
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="filtered_accessories.pdf"'
+        response.write(pdf)
+        return response
+
+    except Exception as e:
+        import traceback
+        print("PDF Generation Error:", e)
+        traceback.print_exc()
+        return HttpResponse("Server error during PDF generation. Check logs.", status=500)
 
 
 

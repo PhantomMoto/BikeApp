@@ -62,7 +62,7 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
   <div class="snap-start feat-card" style="flex: 0 0 auto;box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);  background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); padding: 10px 15px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;" onclick="window.location.href='{% url 'products:product_detail' accessory.slug %}'">
     <h3 style="font-size: 1.1rem; margin: 0 0 10px 0; color: #333; text-align: center;">{{ accessory.name }}</h3>
     {% if accessory.image %}
-      <img src="{{ accessory.image.url }}" alt="{{ accessory.name }}" style="max-width: 100%;border-radius: 8px; margin-bottom: 10px;">
+      <img src="{{ accessory.image.url }}" alt="{{ accessory.name }}" style="max-width: 100%;border-radius: 8px;object-fit: contain; margin-bottom: 10px;">
     {% endif %}
     <p style="text-align: center;"><strong>₹{{ accessory.offer_price }}</strong> <span style="text-decoration:line-through; color:#888; font-size:0.95em;">₹{{ accessory.mrp }}</span></p>
     {% if accessory.discount_percent %}

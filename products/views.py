@@ -814,14 +814,11 @@ from io import BytesIO
 def category_pdf(request):
     try:
         query = ''
-        brand_id = None
-        model_id = None
-        category_name = None
         brand_id = request.GET.get('brand')
         model_id = request.GET.get('model')
         category_name = request.GET.get('category')
     
-        query = request.GET.get('q', '').strip()
+        query = request.params.get('q', '').strip()
 
         accessories = Accessory.objects.filter(stock__gt=0)
 

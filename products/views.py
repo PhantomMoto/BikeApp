@@ -861,17 +861,11 @@ def category_pdf(request):
         print("PDF Generation Error:", e)
         traceback.print_exc()
         return HttpResponse("Server error during PDF generation. Check logs.", status=500)
-def search_pdf(request,query):
-    try:
-        brand_id = request.GET.get('brand')
-        model_id = request.GET.get('model')
-        category_name = request.GET.get('category')
-
-        accessories = Accessory.objects.filter(stock__gt=0)
-
+def search_pdf(request, query):
+    
         
         if query:
-            accessories = accessories.filter(bike_models__brand__id=brand_id)
+            accessories = accessories.filter(bike_models__brand__id=query)
         
         
         accessories = accessories.distinct()

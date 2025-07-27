@@ -861,7 +861,7 @@ def category_pdf(request):
         print("PDF Generation Error:", e)
         traceback.print_exc()
         return HttpResponse("Server error during PDF generation. Check logs.", status=500)
-def search_pdf(query,request):
+def search_pdf(request,query):
     try:
         brand_id = request.GET.get('brand')
         model_id = request.GET.get('model')

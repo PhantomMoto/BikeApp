@@ -32,7 +32,7 @@
                             src="{{ accessory.image.url }}"
                             alt="{{ accessory.name }}"
                             onclick="window.location.href='{% url 'products:product_detail' accessory.slug %}'"
-                            style="max-width: 100%; height: auto; border-radius: 8px; margin: 0 auto 10px auto; display: block; box-shadow: 0 4px 16px rgba(0,0,0,0.1);"
+                            style="max-width: 100%;border-radius: 8px; margin: 0 auto 10px auto; display: block; box-shadow: 0 4px 16px rgba(0,0,0,0.1);"
                         />
                     {% endif %}
                     <p style="text-align: center;"><strong>₹{{ accessory.offer_price|floatformat:2 }}</strong> {% if accessory.mrp and accessory.mrp > accessory.offer_price %}<span style="text-decoration:line-through; color:#888;">₹{{ accessory.mrp|floatformat:2 }}</span>{% endif %}</p>

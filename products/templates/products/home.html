@@ -52,15 +52,15 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
   </form>
 </section>
 
-<section class="feat-pro" style="padding: 30px 0;">
-  <h2 style="font-size:1.6rem; font-weight:800;text-align: center;margin-top:10vh;">FEATURED PRODUCTS</h2>
+<section class="feat-pro">
+  <h2 style="font-size:1.6rem; font-weight:800;text-align: center;" class="headfeature">FEATURED PRODUCTS</h2>
   <div class="auto-scroll-container scroll-snap-x" 
      style="display: flex; overflow-x: auto; scroll-snap-type: x mandatory;  
 ; scroll-behavior: smooth; gap: 20px; padding: 20px; width: 100%;">
 
    {% for accessory in featured_products %}
   <div class="snap-start feat-card" style="flex: 0 0 auto;box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);  background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); padding: 10px 15px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;" onclick="window.location.href='{% url 'products:product_detail' accessory.slug %}'">
-    <h3 style="font-size: 1.1rem; margin: 0 0 10px 0; color: #333; text-align: center;">{{ accessory.name }}</h3>
+    <h3 style="font-size: 1.1rem; margin: 0 0 10px 0; text-align: center;text-wrap:auto;">{{ accessory.name }}</h3>
     {% if accessory.image %}
       <img src="{{ accessory.image.url }}" alt="{{ accessory.name }}" style="max-width: 100%;border-radius: 8px;object-fit: contain; margin-bottom: 10px;">
     {% endif %}
@@ -92,6 +92,7 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
 </section>
 
 <style>
+
   .slideshow-desktop {
     width: 100%;
     height: 120vh;
@@ -128,10 +129,17 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
   max-width: 25%;
 }
 
+.headfeature{
+    margin-top:10vh;
+  }
+
 @media (max-width: 767px) {
   .feat-card {
     min-width: 50%;
     max-width: 50%;
+  }
+  .headfeature{
+    margin-top:10px;
   }
 }
 
@@ -167,7 +175,7 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
 
     @media (max-width: 767px) {
     .home-main {
-      height: auto !important; /* Forcefully remove vh on mobile */
+      
       margin-top: 0;
     }
     .home-cat div{

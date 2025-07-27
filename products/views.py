@@ -873,7 +873,6 @@ from .models import Accessory  # make sure this is imported
 
 def search_pdf(request, query):
     try:
-        query = query.strip()
         accessories = Accessory.objects.filter(stock__gt=0).filter(
             Q(name__icontains=query) |
             Q(description__icontains=query)

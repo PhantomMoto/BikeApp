@@ -83,57 +83,34 @@ from django.shortcuts import render
 from django.db.models import Q
 from .models import Accessory, Category, Blog, YouTubeVideo # Make sure these are imported
 
-from django.shortcuts import render
-from .models import Accessory, Category
-from django.db.models import Q
-
 def search_results(request):
     query = request.GET.get('q', '').strip()
-
+    
     products = []
     categories = []
-    blogs = []  # If you're using these later
-    videos = []  # If using
-
-    download_pdf_url = "category-pdf"  # default
-    brand_id = None
-    model_id = None
-    category_name = None
+    blogs = []
+    videos = []
 
     if query:
+        # Get all matching products
         products = Accessory.objects.filter(
-            Q(name__icontains=query) |
-            Q(description__icontains=query)
-        ).distinct()
+            Q(name__icontains=query) | 
+            Q(description__icontains=query) # Consider adding description to search
+        ).distinct() # Use distinct if products might appear multiple times from Q objects
 
+        # Get all matching categories
         categories = Category.objects.filter(name__icontains=query).distinct()
 
-        # Try to detect brand/model from first product
-        if products.exists():
-            first = products.first()
-            # Get first related model
-            model = first.bike_models.first()
-            if model:
-                model_id = model.id
-                brand_id = model.brand.id
-                download_pdf_url = f"/category-pdf/?brand={brand_id}&model={model_id}"
-            elif first.is_universal:
-                category = first.categories.first()
-                if category:
-                    category_name = category.name
-                    download_pdf_url = f"/category-pdf/?category={category_name}"
-        elif categories.exists():
-            category_name = categories.first().name
-            download_pdf_url = f"/category-pdf/?category={category_name}"
+     
+
+    
 
     context = {
         'query': query,
         'products': products,
         'categories': categories,
-        'download_pdf_url': download_pdf_url,
     }
     return render(request, 'products/search.html', context)
-
 
 from django.http import JsonResponse
 from .models import Accessory
@@ -811,33 +788,22 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 import os
 from io import BytesIO
+
 def category_pdf(request):
     try:
-        query = ''
         brand_id = request.GET.get('brand')
         model_id = request.GET.get('model')
         category_name = request.GET.get('category')
-    
-        query = request.GET.get('q', '').strip()
 
         accessories = Accessory.objects.filter(stock__gt=0)
 
-        # Apply filters based on brand/model/category
         if brand_id:
             accessories = accessories.filter(bike_models__brand__id=brand_id)
-
+        
         if model_id:
             accessories = accessories.filter(bike_models__id=model_id)
-
         if category_name:
             accessories = accessories.filter(categories__name__iexact=category_name)
-
-        # If no brand/model/category is found, try filtering via search query
-        if query != '' or query!=None and not (brand_id or model_id or category_name):
-            accessories = accessories.filter(
-                Q(name__icontains=query) |
-                Q(description__icontains=query)
-            )
 
         accessories = accessories.distinct()
 
@@ -894,7 +860,7 @@ def category_pdf(request):
         import traceback
         print("PDF Generation Error:", e)
         traceback.print_exc()
-        return HttpResponse(e, status=500)
+        return HttpResponse("Server error during PDF generation. Check logs.", status=500)
 
 @login_required
 def shipping_form(request):

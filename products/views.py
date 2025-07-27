@@ -95,7 +95,7 @@ def search_results(request):
     blogs = []  # If you're using these later
     videos = []  # If using
 
-    download_pdf_url = "/category-pdf"  # default
+    download_pdf_url = "category-pdf"  # default
     brand_id = None
     model_id = None
     category_name = None

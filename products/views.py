@@ -894,7 +894,7 @@ def category_pdf(request):
         import traceback
         print("PDF Generation Error:", e)
         traceback.print_exc()
-        return HttpResponse("e", status=500)
+        return HttpResponse(e, status=500)
 
 @login_required
 def shipping_form(request):

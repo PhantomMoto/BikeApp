@@ -789,6 +789,81 @@ from reportlab.lib.styles import getSampleStyleSheet
 import os
 from io import BytesIO
 
+import os
+from io import BytesIO
+from reportlab.lib.pagesizes import landscape, letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.colors import black, darkblue, whitesmoke, lightgrey
+from reportlab.lib.units import inch
+from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
+from reportlab.lib.utils import ImageReader
+from django.http import HttpResponse
+from .models import Accessory # Assuming Accessory model is in the same app
+
+# Helper function to create an accessory "card"
+def create_accessory_card(accessory, styles):
+    card_elements = []
+
+    # Accessory Image
+    img_path = None
+    if accessory.image and hasattr(accessory.image, 'path') and os.path.exists(accessory.image.path):
+        img_path = accessory.image.path
+
+    if img_path:
+        # Use ImageReader for better handling and error prevention
+        try:
+            img = Image(ImageReader(img_path), width=70, height=70)
+            card_elements.append(img)
+            card_elements.append(Spacer(1, 6))
+        except Exception as e:
+            # Fallback if image loading fails (e.g., corrupt image)
+            card_elements.append(Paragraph("Image Error", styles['Normal']))
+            card_elements.append(Spacer(1, 6))
+    else:
+        card_elements.append(Paragraph("No Image Available", styles['Small']))
+        card_elements.append(Spacer(1, 6))
+
+    # Accessory Name
+    card_elements.append(Paragraph(f"<b>{accessory.name}</b>", styles['h4']))
+    card_elements.append(Spacer(1, 4))
+
+    # Prices
+    offer_price = f"<b>Offer:</b> ₹{accessory.offer_price}" if accessory.offer_price else "-"
+    mrp = f"MRP: ₹{accessory.mrp}" if accessory.mrp else "-"
+    
+    price_text = []
+    if accessory.offer_price:
+        price_text.append(Paragraph(offer_price, styles['Normal']))
+    if accessory.mrp:
+        price_text.append(Paragraph(f"<strike>{mrp}</strike>", styles['Small'])) # Strikethrough for MRP
+
+    # Use a small table for price alignment if needed, or just flow it
+    if price_text:
+        card_elements.append(Table([[price_text[0], price_text[1]]], colWidths=[None, None], hAlign='LEFT')) # Simplified for demonstration
+    
+    card_elements.append(Spacer(1, 4))
+
+    # Description (Truncated if too long)
+    description = accessory.description or ""
+    if len(description) > 100: # Limit description length for card view
+        description = description[:97] + "..."
+    card_elements.append(Paragraph(description, styles['Small']))
+
+    # To create a "card" effect, we can put these elements into a nested table with a background
+    card_table = Table([card_elements], colWidths=[2.5 * inch]) # Adjust width as needed
+    card_table.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,-1), lightgrey), # Light background for the card
+        ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+        ('VALIGN', (0,0), (-1,-1), 'TOP'),
+        ('LEFTPADDING', (0,0), (-1,-1), 6),
+        ('RIGHTPADDING', (0,0), (-1,-1), 6),
+        ('TOPPADDING', (0,0), (-1,-1), 6),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 6),
+        ('ROUNDEDCORNERS', (0,0), (-1,-1), 5), # Optional: rounded corners for card look
+    ]))
+    return card_table
+
 def category_pdf(request):
     try:
         brand_id = request.GET.get('brand')
@@ -812,40 +887,51 @@ def category_pdf(request):
         elements = []
         styles = getSampleStyleSheet()
 
+        # Custom styles for better card appearance
+        styles.add(ParagraphStyle(name='h4', parent=styles['h2'], fontSize=12, leading=14, alignment=TA_CENTER))
+        styles.add(ParagraphStyle(name='NormalCentered', parent=styles['Normal'], alignment=TA_CENTER))
+        styles.add(ParagraphStyle(name='Small', parent=styles['Normal'], fontSize=8, leading=10, alignment=TA_CENTER))
+
         title = Paragraph("Filtered Accessories Report", styles['Title'])
         elements.append(title)
-        elements.append(Spacer(1, 12))
+        elements.append(Spacer(1, 24))
 
-        data = [["Image", "Name", "Offer Price (₹)", "MRP (₹)", "Description"]]
+        # --- Grid Layout Setup ---
+        num_columns = 3 # Number of cards per row
+        table_data = []
+        row = []
+        for i, accessory in enumerate(accessories):
+            card = create_accessory_card(accessory, styles)
+            row.append(card)
+            if (i + 1) % num_columns == 0:
+                table_data.append(row)
+                row = []
+        if row: # Add any remaining cards
+            # Fill the last row with empty cells if it's not full
+            while len(row) < num_columns:
+                row.append(Spacer(1, 1)) # Empty spacer for alignment
+            table_data.append(row)
 
-        for accessory in accessories:
-            if accessory.image and accessory.image.path and os.path.exists(accessory.image.path):
-                img = Image(accessory.image.path, width=50, height=50)
-            else:
-                img = Paragraph("No Image", styles['Normal'])
+        if not table_data:
+            elements.append(Paragraph("No accessories found matching your criteria.", styles['NormalCentered']))
+        else:
+            # Calculate column widths to distribute evenly
+            page_width = landscape(letter)[0] - doc.leftMargin - doc.rightMargin
+            col_width = page_width / num_columns
 
-            offer_price = f"₹{accessory.offer_price}" if accessory.offer_price else "-"
-            mrp = f"₹{accessory.mrp}" if accessory.mrp else "-"
+            table = Table(table_data, colWidths=[col_width] * num_columns)
+            table.setStyle(TableStyle([
+                ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+                ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                ('LEFTPADDING', (0,0), (-1,-1), 6), # Padding between cards
+                ('RIGHTPADDING', (0,0), (-1,-1), 6),
+                ('TOPPADDING', (0,0), (-1,-1), 6),
+                ('BOTTOMPADDING', (0,0), (-1,-1), 6),
+                ('GRID', (0,0), (-1,-1), 0.01, colors.white), # Effectively no grid, just for spacing
+                ('BACKGROUND', (0,0), (-1,-1), colors.white), # Ensure no background on main table cells
+            ]))
+            elements.append(table)
 
-            data.append([
-                img,
-                Paragraph(accessory.name, styles['Normal']),
-                offer_price,
-                mrp,
-                Paragraph(accessory.description or "", styles['Normal']),
-            ])
-
-        table = Table(data, colWidths=[60, 120, 80, 80, 120])
-        table.setStyle(TableStyle([
-            ('BACKGROUND', (0,0), (-1,0), colors.darkblue),
-            ('TEXTCOLOR',(0,0),(-1,0),colors.whitesmoke),
-            ('ALIGN',(2,1),(3,-1),'RIGHT'),
-            ('VALIGN',(0,0),(-1,-1),'TOP'),
-            ('INNERGRID', (0,0), (-1,-1), 0.25, colors.gray),
-            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
-        ]))
-
-        elements.append(table)
         doc.build(elements)
 
         pdf = buffer.getvalue()
@@ -861,6 +947,7 @@ def category_pdf(request):
         print("PDF Generation Error:", e)
         traceback.print_exc()
         return HttpResponse("Server error during PDF generation. Check logs.", status=500)
+    
 from django.http import HttpResponse
 from io import BytesIO
 from reportlab.lib.pagesizes import landscape, letter

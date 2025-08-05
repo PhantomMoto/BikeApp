@@ -640,48 +640,40 @@ def submit_to_delhivery(request):
     }
 
     # Call Delhivery API
-    response = create_delhivery_order(request,data,mode=shipping['mode'])
+    # response = create_delhivery_order(request,data,mode=shipping['mode'])
 
-    waybill = None
-    if response.get('packages') and response['packages'][0].get('waybill'):
-        waybill = response['packages'][0]['waybill']
-        # Optionally, you can save the order details in your database here
-        from .models import Order
-        address = f"{shipping['address']}, {shipping['city']}, {shipping['state']} - {shipping['pincode']}"
-        new_order = Order.objects.create(
-                    user=request.user,
-                    order_id=order_id,
-                    waybill=waybill,
-                    amount=request.session['final_amount'],
-                    products_desc=products_desc,
-                    address=address,
-                    status='Pending'
-                )
-        new_order.save()
 
-    # Check for errors in response
-        if response.get('error'):
-            return render(request, 'products/order_fail.html', {'error': response['error']})
+    from .models import Order
+    address = f"{shipping['address']}, {shipping['city']}, {shipping['state']} - {shipping['pincode']}"
+    new_order = Order.objects.create(
+                user=request.user,
+                order_id=order_id,
+                amount=request.session['final_amount'],
+                products_desc=products_desc,
+                address=address,
+                status='Pending'
+            )
+    new_order.save()
 
+
+    
         
         
        #clear session data
-        request.session['shipping'] = None 
-        request.session['cart'] = {}            # Clear cart
-        request.session['shipping'] = None      # Clear shipping info
-        request.session['order_items'] = None   # Clear order items
-        request.session['final_amount'] = None  # Clear amount
+    request.session['shipping'] = None 
+    request.session['cart'] = {}            # Clear cart
+    request.session['shipping'] = None      # Clear shipping info
+    request.session['order_items'] = None   # Clear order items
+    request.session['final_amount'] = None  # Clear amount
+    
+    
         
         
         
-        
-        
-        return render(request, 'products/order_success.html', {
-            'waybill': waybill,
-            'delhivery_response': response
-        })
-    else:
-        return render(request, 'products/order_fail.html', {'error': response})
+    return render(request, 'products/order_success.html', {
+        'delhivery_response': 'Order Created Succesfully ! ... Contact Shop Owner for more info'
+    })
+
 
     
 

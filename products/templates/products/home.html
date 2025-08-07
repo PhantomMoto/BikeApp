@@ -17,6 +17,7 @@ PhantomMoto is India’s premier destination for top-quality bike accessories, b
 Welcome to Phantom Moto, your ultimate destination for premium bike accessories. Explore our curated selection designed to enhance your ride's performance and style. Join the PhantomMoto community today!
 {% endblock %}
 
+{% load mathfilters %}
 {% block content %}
 <!-- 💥 Desktop slideshow after content -->
 <div id="slideshow-desktop" class="slideshow-desktop" >
@@ -57,6 +58,8 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
   <div class="auto-scroll-container scroll-snap-x" 
      style="display: flex; overflow-x: auto; scroll-snap-type: x mandatory;  
 ; scroll-behavior: smooth; gap: 20px; padding: 20px; width: 100%;">
+
+{% load mathfilters %}
 
 {% for accessory in featured_products %}
   <div class="snap-start feat-card" style="flex: 0 0 auto; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25); background: #fff; border-radius: 12px; padding: 10px 15px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;" onclick="window.location.href='{% url 'products:product_detail' accessory.slug %}'">

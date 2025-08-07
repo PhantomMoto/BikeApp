@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'products',
     'django.contrib.sitemaps',
+    'mathfilters',
     ]
 
 MIDDLEWARE = [

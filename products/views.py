@@ -812,7 +812,7 @@ def category_pdf(request):
 
         for accessory in accessories:
             if accessory.image and accessory.image.path and os.path.exists(accessory.image.path):
-                img = Image(accessory.image.path, width=50, height=50)
+                img = Image(accessory.image.path, width=200, height=200)
             else:
                 img = Paragraph("No Image", styles['Normal'])
 

@@ -69,7 +69,11 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
 
       {% if accessory.offer_price|add:0 < accessory.mrp|add:0 %}
         <div style="position: absolute; top: 5px; left: 5px; background-color: #27ae60; color: #fff; padding: 5px 10px; border-radius: 5px; font-weight: bold; font-size: 0.9em; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-          {{ accessory.discount_percent }}% OFF
+          {% with discount=accessory.mrp|sub:accessory.offer_price|floatformat:2 %}
+            {% with percent=discount|div:accessory.mrp|mul:100|floatformat:0 %}
+              {{ percent }}% OFF
+            {% endwith %}
+          {% endwith %}
         </div>
       {% endif %}
     </div>

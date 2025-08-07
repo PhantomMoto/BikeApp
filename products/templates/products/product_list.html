@@ -78,7 +78,7 @@
     </p>
 
     <p style="text-align: center;">{{ accessory.description|truncatechars:40 }}</p>
-    <p style="text-align: center;">Category: {% for cat in accessory.categories.all %}{{ cat.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+                    <p style="text-align: center;color: red;font-weight: bold;">FREE SHIPPING</p>
     
     <form method="post" style="margin-top: 10px; text-align: center;" onclick="return false;">
       {% csrf_token %}

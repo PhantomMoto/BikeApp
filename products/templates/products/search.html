@@ -37,7 +37,7 @@
                     {% endif %}
                     <p style="text-align: center;"><strong>₹{{ accessory.offer_price|floatformat:2 }}</strong> {% if accessory.mrp and accessory.mrp > accessory.offer_price %}<span style="text-decoration:line-through; color:#888;">₹{{ accessory.mrp|floatformat:2 }}</span>{% endif %}</p>
                     <p style="text-align: center;">{{ accessory.description|truncatechars:40 }}</p>
-                    <p style="text-align: center;">Category: {% for cat in accessory.categories.all %}{{ cat.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+                    <p style="text-align: center;color: red;font-weight: bold;">FREE SHIPPING</p>
                     <form method="post" style="margin-top:10px; text-align:center;" onclick="return false;">
                         {% csrf_token %}
                         <div class="cart-controla" data-accessory-id="{{ accessory.id }}">

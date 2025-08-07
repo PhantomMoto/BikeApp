@@ -158,11 +158,11 @@
     </style>
   </head>
   <body>
-    <header class="w-full border-b border-gray-200 head">
+    <header class="w-full border-b border-gray-200" style="background-color: #000;">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-20">
           <div id="logo-box">
-            <img src="{% static 'banner.jpg' %}" alt="Logo" class="h-24 w-auto" style="height: 24vh;" />
+            <img src="{% static 'banner.jpg' %}" alt="Logo" class="h-10 w-auto logo" />
           </div>
           <div class="hidden md:flex flex-1 justify-center px-4">
             <div class="w-full max-w-xl relative">
@@ -208,7 +208,7 @@
           </div>
         </div>
       </div>
-      <nav style="background-color: #000;">
+      <nav class="bg-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="hidden md:flex justify-between items-center gap-6 py-3 text-sm font-semibold text-gray-700">
             <a href="/" class="hover:text-red-600">Home</a>
@@ -726,7 +726,7 @@ mobileBtn?.addEventListener('click', () => executeSearch(MInput.value));
     <footer class="main-footer">
   <div class="footer-container">
     <div class="footer-col logo-col">
-      <img src="{% static 'logo1.png' %}" alt="Phantom Moto" class="footer-logo" style="height: 24vh;">
+      <img src="{% static 'logo1.png' %}" alt="Phantom Moto" class="footer-logo">
       <p>Premium accessories for your ride. We make bikes meaner.</p>
     </div>
     <div style="display: flex;justify-content: space-between;gap: 12vw;align-items: center;">

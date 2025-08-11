@@ -106,5 +106,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'products:product_list'
 LOGOUT_REDIRECT_URL = 'products:login'
 # 🪙 RAZORPAY KEYS
-RAZORPAY_KEY_ID = 'rzp_test_cq7lxIhKWEMmCZ'
-RAZORPAY_KEY_SECRET = 'JlTRultMrU8OS7izPky8fgqV'
+RAZORPAY_KEY_ID = 'rzp_live_gEyAAH8AlXHo4d'
+RAZORPAY_KEY_SECRET = 'yG4wuDdeQ7IK1frFJ5uMJudk'

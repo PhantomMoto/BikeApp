@@ -1013,7 +1013,8 @@ def shipping_form(request):
             'pincode': pincode,
             'delivery_cost': delivery_cost,
             'priority': priority,
-            'amount': float(total) + delivery_cost, 
+            # 'amount': float(total) + delivery_cost, 
+            'amount': float(total), 
             'total_weight': total_weight,  # Save total weight for Delhivery
             'total_width': total_width,    # Save total width for Delhivery
             'total_height': total_height,  # Save total height for Delhivery

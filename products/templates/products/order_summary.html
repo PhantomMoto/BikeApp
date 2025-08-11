@@ -81,7 +81,7 @@
     .then(data => {
       var options = {
         "key": data.key,
-        "amount": amount-{{delivery_charge*100|floatformat:2|add:"0"|floatformat:0}},
+        "amount": amount,
         "currency": "INR",
         "name": "PhantomMoto",
         "description": "Order Payment",

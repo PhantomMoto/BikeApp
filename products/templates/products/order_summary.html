@@ -43,7 +43,7 @@
         </tr>
         <tr>
           <td colspan="3" class="text-right">Delivery Charge:</td>
-          <td>₹{{ delivery_cost }}</td>
+          <td style="color: red;"> <p style="text-decoration: line-through; color: #888;">{{ delivery_charge }}</p> Free ! </td>
         </tr>
         <tr>
           <td colspan="3" class="text-right total-label">Grand Total:</td>
@@ -81,7 +81,7 @@
     .then(data => {
       var options = {
         "key": data.key,
-        "amount": amount,
+        "amount": amount-{{delivery_charge*100|floatformat:2|add:"0"|floatformat:0}},
         "currency": "INR",
         "name": "PhantomMoto",
         "description": "Order Payment",

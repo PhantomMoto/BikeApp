@@ -1096,7 +1096,8 @@ def order_summary(request):
     delivery_cost = shipping.get('delivery_cost', 0)
     from decimal import Decimal
 
-    grand_total = total + Decimal(str(delivery_cost))
+    # grand_total = total + Decimal(str(delivery_cost))
+    grand_total = total
 
     request.session['final_amount'] = float(grand_total)  # Save for payment
 

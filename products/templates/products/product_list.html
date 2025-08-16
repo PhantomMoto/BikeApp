@@ -106,9 +106,9 @@
 <section class="universal-accessories-section" style="padding: 20px;">
   <div class="cards-container" style="display: grid;grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));justify-content: center;">
     {% load mathfilters %}
-univ.......
+{%if universal_accessories.length > 0%}
 {% for accessory in universal_accessories %}
-  <div class="card accessory-card" style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); padding: 15px; cursor: pointer; transition: transform 0.2s;">
+  <div class="card accessoryu-card" style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); padding: 15px; cursor: pointer; transition: transform 0.2s;">
     <h3 style="font-size: 1.1rem; margin: 0 0 10px 0; text-align: center; text-wrap: auto;">{{ accessory.name }}</h3>
     
     <div style="position: relative;">
@@ -156,12 +156,14 @@ univ.......
   </div>
 
 
-  <div id="pagination-controls" style="text-align:center; margin-top:20px;">
-  <button id="prev-page" style="padding:6px 12px; margin-right:5px;">Previous</button>
-  <span id="page-info"></span>
-  <button id="next-page" style="padding:6px 12px; margin-left:5px;">Next</button>
+  <div id="paginationu-controls" style="text-align:center; margin-top:20px;">
+  <button id="prevu-page" style="padding:6px 12px; margin-right:5px;">Previous</button>
+  <span id="pageu-info"></span>
+  <button id="nextu-page" style="padding:6px 12px; margin-left:5px;">Next</button>
 </div>
 </section>
+
+{% endfor %}
 
 
 <style>
@@ -183,8 +185,21 @@ univ.......
 .accessory-card {
   display: block;
 }
+.accessoryu-card {
+  display: block;
+}
 
 #pagination-controls button {
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+#paginationu-controls button {
   background-color: #27ae60;
   color: white;
   border: none;
@@ -205,6 +220,18 @@ univ.......
   font-size: 1.1rem;
 }
 .accessory-card {
+  width: 100%;
+}
+#paginationu-controls button:disabled {
+  background-color: #a5d6a7;
+  cursor: not-allowed;
+}
+
+#paginationu-controls span {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+.accessoryu-card {
   width: 100%;
 }
 
@@ -383,6 +410,59 @@ document.addEventListener("DOMContentLoaded", function() {
   const nextBtn = document.getElementById("next-page");
   const pageInfo = document.getElementById("page-info");
   const paginationControls = document.getElementById("pagination-controls");
+
+  function showPage(page) {
+    const start = (page - 1) * perPage;
+    const end = start + perPage;
+
+    cards.forEach((card, index) => {
+      card.style.display = (index >= start && index < end) ? "block" : "none";
+    });
+
+    pageInfo.textContent = `< Page ${page} of ${totalPages} >`;
+
+    prevBtn.disabled = page === 1;
+    nextBtn.disabled = page === totalPages;
+    window.scrollTo({
+    top: window.innerHeight * 0.25,
+    behavior: 'smooth'
+  });
+  }
+
+  prevBtn.addEventListener("click", () => {
+    if (currentPage > 1) {
+      currentPage--;
+      showPage(currentPage);
+    }
+  });
+
+  nextBtn.addEventListener("click", () => {
+    if (currentPage < totalPages) {
+      currentPage++;
+      showPage(currentPage);
+    }
+  });
+
+if (totalPages <= 1) {
+ paginationControls.style.display = "none";
+} else {
+ showPage(currentPage);
+}
+});
+
+
+{% comment %} logic pages {% endcomment %}
+
+document.addEventListener("DOMContentLoaded", function() {
+  const cards = Array.from(document.querySelectorAll(".accessoryu-card"));
+  const perPage = 12;
+  let currentPage = 1;
+  const totalPages = Math.ceil(cards.length / perPage);
+
+  const prevBtn = document.getElementById("prevu-page");
+  const nextBtn = document.getElementById("nextu-page");
+  const pageInfo = document.getElementById("pageu-info");
+  const paginationControls = document.getElementById("paginationu-controls");
 
   function showPage(page) {
     const start = (page - 1) * perPage;

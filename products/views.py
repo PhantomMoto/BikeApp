@@ -93,7 +93,8 @@ def search_results(request):
     if query:
         pass
     else:
-        query = None
+        category_q = request.GET.get('q', '').strip()
+        
     
     products = []
     categories = []
@@ -106,6 +107,13 @@ def search_results(request):
             Q(name__icontains=query) | 
             Q(description__icontains=query) # Consider adding description to search
         ).distinct() # Use distinct if products might appear multiple times from Q objects
+
+        # Get all matching categories
+        categories = Category.objects.filter(name__icontains=query).distinct()
+    if category_q:
+        # Get all matching products
+        products = Accessory.objects.filter(
+            Q(category__icontains=query)).distinct() # Use distinct if products might appear multiple times from Q objects
 
         # Get all matching categories
         categories = Category.objects.filter(name__icontains=query).distinct()

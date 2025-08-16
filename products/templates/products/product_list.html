@@ -106,7 +106,7 @@
 <section class="universal-accessories-section" style="padding: 20px;">
   <div class="cards-container" style="display: grid;grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));justify-content: center;">
     {% load mathfilters %}
-{% if products|length > 1 %}
+{% if universal_accessories|length > 1 %}
 {% for accessory in universal_accessories %}
   <div class="card accessoryu-card" style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); padding: 15px; cursor: pointer; transition: transform 0.2s;">
     <h3 style="font-size: 1.1rem; margin: 0 0 10px 0; text-align: center; text-wrap: auto;">{{ accessory.name }}</h3>

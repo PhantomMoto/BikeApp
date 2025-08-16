@@ -92,7 +92,7 @@ Welcome to Phantom Moto, your ultimate destination for premium bike accessories.
     
     <form action="{% url 'products:cart_add' accessory.id %}" method="post" style="margin-top: 10px; text-align: center;" onclick="event.stopPropagation();">
       {% csrf_token %}
-      <button style="background-color: #27ae60; color: #fff; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">Add to Cart</button>
+      <button style="background-color: #27ae60; color: #fff; border: none; padding: 10px; border-radius: 5px; cursor: pointer;font-size: 1rem;">Add to Cart</button>
     </form>
   </div>
 {% endfor %}

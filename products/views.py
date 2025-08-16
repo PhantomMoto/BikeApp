@@ -90,6 +90,10 @@ from .models import Accessory, Category, Blog, YouTubeVideo # Make sure these ar
 
 def search_results(request):
     query = request.GET.get('q', '').strip()
+    if query:
+        pass
+    else:
+        query = None
     
     products = []
     categories = []

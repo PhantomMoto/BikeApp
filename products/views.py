@@ -100,6 +100,7 @@ def search_results(request):
     categories = []
     blogs = []
     videos = []
+    realq = ''
 
     if query:
         # Get all matching products

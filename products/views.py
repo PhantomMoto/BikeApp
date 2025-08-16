@@ -93,7 +93,7 @@ def search_results(request):
     if query:
         pass
     else:
-        category_q = request.GET.get('q', '').strip()
+        category_q = request.GET.get('c', '').strip()
         
     
     products = []

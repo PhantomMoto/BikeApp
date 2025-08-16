@@ -91,26 +91,9 @@
 {% empty %}
   <p style="text-align: center;">No accessories found.</p>
 {% endfor %}
-  </div>
-
-
-  <div id="pagination-controls" style="text-align:center; margin-top:20px;">
-  <button id="prev-page" style="padding:6px 12px; margin-right:5px;">Previous</button>
-  <span id="page-info"></span>
-  <button id="next-page" style="padding:6px 12px; margin-left:5px;">Next</button>
-</div>
-</section>
-
-
-{% comment %} universal-accessories-section {% endcomment %}
-<section class="universal-accessories-section" style="padding: 20px;">
-  <h2 style="font-size: 1.8rem; margin: 0 auto 20px auto; text-align: center;">Universal Accessories</h2>
-
-  <div class="cards-container" style="display: grid;grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));justify-content: center;">
-    {% load mathfilters %}
 {% if universal_accessories|length > 1 %}
 {% for accessory in universal_accessories %}
-  <div class="card accessoryu-card" style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); padding: 15px; cursor: pointer; transition: transform 0.2s;">
+  <div class="card accessory-card" style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); padding: 15px; cursor: pointer; transition: transform 0.2s;">
     <h3 style="font-size: 1.1rem; margin: 0 0 10px 0; text-align: center; text-wrap: auto;">{{ accessory.name }}</h3>
     
     <div style="position: relative;">
@@ -155,17 +138,22 @@
 {% empty %}
   <p style="text-align: center;">No accessories found.</p>
 {% endfor %}
-  </div>
+{% endif %}
+</div>
 
 
-  <div id="paginationu-controls" style="text-align:center; margin-top:20px;">
-  <button id="prevu-page" style="padding:6px 12px; margin-right:5px;">Previous</button>
-  <span id="pageu-info"></span>
-  <button id="nextu-page" style="padding:6px 12px; margin-left:5px;">Next</button>
+  <div id="pagination-controls" style="text-align:center; margin-top:20px;">
+  <button id="prev-page" style="padding:6px 12px; margin-right:5px;">Previous</button>
+  <span id="page-info"></span>
+  <button id="next-page" style="padding:6px 12px; margin-left:5px;">Next</button>
 </div>
 </section>
 
-{% endif %}
+
+
+
+
+
 
 
 <style>

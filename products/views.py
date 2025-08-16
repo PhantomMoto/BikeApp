@@ -108,16 +108,13 @@ def search_results(request):
             Q(description__icontains=query) # Consider adding description to search
         ).distinct() # Use distinct if products might appear multiple times from Q objects
 
-        # Get all matching categories
-        categories = Category.objects.filter(name__icontains=query).distinct()
+       
     if category_q:
         # Get all matching products
         products = Accessory.objects.filter(
-            Q(category__icontains=query)).distinct() # Use distinct if products might appear multiple times from Q objects
+            Q(categories__icontains=query)).distinct() # Use distinct if products might appear multiple times from Q objects
 
-        # Get all matching categories
-        categories = Category.objects.filter(name__icontains=query).distinct()
-
+        
      
 
     

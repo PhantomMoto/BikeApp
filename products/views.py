@@ -891,6 +891,11 @@ def search_pdf(request):
             Q(name__icontains=query) |
             Q(description__icontains=query)
         ).distinct()
+        if accessories:
+            pass
+        else:
+            accessories = Accessory.objects.filter(categories__name=query).distinct()
+
 
         buffer = BytesIO()
         doc = SimpleDocTemplate(buffer, pagesize=landscape(letter), rightMargin=30, leftMargin=30, topMargin=30, bottomMargin=18)

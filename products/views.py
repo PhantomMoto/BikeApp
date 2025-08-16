@@ -107,22 +107,22 @@ def search_results(request):
             Q(name__icontains=query) | 
             Q(description__icontains=query) # Consider adding description to search
         ).distinct() # Use distinct if products might appear multiple times from Q objects
+        realq = query
 
        
     if category_q:
         # Get all matching products
         products = Accessory.objects.filter(
-            Q(categories__icontains=query)).distinct() # Use distinct if products might appear multiple times from Q objects
+            Q(categories__icontains=category_q)).distinct() # Use distinct if products might appear multiple times from Q objects
 
         
-     
+        realq = category_q
 
     
 
     context = {
         'query': query,
         'products': products,
-        'categories': categories,
     }
     return render(request, 'products/search.html', context)
 

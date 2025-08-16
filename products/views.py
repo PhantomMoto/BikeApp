@@ -113,7 +113,7 @@ def search_results(request):
        
     if category_q:
         # Get all matching products
-        products = Accessory.objects.filter(categories__name__icontains=category_q).distinct() # Use distinct if products might appear multiple times from Q objects
+        products = Accessory.objects.filter(categories__icontains=category_q).distinct() # Use distinct if products might appear multiple times from Q objects
 
         
         realq = category_q

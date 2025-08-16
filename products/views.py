@@ -121,7 +121,7 @@ def search_results(request):
     
 
     context = {
-        'query': query,
+        'query': realq,
         'products': products,
     }
     return render(request, 'products/search.html', context)

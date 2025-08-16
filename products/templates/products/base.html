@@ -596,13 +596,13 @@
                     div.className = 'px-4 py-2 hover:bg-gray-100 cursor-pointer';
                     div.addEventListener('click', () => {
                       if(item.kind === 'category') {
-                        window.location.href = `/products/?category=${encodeURIComponent(item.name)}`;
+                        window.location.href = `/search/?q=${encodeURIComponent(item.name)}`;
                       } else if(item.kind === 'blog') {
                         window.location.href = `/blog/${item.id}/`;
                       } else if(item.kind === 'video') {
                         window.location.href = `/blog/#video-${item.id}`;
                       } else {
-                        window.location.href = `/products/?search=${encodeURIComponent(item.name)}`;
+                        window.location.href = `/search/?q=${encodeURIComponent(item.name)}`;
                       }
                     });
                     suggestionsBox.appendChild(div);

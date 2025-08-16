@@ -90,11 +90,12 @@ from .models import Accessory, Category, Blog, YouTubeVideo # Make sure these ar
 
 def search_results(request):
     query = request.GET.get('q', '').strip()
+    category_q = ''
     if query:
         pass
     else:
         category_q = request.GET.get('c', '').strip()
-        
+    
     
     products = []
     categories = []
@@ -909,7 +910,7 @@ def search_pdf(request):
 
         for accessory in accessories:
             if accessory.image and accessory.image.path and os.path.exists(accessory.image.path):
-                img = Image(accessory.image.path, width=50, height=50)
+                img = Image(accessory.image.path, width=120, height=120)
             else:
                 img = Paragraph("No Image", styles['Normal'])
 

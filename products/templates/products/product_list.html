@@ -102,6 +102,68 @@
 </section>
 
 
+{% comment %} universal-accessories-section {% endcomment %}
+<section class="universal-accessories-section" style="padding: 20px;">
+  <div class="cards-container" style="display: grid;grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));justify-content: center;">
+    {% load mathfilters %}
+univ.......
+{% for accessory in universal_accessories %}
+  <div class="card accessory-card" style="background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); padding: 15px; cursor: pointer; transition: transform 0.2s;">
+    <h3 style="font-size: 1.1rem; margin: 0 0 10px 0; text-align: center; text-wrap: auto;">{{ accessory.name }}</h3>
+    
+    <div style="position: relative;">
+      {% if accessory.image %}
+        <img
+          src="{{ accessory.image.url }}"
+          alt="{{ accessory.name }}"
+          onclick="window.location.href='{% url 'products:product_detail' accessory.slug %}'"
+          style="max-width: 100%; border-radius: 8px; margin: 0 auto 10px auto; object-fit: contain; display: block; box-shadow: 0 4px 16px rgba(0,0,0,0.1);"
+        />
+      {% endif %}
+
+      {% if accessory.offer_price|add:0 < accessory.mrp|add:0 %}
+        <div style="position: absolute; top: 5px; left: 5px; background-color: #27ae60; color: #fff; padding: 5px 10px; border-radius: 5px; font-weight: bold; font-size: 0.9em; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+          {% with discount=accessory.mrp|sub:accessory.offer_price|floatformat:2 %}
+            {% with percent=discount|div:accessory.mrp|mul:100|floatformat:0 %}
+              {{ percent }}% OFF
+            {% endwith %}
+          {% endwith %}
+        </div>
+      {% endif %}
+    </div>
+
+    <p style="text-align: center;">
+      <strong>₹{{ accessory.offer_price }}</strong> 
+      {% if accessory.mrp and accessory.offer_price|add:0 < accessory.mrp|add:0 %}
+        <span style="text-decoration: line-through; color: #888;">₹{{ accessory.mrp }}</span>
+      {% endif %}
+    </p>
+
+    <p style="text-align: center;">{{ accessory.description|truncatechars:40 }}</p>
+                    <p style="text-align: center;color: red;font-weight: bold;" class="bounce-text">FREE SHIPPING</p>
+    
+    <form method="post" style="margin-top: 10px; text-align: center;" onclick="return false;">
+      {% csrf_token %}
+      <div class="cart-control" data-accessory-id="{{ accessory.id }}">
+        <input type="hidden" name="color" value="">
+        <button type="button" class="btn-add-cart" style="background-color: #27ae60; color: #fff; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 1.1rem;">Add to Cart</button>
+      </div>
+    </form>
+  </div>
+{% empty %}
+  <p style="text-align: center;">No accessories found.</p>
+{% endfor %}
+  </div>
+
+
+  <div id="pagination-controls" style="text-align:center; margin-top:20px;">
+  <button id="prev-page" style="padding:6px 12px; margin-right:5px;">Previous</button>
+  <span id="page-info"></span>
+  <button id="next-page" style="padding:6px 12px; margin-left:5px;">Next</button>
+</div>
+</section>
+
+
 <style>
 @keyframes bounce {
   0%, 20%, 50%, 80%, 100% {

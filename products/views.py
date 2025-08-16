@@ -36,6 +36,10 @@ def product_list(request):
     search = request.GET.get('search')
 
     accessories = Accessory.objects.filter(stock__gt=0)
+    universal_accessories = accessories.filter(is_universal=True)
+
+    if universal_accessories.exists():
+        accessories = accessories.exclude(id__in=universal_accessories.values_list('id', flat=True))
     
     if category_name:
         accessories = accessories.filter(categories__name=category_name,stock__gt=0).distinct()
@@ -62,6 +66,7 @@ def product_list(request):
         'model_id': model_id,
         'category_name': category_name,
         'search': search,
+        'universal_accessories': universal_accessories,
 
     })
 

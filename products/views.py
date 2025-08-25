@@ -902,14 +902,18 @@ def search_pdf(request):
         elements = []
         styles = getSampleStyleSheet()
 
-        title = Paragraph(f"Accessories Matching '{query}'", styles['Title'])
+        title = Paragraph("Filtered Accessories Report", styles['Title'])
         elements.append(title)
         elements.append(Spacer(1, 12))
-
+        
+        # Adjust column widths to accommodate a larger image. The first column (image) is now wider.
+        # The total width should not exceed the page width (e.g., landscape letter is ~792 points)
+        col_widths = [150, 120, 80, 80, 200]
         data = [["Image", "Name", "Offer Price (₹)", "MRP (₹)", "Description"]]
 
         for accessory in accessories:
             if accessory.image and accessory.image.path and os.path.exists(accessory.image.path):
+                # Increase image size to fit the wider column
                 img = Image(accessory.image.path, width=120, height=120)
             else:
                 img = Paragraph("No Image", styles['Normal'])
@@ -925,14 +929,15 @@ def search_pdf(request):
                 Paragraph(accessory.description or "", styles['Normal']),
             ])
 
-        table = Table(data, colWidths=[150, 120, 80, 80, 200])
+        table = Table(data, colWidths=col_widths)
         table.setStyle(TableStyle([
             ('BACKGROUND', (0,0), (-1,0), colors.darkblue),
             ('TEXTCOLOR',(0,0),(-1,0),colors.whitesmoke),
             ('ALIGN',(2,1),(3,-1),'RIGHT'),
             ('VALIGN',(0,0),(-1,-1),'TOP'),
-            ('INNERGRID', (0,0), (-1,-1), 0.25, colors.gray),
-            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
+            # These lines are commented out to make the borders invisible.
+            # ('INNERGRID', (0,0), (-1,-1), 0.25, colors.gray),
+            # ('BOX', (0,0), (-1,-1), 0.5, colors.black),
         ]))
 
         elements.append(table)
@@ -942,15 +947,15 @@ def search_pdf(request):
         buffer.close()
 
         response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = f'attachment; filename="accessories_{query}.pdf"'
+        response['Content-Disposition'] = 'attachment; filename="filtered_accessories.pdf"'
         response.write(pdf)
         return response
 
     except Exception as e:
         import traceback
-        print("Search PDF Error:", e)
+        print("PDF Generation Error:", e)
         traceback.print_exc()
-        return HttpResponse("PDF generation failed.", status=500)
+        return HttpResponse("Server error during PDF generation. Check logs.", status=500)
 
 
 

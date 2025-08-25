@@ -925,7 +925,7 @@ def search_pdf(request):
                 Paragraph(accessory.description or "", styles['Normal']),
             ])
 
-        table = Table(data, colWidths=[60, 120, 80, 80, 120])
+        table = Table(data, colWidths=[150, 120, 80, 80, 200])
         table.setStyle(TableStyle([
             ('BACKGROUND', (0,0), (-1,0), colors.darkblue),
             ('TEXTCOLOR',(0,0),(-1,0),colors.whitesmoke),

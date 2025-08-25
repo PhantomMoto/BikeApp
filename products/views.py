@@ -923,7 +923,7 @@ def search_pdf(request):
 
             data.append([
                 img,
-                Paragraph(accessory.name, styles['Bold']),
+                Paragraph(accessory.name, styles['Heading2']),
                 offer_price,
                 mrp,
                 Paragraph(accessory.description or "", styles['Normal']),

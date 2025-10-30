@@ -607,7 +607,7 @@ from .models import Accessory
 @csrf_exempt
 @login_required
 def submit_to_delhivery(request):
- 
+    
     # Get shipping info from session
     shipping = request.session.get('shipping')
     order_items = request.session.get('order_items')

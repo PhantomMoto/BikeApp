@@ -14,7 +14,7 @@
     <meta name="keywords" content="{% block meta_keywords %}bike accessories, exhaust, handlebars, PhantomMoto{% endblock %}">
     <meta property="og:title" content="{% block og_title %}PhantomMoto{% endblock %}">
     <meta property="og:description" content="{% block og_description %}Find premium bike accessories...{% endblock %}">
-    <meta property="og:image" content="{% static 'logo1.png' %}">
+    <meta property="og:image" content="{{ block og_image {% static 'logo1.png' %} }}">
     <link rel="icon" href="{% static 'logo1.png' %}" type="image/x-icon">
 <link rel="shortcut icon" href="{% static "logo1.png" %}}" type="image/x-icon">
     <meta name="robots" content="index, follow">

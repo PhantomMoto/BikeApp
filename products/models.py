@@ -152,7 +152,7 @@ class Order(models.Model):
     status = models.CharField(max_length=20, default='Pending')
     created_at = models.DateTimeField(auto_now_add=True)
     mobile = models.CharField(max_length=15)
-    mode = models.CharField(max_length=20, default='Prepaid')  # 'COD' or 'Prepaid'
+    mode = models.CharField(max_length=20, default='Unknown')  # 'COD' or 'Prepaid'
 
     def __str__(self):
         return f"{self.order_id} - {self.user.username}"

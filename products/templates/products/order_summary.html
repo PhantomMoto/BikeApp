@@ -39,7 +39,7 @@
       <tfoot>
         <tr>
           <td colspan="3" class="text-right">Subtotal:</td>
-          <td>₹{{subtotal}} +  {{ subtotal*0.1 }} (paid online now) </td>
+          <td>₹{{subtotal}}</td>
         </tr>
         <tr>
           <td colspan="3" class="text-right">Delivery Charge:</td>
@@ -47,7 +47,7 @@
         </tr>
         <tr>
           <td colspan="3" class="text-right total-label">Grand Total:</td>
-          <td class="grand-total">₹{{ grand_total }}</td>
+          <td class="grand-total">₹{{ grand_total }} {%if shipping.mode == "COD"%}(you will have to pay 10% online now){% endif %}</td>
         </tr>
       </tfoot>
     </table>

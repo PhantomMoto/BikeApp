@@ -1002,6 +1002,8 @@ def shipping_form(request):
                     'color': key.split('|')[1] if '|' in key else '',  # ADD THIS LINE
                     'quantity': qty,
                 })
+                
+        request.session['final_amount'] = float(total)*0.9 if mode == "COD" else float(total)
         total_width = 0
         total_height = 0
         total_weight = 0
@@ -1032,7 +1034,6 @@ def shipping_form(request):
         # Save in session
         
         
-        amt = float(request.session.get('final_amount', 0)) if mode == "Pre-paid" else float(request.session.get('final_amount', 0))*0.9 
         request.session['shipping'] = {
             'name': name,
             'email': email,
@@ -1044,7 +1045,7 @@ def shipping_form(request):
             'delivery_cost': delivery_cost,
             'priority': priority,
             # 'amount': float(total) + delivery_cost, 
-            'amount': amt,
+            'amount': request.session['final_amount'],
             'total_weight': total_weight,  # Save total weight for Delhivery
             'total_width': total_width,    # Save total width for Delhivery
             'total_height': total_height,  # Save total height for Delhivery

@@ -64,7 +64,7 @@
 
 </div>
 
-{% if shipping.mode != "COD" %}
+
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
   document.getElementById('rzp-checkout-btn').onclick = function(e){
@@ -126,9 +126,8 @@
   document.getElementById('cod-pay').onclick = function(e){
     window.location.href = '/submit-to-delhivery'
   }
-</script>
-{% endif %}
-{% if shipping.mode == "COD" %}
+
+
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
   document.getElementById('rzp-cod-btn').onclick = function(e){
@@ -191,7 +190,7 @@
     window.location.href = '/submit-to-delhivery'
   }
 </script>
-{% endif %}
+
 
 <style>
 body {

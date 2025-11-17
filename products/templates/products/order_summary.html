@@ -56,7 +56,8 @@
   <!-- 💳 Payment button -->
  
     {% if shipping.mode == "COD" %}
-      <button type="submit" class="pay-button" id='cod-pay'><a href="/submit-to-delhivery">Place Order (COD)</a></button>
+     
+    <button id="rzp-cod-btn" class="pay-button">Pay 10% and checkout</button>
     {% else %}
       <button id="rzp-checkout-btn" class="pay-button">Checkout & Pay</button>
     {% endif %}

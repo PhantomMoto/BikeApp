@@ -667,7 +667,9 @@ def submit_to_delhivery(request):
                 amount=total,
                 products_desc=products_desc,
                 address=address,
-                status='Pending'
+                status='Pending',
+                mode = shipping['mode'],
+                mobile = shipping['phone'],
             )
     new_order.save()
 

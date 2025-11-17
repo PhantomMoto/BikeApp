@@ -976,6 +976,25 @@ def shipping_form(request):
         # mode = 
         cart = request.session.get('cart', {})
         
+        if mode == 'COD':
+            #pay 10% first online and rest on delivery
+            fgtotal = 0
+            for key, qty in cart.items():
+                acc_id = key.split('|')[0]
+                accessory = Accessory.objects.filter(pk=acc_id).first()
+                if accessory:
+                    fgtotal += accessory.offer_price * qty
+            request.session['final_amount'] = float(fgtotal) * 0.9  # 10% advance for COD
+        else:
+            fgtotal = 0
+            for key, qty in cart.items():
+                acc_id = key.split('|')[0]
+                accessory = Accessory.objects.filter(pk=acc_id).first()
+                if accessory:
+                    fgtotal += accessory.offer_price * qty
+            request.session['final_amount'] = float(fgtotal)  # Full amount for Pre-paid
+        
+        
         accessories = []
         order_items = []
         total = 0
@@ -1004,7 +1023,7 @@ def shipping_form(request):
         total_height = 0
         total_weight = 0
         total_length = 0
-
+        
         
 
         for key, qty in cart.items():

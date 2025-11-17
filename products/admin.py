@@ -164,7 +164,7 @@ from .models import Accessory
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('order_id', 'user', 'amount', 'status', 'created_at', 'waybill')
+    list_display = ('order_id', 'user', 'amount', 'status', 'created_at', 'waybill','mode','mobile')
     list_filter = ('status', 'created_at')
     search_fields = ('order_id', 'user__username', 'waybill', 'products_desc')
     readonly_fields = ('created_at',)
@@ -174,7 +174,7 @@ class OrderAdmin(admin.ModelAdmin):
             'fields': ('order_id', 'waybill', 'amount', 'products_desc', 'status')
         }),
         ('Customer Info', {
-            'fields': ('user', 'address')
+            'fields': ('user', 'address', 'mobile','mode')
         }),
         ('Timestamps', {
             'fields': ('created_at',)

@@ -472,10 +472,7 @@ def create_razorpay_order(request):
     if request.method == 'POST':
         import json
         data = json.loads(request.body)
-        if request.shipping.mode == "COD":
-            amount = request.session.get('final_amount', 0) * 10  # 10% of total amount in paise
-        else:
-            amount = request.session.get('final_amount', 0) * 100  # Convert to paise
+        amount = request.session.get('final_amount', 0) * 100 if request.session.get('shipping', {}).get('mode') != "COD" else request.session.get('final_amount', 0)*0.1*100
         if amount <= 0:
             return JsonResponse({'success': False, 'error': 'Invalid amount'}, status=400)
 

@@ -133,7 +133,7 @@
 <script>
   document.getElementById('rzp-cod-btn').onclick = function(e){
     e.preventDefault();
-    var amount = {{ grand_total|floatformat:2|add:"0"|floatformat:0 }} * 100; // in paise
+    var amount = {{ grand_total|floatformat:2|add:"0"|floatformat:0 }} * 10; // in paise
     fetch("/razorpay/create-order/", {
       method: "POST",
       headers: {

@@ -1027,6 +1027,7 @@ def shipping_form(request):
             delivery_cost = get_delhivery_shipping_cost(dest_pin=pincode, weight_grams=total_weight, mode='S', payment_type=mode)
             
         print("Delivery cost calculated:", delivery_cost)
+        
         if mode == 'COD':
             #pay 10% first online and rest on delivery
             fgtotal = 0
@@ -1043,7 +1044,7 @@ def shipping_form(request):
                 accessory = Accessory.objects.filter(pk=acc_id).first()
                 if accessory:
                     fgtotal += accessory.offer_price * qty
-            request.session['final_amount'] = float(fgtotal)  # Full amount for Pre-paid
+            request.session['final_amount'] = float(fgtotal) * 0  # Full amount for Pre-paid
         # Save in session
         
         total = request.session.get('final_amount', 0)

@@ -973,7 +973,7 @@ def shipping_form(request):
         state = request.POST.get('state')
         pincode = request.POST.get('pincode')
         priority = request.POST.get('priority')
-        mode = request.POST.get('mode', 'Prepaid')  # Default to Pre-paid if not set
+        mode = request.POST.get('mode', 'Pre-paid')  # Default to Pre-paid if not set
         # mode = 
         cart = request.session.get('cart', {})
         
@@ -1004,7 +1004,7 @@ def shipping_form(request):
                     'quantity': qty,
                 })
                 
-        request.session['final_amount'] = float(total)
+        request.session['final_amount'] = float(total) if mode == "Prepaid" else float(total)*0.9
         total_width = 0
         total_height = 0
         total_weight = 0
@@ -1046,7 +1046,7 @@ def shipping_form(request):
             'delivery_cost': delivery_cost,
             'priority': priority,
             # 'amount': float(total) + delivery_cost, 
-            'amount': float(total),
+            'amount': request.session['final_amount'],
             'total_weight': total_weight,  # Save total weight for Delhivery
             'total_width': total_width,    # Save total width for Delhivery
             'total_height': total_height,  # Save total height for Delhivery

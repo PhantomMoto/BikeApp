@@ -128,6 +128,70 @@
   }
 </script>
 {% endif %}
+{% if shipping.mode == "COD" %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  document.getElementById('rzp-cod-btn').onclick = function(e){
+    e.preventDefault();
+    var amount = {{ grand_total|floatformat:2|add:"0"|floatformat:0 }} * 100; // in paise
+    fetch("/razorpay/create-order/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": '{{ csrf_token }}'
+      },
+      body: JSON.stringify({ amount: amount })
+    })
+    .then(response => response.json())
+    .then(data => {
+      var options = {
+        "key": data.key,
+        "amount": amount,
+        "currency": "INR",
+        "name": "PhantomMoto",
+        "description": "Order Payment",
+        "order_id": data.order_id,
+        "handler": function (response){
+          fetch("/razorpay/verify/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature
+            })
+          })
+          .then(res => res.json())
+          .then(result => {
+            if(result.success){
+              alert('Payment successful! Payment ID: ' + response.razorpay_payment_id);
+              window.location.href = "/submit-to-delhivery/";
+            } else {
+              alert('Payment verification failed: ' + (result.error || 'Unknown error'));
+            }
+          });
+        },
+        "prefill": {
+          "email": "{{ user.email|default:'' }}"
+        },
+        "theme": {
+          "color": "#F97A00"
+        }
+      };
+      var rzp1 = new Razorpay(options);
+      rzp1.open();
+    });
+  }
+
+
+  document.getElementById('cod-pay').onclick = function(e){
+    window.location.href = '/submit-to-delhivery'
+  }
+</script>
+{% endif %}
 
 <style>
 body {

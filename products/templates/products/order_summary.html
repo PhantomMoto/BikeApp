@@ -57,7 +57,7 @@
  
     {% if shipping.mode == "COD" %}
      
-    <button id="rzp-checkout-btn" class="pay-button">Pay 10% and checkout</button>
+    <button id="rzp-cod-btn" class="pay-button">Pay 10% and checkout</button>
     {% else %}
       <button id="rzp-checkout-btn" class="pay-button">Checkout & Pay</button>
     {% endif %}
@@ -130,7 +130,7 @@
 {% else %}
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-  document.getElementById('rzp-checkout-btn').onclick = function(e){
+  document.getElementById('rzp-cod-btn').onclick = function(e){
     e.preventDefault();
     var amount = {{ grand_total|floatformat:2|add:"0"|floatformat:0 }} * 10; // in paise
     fetch("/razorpay/create-order/", {

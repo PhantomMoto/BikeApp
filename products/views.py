@@ -1004,7 +1004,7 @@ def shipping_form(request):
                     'quantity': qty,
                 })
                 
-        request.session['final_amount'] = float(total) if mode == "Pre-paid" else float(total)*0.9
+        request.session['final_amount'] = float(total)
         total_width = 0
         total_height = 0
         total_weight = 0

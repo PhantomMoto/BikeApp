@@ -660,10 +660,11 @@ def submit_to_delhivery(request):
 
     from .models import Order
     address = f"{shipping['address']}, {shipping['city']}, {shipping['state']} - {shipping['pincode']}"
+    total = float(request.session['final_amount'])*0.9 if shipping['mode']=="COD" else float(request.session['final_amount'])
     new_order = Order.objects.create(
                 user=request.user,
                 order_id=order_id,
-                amount=request.session['final_amount'],
+                amount=total,
                 products_desc=products_desc,
                 address=address,
                 status='Pending'

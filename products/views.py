@@ -1031,8 +1031,8 @@ def shipping_form(request):
        
         # Save in session
         
-        total = request.session.get('final_amount', 0)
-        amt = float(total) if mode == "Pre-paid" else float(total)*0.9 
+        
+        amt = float(request.session.get('final_amount', 0)) if mode == "Pre-paid" else float(request.session.get('final_amount', 0))*0.9 
         request.session['shipping'] = {
             'name': name,
             'email': email,

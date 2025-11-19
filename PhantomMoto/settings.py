@@ -107,12 +107,12 @@ LOGIN_REDIRECT_URL = 'products:product_list'
 LOGOUT_REDIRECT_URL = 'products:login'
 
 
-# # 🪙 RAZORPAY KEYS
-# RAZORPAY_KEY_ID = 'rzp_live_gEyAAH8AlXHo4d'
-# RAZORPAY_KEY_SECRET = 'yG4wuDdeQ7IK1frFJ5uMJudk'
+ # 🪙 RAZORPAY KEYS
+RAZORPAY_KEY_ID = 'rzp_live_gEyAAH8AlXHo4d'
+RAZORPAY_KEY_SECRET = 'yG4wuDdeQ7IK1frFJ5uMJudk'
 
-#testing keys
-RAZORPAY_KEY_ID = 'rzp_test_RZgn136dGJK5xP'
-RAZORPAY_KEY_SECRET = 'YSTJD4XghN8kgRJ3GrXK2njH'
+##testing keys
+#RAZORPAY_KEY_ID = 'rzp_test_RZgn136dGJK5xP'
+#RAZORPAY_KEY_SECRET = 'YSTJD4XghN8kgRJ3GrXK2njH'
 
 

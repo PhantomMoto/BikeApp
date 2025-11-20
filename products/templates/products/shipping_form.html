@@ -52,14 +52,11 @@
     </div>
     <div class="form-group half-width">
       <label for="mode" class="form-label">Payment Mode</label>
-      <select id="mode" name="mode" required {% if total <= 1000 or not isCOD%}disabled{% endif %}>
+      <select id="mode" name="mode" required {% if not isCOD%}disabled{% endif %}>
   <option value="Prepaid">Pre-Paid</option>
 <option value="COD" >Cash-On-Delivery</option>
 </select>
-{% if total < 1000 %}
-  <p class="cod-info">COD available after Rs.1000 </p>
-  {% endif %}
-  {% if total > 1000 and not isCOD %}
+  {% if not isCOD %}
   <p class="cod-info" style="color:#c62828;">COD not available for some items </p>
   {% endif %}
 
